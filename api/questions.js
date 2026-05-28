@@ -1,24 +1,4 @@
-export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json',
-        'anthropic-version': '2023-06-01',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-      },
-      body: JSON.stringify(req.body),
-    });
-    const data = await response.json();
-    res.status(response.status).json(data);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-}
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -29,10 +9,9 @@ export default async function handler(req, res) {
 
   const { saveQuestions, fetchQuestions, ...anthropicBody } = req.body;
 
-  // FETCH questions from database
   if (fetchQuestions) {
     const { location, difficulty, limit = 10 } = req.body;
-    const url = `${SUPABASE_URL}/rest/v1/questions?location=eq.${encodeURIComponent(location)}&difficulty=eq.${difficulty}&order=times_used.asc&limit=${limit}`;
+    const url = `${SUPABASE_URL}/rest/v1/questions?location=eq.${encodeURIComponent(location)}&difficulty=eq.${difficulty}&pending=eq.false&order=times_used.asc&limit=${limit}`;
     const r = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
@@ -43,7 +22,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ questions: data });
   }
 
-  // SAVE questions to database
   if (saveQuestions) {
     const { questions, location, game_mode } = req.body;
     const rows = questions.map(q => ({
@@ -57,7 +35,8 @@ export default async function handler(req, res) {
       options: q.options || null,
       answer: q.answer,
       explanation: q.explanation || '',
-      surprising: q.surprising || false
+      surprising: q.surprising || false,
+      pending: false
     }));
     await fetch(`${SUPABASE_URL}/rest/v1/questions`, {
       method: 'POST',
@@ -72,7 +51,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ saved: rows.length });
   }
 
-  // GENERATE questions via Claude
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -84,4 +62,8 @@ export default async function handler(req, res) {
       body: JSON.stringify(anthropicBody),
     });
     const data = await response.json();
-    res.status(re
+    res.status(response.status).json(data);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
