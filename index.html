@@ -221,6 +221,46 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
   </div>
 </div>
 
+<!-- SUBMIT QUESTION MODAL -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal" style="max-width:540px">
+    <h3>Submit a Question</h3>
+    <p style="margin-bottom:.75rem">Know a great local trivia question? Submit it and it may appear in the game!</p>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.75rem;font-size:.82rem;color:#92400e;margin-bottom:1rem;line-height:1.6">
+      ⚠️ <strong>Please note:</strong> All submitted questions are reviewed by our team before being added to the game. We verify facts, check for accuracy, and ensure questions meet our quality standards. Submissions may be edited or declined.
+    </div>
+    <div class="lbl">Your city & state</div>
+    <input type="text" id="sq-location" placeholder="e.g. Tucson, AZ"/>
+    <div class="lbl">Your name <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></div>
+    <input type="text" id="sq-name" placeholder="First name or nickname"/>
+    <div class="lbl">Category</div>
+    <select id="sq-category" style="width:100%;padding:.7rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:DM Sans,sans-serif;font-size:.95rem;outline:none;margin-bottom:.5rem;background:#fff">
+      <option>Local Landmarks</option>
+      <option>Local Food</option>
+      <option>Local History</option>
+      <option>Local Slang</option>
+      <option>Know Your Rights</option>
+      <option>American History</option>
+      <option>American Music</option>
+      <option>American Sports</option>
+      <option>Movies & TV</option>
+      <option>American Government</option>
+      <option>World Religions</option>
+      <option>Other</option>
+    </select>
+    <div class="lbl">Your question</div>
+    <textarea id="sq-question" style="width:100%;padding:.7rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:DM Sans,sans-serif;font-size:.95rem;outline:none;resize:none;height:80px;margin-bottom:.5rem" placeholder="Type your trivia question here..."></textarea>
+    <div class="lbl">The correct answer</div>
+    <input type="text" id="sq-answer" placeholder="What is the correct answer?"/>
+    <div class="lbl">Fun fact or explanation <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></div>
+    <input type="text" id="sq-explanation" placeholder="Any extra info about this question?"/>
+    <div class="modal-btns" style="margin-top:.75rem">
+      <button class="modal-cancel" onclick="closeSubmit()">Cancel</button>
+      <button class="modal-submit" onclick="submitQuestion()" id="sq-btn">Submit Question →</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-wrap">
   <div class="ad-left">
     <div class="ad-sidebar-block"><div class="ad-label">Advertisement</div><div class="ad-inner" style="height:600px;width:150px"><span style="font-size:1.5rem">📢</span><span>Ad Space</span><span style="font-size:.65rem;color:#d1d5db">160×600</span></div></div>
@@ -305,6 +345,10 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
         <div><strong>Own a local business?</strong><p>Get featured in You From Here questions for your city!</p></div>
         <button class="contact-btn" onclick="openContact()">Get Featured →</button>
       </div>
+      <div class="contact-bar" style="background:#f0fdf4;border:1.5px solid #bbf7d0;margin-top:.5rem">
+        <div><strong style="color:#166534">Know a great local question?</strong><p style="color:#166534;opacity:.8">Submit it and it could appear in the game!</p></div>
+        <button class="contact-btn" style="background:#22c55e" onclick="openSubmit()">Submit Question →</button>
+      </div>
     </div>
 
     <!-- LOADING -->
@@ -378,7 +422,7 @@ const MAX_CATS=6;
 
 // Funny loading messages per difficulty
 const LOAD_MSGS={
-  easy:["Searching for questions even your dog could answer...","Finding something your grandma could get right...","Lowering the bar gently...","Warming up the easy button..."],
+  easy:["Setting the difficulty to 'participation trophy' level...","Finding something your grandma could get right...","Lowering the bar gently...","Warming up the easy button..."],
   medium:["Cooking up something spicy...","Not too hot, not too cold, just like Goldilocks...","Consulting the brain teaser archives...","Calibrating the difficulty dial..."],
   hard:["Waking up the rocket scientists...","Consulting the ancient scrolls...","Calling in a favor from Jeopardy...","This one's gonna hurt a little...","Summoning the trivia gods..."]
 };
@@ -420,6 +464,22 @@ function toggleRules(){document.getElementById('rules-body').classList.toggle('o
 function openContact(){document.getElementById('contact-modal').className='modal-overlay show';}
 function closeContact(){document.getElementById('contact-modal').className='modal-overlay';}
 function submitContact(){const name=document.getElementById('m-name').value.trim();const email=document.getElementById('m-email').value.trim();if(!name||!email){alert('Please fill in your name and email!');return;}alert('Thanks '+name+'! We\'ll be in touch at '+email+' soon. 🎉');closeContact();}
+function openSubmit(){document.getElementById('submit-modal').className='modal-overlay show';}
+function closeSubmit(){document.getElementById('submit-modal').className='modal-overlay';}
+async function submitQuestion(){
+  const location=document.getElementById('sq-location').value.trim();
+  const question=document.getElementById('sq-question').value.trim();
+  const answer=document.getElementById('sq-answer').value.trim();
+  if(!location||!question||!answer){alert('Please fill in your city, question and answer!');return;}
+  const btn=document.getElementById('sq-btn');btn.textContent='Submitting...';btn.disabled=true;
+  try{
+    const row={location,game_mode:'local',category:document.getElementById('sq-category').value,difficulty:'medium',points:2,type:'mc',question,options:null,answer,explanation:document.getElementById('sq-explanation').value.trim(),surprising:false,pending:true,submitted_by:document.getElementById('sq-name').value.trim()||'Anonymous'};
+    const r=await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)});
+    if(r.ok){alert('Thanks! Your question has been submitted for review. 🎉\n\nOur team will verify it before adding it to the game.');closeSubmit();['sq-location','sq-name','sq-question','sq-answer','sq-explanation'].forEach(id=>document.getElementById(id).value='');}
+    else{alert('Error submitting. Please try again!');}
+  }catch(e){alert('Error submitting. Please try again!');}
+  btn.textContent='Submit Question →';btn.disabled=false;
+}
 
 const TAGLINES={local:'Think you know your city? Prove it.',national:'Think you know America? Prove it.',world:'Think you know the world? Prove it.'};
 function setGameMode(m){
