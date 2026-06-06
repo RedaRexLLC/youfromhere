@@ -310,6 +310,8 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 .q-img-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.55);color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;letter-spacing:.05em;backdrop-filter:blur(4px)}
 .q-img-loading{height:200px;display:flex;align-items:center;justify-content:center;background:#f0f0ee;border-radius:12px;margin-bottom:.85rem;color:#9ca3af;font-size:.85rem;gap:.5rem}
 #s-game .q-img{height:200px}
+.q-map-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.6);color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;letter-spacing:.05em;backdrop-filter:blur(4px)}
+.q-map-credit{position:absolute;bottom:.4rem;right:.5rem;font-size:.55rem;color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif}
 
 /* ── FOCUS RINGS (WCAG 2.1 AA) ── */
 :focus-visible{outline:3px solid #e8b84b;outline-offset:2px;border-radius:4px}
@@ -696,7 +698,7 @@ const LOAD_MSGS={
   600:["Waking up the rocket scientists...","Consulting the ancient scrolls...","Calling in a favor from Jeopardy...","This one's gonna hurt a little...","Summoning the trivia gods..."]
 };
 
-let G={gameMode:'local',city:'',college:'',country:'',style:'multi',teams:[],bank:{},usedQs:{},answered:false,ct:0,stealing:false,scores:[],mi:[],board:[],curCell:null,curQ:null};
+let G={gameMode:'local',city:'',college:'',country:'',style:'multi',teams:[],bank:{},usedQs:{},usedImgs:{},answered:false,ct:0,stealing:false,scores:[],mi:[],board:[],curCell:null,curQ:null};
 let tc=0,tmr=null,tLeft=TMAX,stealTmr=null,actx=null,colOn=false;
 
 // Populate countries
@@ -875,7 +877,7 @@ function startGame(){
   }
 
   G.scores=G.teams.map(()=>0);G.mi=G.teams.map(()=>0);
-  G.bank={};G.usedQs={};G.ct=0;G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
+  G.bank={};G.usedQs={};G.usedImgs={};G.ct=0;G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
 
   // Build shared board from merged unique categories
   const allCats=[...new Set(G.teams.flatMap(t=>t.cats))];
@@ -918,16 +920,16 @@ async function genQsForCategory(catId){
   const prompt=locCtx+'\nCategory: '+catLabel+'. '+collegeNote
     +(asked?'\nDo NOT repeat these questions: '+asked:'')
     +'\nGenerate exactly 6 trivia questions for this single category:'
-    +'\n- 2 questions worth 200 points (easy — the most famous/well-known aspect of this category)'
-    +'\n- 2 questions worth 400 points (medium — a different, moderately well-known aspect)'
-    +'\n- 2 questions worth 600 points (hard — an obscure or highly specific aspect)'
-    +'\nCRITICAL: Each of the 6 questions MUST cover a completely different specific topic, person, place, or event. Do NOT ask about the same subject at different point values.'
+    +'\n- 2 questions worth 200 points (EASY — most famous, well-known facts that most locals would know)'
+    +'\n- 2 questions worth 400 points (MEDIUM — moderately well-known, requires some local knowledge)'
+    +'\n- 2 questions worth 600 points (HARD — obscure, specific, or surprising facts only experts would know)'
+    +'\nCRITICAL DEDUPLICATION: Each of the 6 questions MUST cover a completely different specific topic, landmark, person, or event. NEVER ask about the same subject at different point values. Every question must have a unique image/location (no two questions about the same place).'
     +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false: (1) the question MUST be a clear factual statement the player agrees or disagrees with, (2) NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice, (3) CRITICAL: before setting the answer field, verify it is factually correct — if your explanation confirms the statement is true, the answer MUST be "true"; if false, "false". Never contradict your own explanation.'
     +'\nFor multiple choice: the `answer` field must exactly match one of the strings in the `options` array.'
     +'\nAvoid questions with ambiguous, contested, or overly nuanced answers — only ask things with a single clear correct answer.'
-    +(catId==='you_know_place'?'\nUse question type "photo" for ALL questions in this category. Include a "wikiTitle" field with the EXACT Wikipedia article title for the landmark/place (e.g. "Tucson Convention Center" or "University of Arizona"). The question should ask "Where is this?" or "What place is shown here?" as multiple choice, with the place name as the answer. Options should be 4 real places in or near '+G.city+'.':catId==='spot_it'?'\nUse question type "photo" for ALL questions in this category. Include a "wikiTitle" field with the exact Wikipedia article title for a well-known local attraction or landmark. Ask "What is this landmark?" or "Where in '+G.city+' is this?" as multiple choice.':catId==='loc_landmarks'?'\nFor up to 3 of the 6 questions, use question type "photo" and include a "wikiTitle" field with the exact Wikipedia article title for the landmark. Ask "What landmark is this?" as multiple choice.':catId==='w_landmarks'?'\nFor up to 3 of the 6 questions, use question type "photo" and include a "wikiTitle" field with the exact Wikipedia article title for the world-famous attraction. Ask "What famous landmark is this?" as multiple choice.':'')
+    +(catId==='you_know_place'?'\nMix two visual question types for this category:\n1. Type "photo": include "wikiTitle" with the EXACT Wikipedia article title for a well-known local spot. Ask "What place is this?" MC with 4 real local places as options.\n2. Type "mapview": include "lat" (number), "lng" (number), "zoom" (17-19), and "mapviewHint" describing what corner/side to look at. Ask "What is at [intersection description]?" MC. Coordinates must be precise GPS coords for that exact spot in '+G.city+'. Each question must use a completely different location.':catId==='spot_it'?'\nUse question type "mapview" for ALL questions. Include "lat" (number), "lng" (number), "zoom" (17-19 based on how large the area is), and "mapviewHint" (e.g. "northeast corner"). The question should ask what business/landmark/feature is at that specific GPS location in '+G.city+'. Include 4 real nearby options as MC choices. Every question must be at a completely different intersection or location — no two questions share the same area.':catId==='loc_landmarks'?'\nFor 2-3 of the 6 questions, use question type "photo" with "wikiTitle" (exact Wikipedia article title). Ask "What landmark is this?" as MC.':catId==='w_landmarks'?'\nFor 2-3 of the 6 questions, use question type "photo" with "wikiTitle" (exact Wikipedia article title for the world-famous attraction). Ask "What famous landmark is this?" as MC.':'')
     +'\nMark genuinely surprising facts with surprising:true.'
-    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"photo","wikiTitle":"Exact Wikipedia Article Title","category":"'+catLabel+'","difficulty":"medium","points":400,"question":"Where is this?","options":["Place A","Place B","Place C","Place D"],"answer":"Place A","explanation":"fact.","surprising":false}]}';
+    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"photo","wikiTitle":"Exact Wikipedia Article Title","category":"'+catLabel+'","difficulty":"medium","points":400,"question":"What landmark is this?","options":["Place A","Place B","Place C","Place D"],"answer":"Place A","explanation":"fact.","surprising":false},{"type":"mapview","lat":32.2226,"lng":-110.9747,"zoom":18,"mapviewHint":"northeast corner","category":"'+catLabel+'","difficulty":"hard","points":600,"question":"What business is on the northeast corner of 4th Ave and University Blvd?","options":["Business A","Business B","Business C","Business D"],"answer":"Business A","explanation":"fact.","surprising":false}]}';
   const response=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
   if(!response.ok){const e=await response.json().catch(()=>({}));throw new Error(e?.error?.message||'HTTP '+response.status);}
   const data=await response.json();
@@ -947,17 +949,31 @@ async function saveQsToDb(qs){
   await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
 }
 
-// ── WIKIPEDIA IMAGE FETCH ──
+// ── IMAGE FETCHING ──
 async function fetchWikiImage(title){
   try{
-    const url='https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(title)+'&prop=pageimages&format=json&pithumbsize=900&origin=*';
-    const r=await fetch(url);
-    const d=await r.json();
-    const pages=d?.query?.pages;
-    if(!pages)return null;
-    const page=Object.values(pages)[0];
-    return page?.thumbnail?.source||null;
+    // 1. Direct title lookup
+    const r1=await fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(title)+'&prop=pageimages&format=json&pithumbsize=900&origin=*');
+    const d1=await r1.json();
+    const pages1=d1?.query?.pages;
+    if(pages1){const p=Object.values(pages1)[0];if(p?.thumbnail?.source)return p.thumbnail.source;}
+    // 2. Fallback: search Wikipedia for the title, use top result
+    const r2=await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='+encodeURIComponent(title)+'&format=json&origin=*&srlimit=3');
+    const d2=await r2.json();
+    const results=d2?.query?.search;
+    if(!results?.length)return null;
+    for(const res of results){
+      const r3=await fetch('https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(res.title)+'&prop=pageimages&format=json&pithumbsize=900&origin=*');
+      const d3=await r3.json();
+      const pages3=d3?.query?.pages;
+      if(pages3){const p=Object.values(pages3)[0];if(p?.thumbnail?.source)return p.thumbnail.source;}
+    }
+    return null;
   }catch(e){return null;}
+}
+
+function buildMapImageUrl(lat,lng,zoom){
+  return '/api/mapimage?lat='+lat+'&lng='+lng+'&zoom='+(zoom||18);
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
@@ -965,13 +981,18 @@ function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.ra
 function getNextQ(pts,catId){
   if(!G.bank[pts])return null;
   const catLabel=ALL.find(c=>c.id===catId)?.label;
-  let idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]&&q.category===catLabel);
-  if(idx<0)idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]);
+  // Find unused question — also skip if its image was already shown this game
+  const isImgUsed=q=>(q.wikiTitle&&G.usedImgs[q.wikiTitle])||(q.lat&&G.usedImgs[q.lat+','+q.lng]);
+  let idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]&&!isImgUsed(q)&&q.category===catLabel);
+  if(idx<0)idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]&&!isImgUsed(q));
+  if(idx<0)idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]); // last resort: allow img repeat
   if(idx<0)return null;
   const q={...G.bank[pts][idx]};
   G.usedQs[q.question]=true;
-  // Shuffle MC/photo options so correct answer isn't always in position A
-  if((q.type==='mc'||q.type==='photo')&&Array.isArray(q.options)){
+  if(q.wikiTitle)G.usedImgs[q.wikiTitle]=true;
+  if(q.lat&&q.lng)G.usedImgs[q.lat+','+q.lng]=true;
+  // Shuffle MC/photo/mapview options so correct answer isn't always position A
+  if((q.type==='mc'||q.type==='photo'||q.type==='mapview')&&Array.isArray(q.options)){
     q.options=shuffle([...q.options]);
   }
   return q;
@@ -1035,10 +1056,12 @@ function renderQuestion(q,pts){
   document.getElementById('board-section').style.display='none';
 
   const isPhoto=q.type==='photo';
+  const isMap=q.type==='mapview';
+  const hasImg=isPhoto||isMap;
   let html='<div class="q-card">'
     +'<div class="timer-wrap"><div class="t-lbl"><span class="t-cat" id="t-cat">'+q.category+'</span><span class="t-num" id="t-num">1:00</span></div><div class="t-bg"><div class="t-bar" id="t-bar" style="width:100%;background:#22c55e"></div></div></div>'
     +'<div><span class="pts-badge '+pbClass+'">'+pts+' PTS</span></div>'
-    +(isPhoto?'<div class="q-img-loading" id="q-img-container"><span>🖼</span> Loading image...</div>':'')
+    +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div>':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
     +'<div class="q-txt">'+q.question+'</div>';
 
@@ -1066,7 +1089,7 @@ function renderQuestion(q,pts){
       +'</div>';
 
     let ans='';
-    if(q.type==='mc'||q.type==='photo'){
+    if(q.type==='mc'||q.type==='photo'||q.type==='mapview'){
       ans='<div class="opts">'+(q.options||[]).map(o=>{
         const se=o.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
         const sa=(q.answer||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
@@ -1088,7 +1111,7 @@ function renderQuestion(q,pts){
   }
   html+='</div>';
   document.getElementById('q-area').innerHTML=html;
-  // Async load Wikipedia image for photo questions
+  // Async load image/map for visual question types
   if(isPhoto&&q.wikiTitle){
     fetchWikiImage(q.wikiTitle).then(imgUrl=>{
       const wrap=document.getElementById('q-img-container');
@@ -1099,9 +1122,22 @@ function renderQuestion(q,pts){
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-badge">📸 Where is this?</div>';
       } else {
-        wrap.style.display='none'; // hide gracefully if no image found
+        wrap.style.display='none';
       }
     });
+  }
+  if(isMap&&q.lat&&q.lng){
+    const wrap=document.getElementById('q-img-container');
+    if(wrap){
+      const mapSrc=buildMapImageUrl(q.lat,q.lng,q.zoom);
+      wrap.className='q-img-wrap';
+      wrap.innerHTML='<img class="q-img" src="'+mapSrc+'" alt="Satellite map view" loading="eager" '
+        +'onerror="this.closest(\'.q-img-wrap\').innerHTML=\'<div style=\\\'padding:1rem;text-align:center;color:#6b7280;font-size:.85rem\\\'>🗺 Map unavailable — answer from your local knowledge!</div>\'"'
+        +'/>'
+        +'<div class="q-img-overlay"></div>'
+        +'<div class="q-map-badge">🛰 Satellite View'+(q.mapviewHint?' · Look at the '+q.mapviewHint:'')+'</div>'
+        +'<div class="q-map-credit">© Google Maps</div>';
+    }
   }
   if(!isMod)startTmr();
 }
