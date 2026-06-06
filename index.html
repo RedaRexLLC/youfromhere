@@ -201,6 +201,17 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .mod-nobody{background:#6b7280;color:#fff}
 .mod-adj{display:flex;gap:.35rem;margin-top:.5rem;flex-wrap:wrap}
 .mod-adj-btn{flex:1;padding:.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;min-width:80px}
+.mod-reveal-btn{width:100%;padding:1rem;border-radius:12px;background:#e8b84b;color:#1a1a2e;border:none;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;margin-bottom:.5rem;transition:background .15s}
+.mod-reveal-btn:hover{background:#d4a43a}
+.mod-hidden{display:none}
+
+/* ── MIRROR MODAL ── */
+.mirror-btn{background:none;border:1.5px solid #e5e7eb;border-radius:8px;padding:.3rem .7rem;font-family:'DM Sans',sans-serif;font-size:.75rem;font-weight:600;color:#6b7280;cursor:pointer;display:flex;align-items:center;gap:.3rem}
+.mirror-btn:hover{border-color:#1a1a2e;color:#1a1a2e}
+.mirror-modal{background:#fff;border-radius:16px;padding:1.5rem;max-width:520px;width:100%;max-height:85vh;overflow-y:auto}
+.mirror-device{border:1px solid #e5e7eb;border-radius:10px;padding:.85rem 1rem;margin-bottom:.6rem}
+.mirror-device-hdr{font-weight:700;font-size:.9rem;margin-bottom:.35rem;display:flex;align-items:center;gap:.5rem}
+.mirror-device p{font-size:.82rem;color:#6b7280;line-height:1.6}
 
 /* ── SHARE ── */
 .share-box{margin-top:.7rem;display:none}.share-box.show{display:block}
@@ -285,11 +296,54 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 #s-game .nxt-btn{margin-top:.5rem;padding:.7rem}
 #s-game .fb{margin-top:.5rem;font-size:.88rem;padding:.7rem .9rem}
 #s-game .acts{margin-bottom:.5rem}
-#s-game .mod-bar{padding:.75rem 1rem;margin-bottom:.5rem}
-#s-game .mod-answer{padding:.5rem .75rem;font-size:.9rem;margin-bottom:.5rem}
+#s-game .mod-bar{padding:.6rem .85rem;margin-bottom:.4rem}
+#s-game .mod-answer{padding:.4rem .65rem;font-size:.88rem;margin-bottom:.4rem}
+#s-game .mod-bar-title{font-size:.85rem;margin-bottom:.3rem}
+#s-game .mod-reveal-btn{padding:.65rem;font-size:.95rem;margin-bottom:.4rem}
+#s-game .pts-badge{margin-bottom:.3rem;font-size:.95rem}
+#s-game .q-txt{margin-bottom:.6rem}
 </style>
 </head>
 <body>
+
+<!-- MIRROR MODAL -->
+<div class="modal-overlay" id="mirror-modal">
+  <div class="mirror-modal">
+    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;margin-bottom:.35rem">📺 Mirror to TV</h3>
+    <p style="font-size:.83rem;color:#6b7280;margin-bottom:1rem;line-height:1.5">Pick your device below. Once mirroring, the TV shows the game — the moderator keeps the phone/tablet to control it.</p>
+
+    <div class="mirror-device">
+      <div class="mirror-device-hdr">🍎 iPhone or iPad (AirPlay)</div>
+      <p>1. Connect iPhone/iPad and Apple TV (or AirPlay-compatible TV) to the <strong>same Wi-Fi</strong>.<br>2. Swipe down from top-right corner to open <strong>Control Center</strong>.<br>3. Tap <strong>Screen Mirroring</strong> → select your TV.</p>
+    </div>
+
+    <div class="mirror-device">
+      <div class="mirror-device-hdr">💻 Mac (AirPlay)</div>
+      <p>1. Click the <strong>Control Center</strong> icon in the menu bar (top-right).<br>2. Click <strong>Screen Mirroring</strong> → select your Apple TV or AirPlay TV.<br>3. Or use the AirPlay icon directly in the menu bar if visible.</p>
+    </div>
+
+    <div class="mirror-device">
+      <div class="mirror-device-hdr">🤖 Android Phone or Tablet</div>
+      <p>1. Connect to the same Wi-Fi as your TV.<br>2. Swipe down for <strong>Quick Settings</strong> → tap <strong>Smart View</strong>, <strong>Screen Cast</strong>, or <strong>Cast</strong> (name varies by brand).<br>3. Select your TV or Chromecast device.</p>
+    </div>
+
+    <div class="mirror-device">
+      <div class="mirror-device-hdr">🪟 Windows PC</div>
+      <p>1. Press <strong>Windows + K</strong> to open the Cast panel.<br>2. Select your TV or Miracast display.<br>3. Alternatively use <strong>Settings → System → Display → Connect to a wireless display</strong>.</p>
+    </div>
+
+    <div class="mirror-device">
+      <div class="mirror-device-hdr">🔌 Any Device — HDMI Cable (most reliable)</div>
+      <p>Plug an HDMI cable from your laptop/phone (with adapter if needed) directly into the TV. Switch the TV input to the correct HDMI port. Works everywhere, no Wi-Fi needed.</p>
+    </div>
+
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.75rem;font-size:.8rem;color:#92400e;margin-top:.5rem;line-height:1.6">
+      💡 <strong>Tip:</strong> Use <strong>Moderator Mode</strong> so the answer stays hidden on the TV. The moderator taps "Reveal Answer" on their device when ready.
+    </div>
+
+    <button class="start-btn" style="margin-top:1rem" onclick="document.getElementById('mirror-modal').className='modal-overlay'">Done</button>
+  </div>
+</div>
 
 <!-- CONTACT MODAL -->
 <div class="modal-overlay" id="contact-modal">
@@ -474,7 +528,10 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
       <div class="game-top">
         <div class="game-header">
           <div class="game-logo">You From <span>Here?</span></div>
-          <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
+          <div style="display:flex;gap:.4rem;align-items:center">
+            <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'">📺 Mirror</button>
+            <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
+          </div>
         </div>
         <div class="scores-wrap" id="scores-wrap"></div>
         <div class="turn-bar" id="turn-bar" style="display:none"></div>
@@ -824,7 +881,9 @@ async function genQsForCategory(catId){
     +'\n- 2 questions worth 400 points (medium — a different, moderately well-known aspect)'
     +'\n- 2 questions worth 600 points (hard — an obscure or highly specific aspect)'
     +'\nCRITICAL: Each of the 6 questions MUST cover a completely different specific topic, person, place, or event. Do NOT ask about the same subject at different point values.'
-    +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false, the question MUST be a clear factual statement the player agrees or disagrees with (e.g. "The Eiffel Tower is located in Paris."). NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice.'
+    +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false: (1) the question MUST be a clear factual statement the player agrees or disagrees with, (2) NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice, (3) CRITICAL: before setting the answer field, verify it is factually correct — if your explanation confirms the statement is true, the answer MUST be "true"; if false, "false". Never contradict your own explanation.'
+    +'\nFor multiple choice: the `answer` field must exactly match one of the strings in the `options` array.'
+    +'\nAvoid questions with ambiguous, contested, or overly nuanced answers — only ask things with a single clear correct answer.'
     +(catId==='you_know_place'?'\nDescribe a well-known local spot without naming it.':'')
     +(catId==='spot_it'?'\nDescribe a scene and ask about specific details.':'')
     +'\nMark genuinely surprising facts with surprising:true.'
@@ -848,14 +907,20 @@ async function saveQsToDb(qs){
   await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
 }
 
+function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+
 function getNextQ(pts,catId){
   if(!G.bank[pts])return null;
   const catLabel=ALL.find(c=>c.id===catId)?.label;
   let idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]&&q.category===catLabel);
   if(idx<0)idx=G.bank[pts].findIndex(q=>!G.usedQs[q.question]);
   if(idx<0)return null;
-  const q=G.bank[pts][idx];
+  const q={...G.bank[pts][idx]};
   G.usedQs[q.question]=true;
+  // Shuffle MC options so correct answer isn't always in position A
+  if(q.type==='mc'&&Array.isArray(q.options)){
+    q.options=shuffle([...q.options]);
+  }
   return q;
 }
 
@@ -923,17 +988,18 @@ function renderQuestion(q,pts){
     +'<div class="q-txt">'+q.question+'</div>';
 
   if(isMod){
-    // Moderator mode — show answer, give correct/wrong/nobody buttons
-    html+='<div class="mod-bar">'
-      +'<div class="mod-bar-title">🎙️ Moderator — Answer</div>'
+    // Moderator mode — answer hidden until revealed
+    html+='<button class="mod-reveal-btn" id="mod-reveal-btn" onclick="revealModAnswer()">👁 Reveal Answer</button>'
+      +'<div class="mod-bar mod-hidden" id="mod-answer-bar">'
+      +'<div class="mod-bar-title">🎙️ Answer</div>'
       +'<div class="mod-answer">✓ '+q.answer+'</div>'
-      +(q.explanation?'<div style="font-size:.8rem;color:rgba(255,255,255,.6);margin-bottom:.75rem">'+q.explanation+'</div>':'')
-      +'<div class="mod-btns">'
-      +G.teams.map((team,i)=>'<button class="mod-btn mod-correct" onclick="modCorrect('+i+','+pts+')">✓ '+team.name+' Correct (+'+pts+')</button>').join('')
-      +'<button class="mod-btn mod-wrong" onclick="modWrong()">✗ Nobody got it</button>'
+      +(q.explanation?'<div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-bottom:.6rem;line-height:1.45">'+q.explanation+'</div>':'')
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.4rem">'
+      +G.teams.map((team,i)=>'<button class="mod-btn mod-correct" style="font-size:.8rem;padding:.6rem .4rem" onclick="modCorrect('+i+','+pts+')">✓ '+team.name+'<br><span style="font-size:.72rem;opacity:.85">+'+pts+' pts</span></button>').join('')
       +'</div>'
-      +'<div class="mod-adj">'
-      +G.teams.map((team,i)=>'<button class="mod-adj-btn" onclick="modAdj('+i+','+pts+')">+'+pts+' to '+team.name+'</button>').join('')
+      +'<button class="mod-btn mod-wrong" style="width:100%;margin-bottom:.4rem" onclick="modWrong()">✗ Nobody got it</button>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem">'
+      +G.teams.map((team,i)=>'<button class="mod-adj-btn" onclick="modAdj('+i+',-'+pts+')">−'+pts+' '+team.name+'</button>').join('')
       +'</div>'
       +'</div>';
     html+='<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>';
@@ -971,6 +1037,12 @@ function renderQuestion(q,pts){
 }
 
 // ── MODERATOR MODE ──
+function revealModAnswer(){
+  const btn=document.getElementById('mod-reveal-btn');
+  const bar=document.getElementById('mod-answer-bar');
+  if(btn)btn.style.display='none';
+  if(bar)bar.classList.remove('mod-hidden');
+}
 function modCorrect(teamIdx,pts){
   G.scores[teamIdx]+=pts;G.mi[teamIdx]++;sOk();
   updScores();
