@@ -302,14 +302,43 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 #s-game .mod-reveal-btn{padding:.65rem;font-size:.95rem;margin-bottom:.4rem}
 #s-game .pts-badge{margin-bottom:.3rem;font-size:.95rem}
 #s-game .q-txt{margin-bottom:.6rem}
+
+/* ── FOCUS RINGS (WCAG 2.1 AA) ── */
+:focus-visible{outline:3px solid #e8b84b;outline-offset:2px;border-radius:4px}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #e8b84b;outline-offset:2px}
+
+/* ── ACCESSIBILITY MODE ── */
+body.a11y{font-size:18px !important}
+body.a11y .q-txt{font-size:1.2rem !important;line-height:1.65 !important}
+body.a11y .opt-btn{font-size:1.05rem !important;padding:1rem !important;line-height:1.45}
+body.a11y .tf-btn{font-size:2.2rem !important;padding:1.3rem !important}
+body.a11y .s-name{font-size:1rem !important}
+body.a11y .s-pts{font-size:2.2rem !important}
+body.a11y .turn-bar,.a11y .steal-bar{font-size:1.05rem !important}
+body.a11y .board-cat-hdr{font-size:.88rem !important}
+body.a11y .board-cell{font-size:1.4rem !important}
+body.a11y .fb{font-size:1rem !important}
+body.a11y .t-num{font-size:1.6rem !important}
+body.a11y button:focus-visible,body.a11y input:focus-visible,body.a11y select:focus-visible,body.a11y textarea:focus-visible{outline:4px solid #1a1a2e;outline-offset:3px}
+body.a11y .s-card{border-width:3px !important}
+body.a11y .s-card.cur{background:#d1fae5 !important}
+body.a11y .opt-btn.ok{background:#15803d !important;border-color:#15803d !important}
+body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !important}
+/* Accessibility toggle button */
+.a11y-toggle{position:fixed;bottom:1rem;right:1rem;z-index:999;background:#1a1a2e;color:#fff;border:2px solid #e8b84b;border-radius:10px;padding:.5rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.35rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.a11y-toggle.on{background:#e8b84b;color:#1a1a2e}
+.a11y-toggle:focus-visible{outline:3px solid #e8b84b;outline-offset:3px}
 </style>
 </head>
 <body>
 
+<!-- ACCESSIBILITY TOGGLE -->
+<button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" title="Toggle Accessibility Mode">♿ A11y</button>
+
 <!-- MIRROR MODAL -->
-<div class="modal-overlay" id="mirror-modal">
+<div class="modal-overlay" id="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirror-modal-title">
   <div class="mirror-modal">
-    <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;margin-bottom:.35rem">📺 Mirror to TV</h3>
+    <h3 id="mirror-modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;margin-bottom:.35rem">📺 Mirror to TV</h3>
     <p style="font-size:.83rem;color:#6b7280;margin-bottom:1rem;line-height:1.5">Pick your device below. Once mirroring, the TV shows the game — the moderator keeps the phone/tablet to control it.</p>
 
     <div class="mirror-device">
@@ -346,13 +375,17 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 </div>
 
 <!-- CONTACT MODAL -->
-<div class="modal-overlay" id="contact-modal">
+<div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
   <div class="modal">
-    <h3>Get Featured Here</h3>
+    <h3 id="contact-modal-title">Get Featured Here</h3>
     <p>Own a restaurant, attraction, or local business? Partner with You From Here and get featured in questions for your city!</p>
-    <input type="text" id="m-name" placeholder="Your name"/>
+    <label for="m-name" class="lbl">Your name</label>
+    <input type="text" id="m-name" placeholder="Your name" autocomplete="name"/>
+    <label for="m-biz" class="lbl">Business name &amp; city</label>
     <input type="text" id="m-biz" placeholder="Business name & city"/>
-    <input type="email" id="m-email" placeholder="Email address"/>
+    <label for="m-email" class="lbl">Email address</label>
+    <input type="email" id="m-email" placeholder="Email address" autocomplete="email"/>
+    <label for="m-msg" class="lbl">Message</label>
     <textarea id="m-msg" placeholder="Tell us about your business..."></textarea>
     <div class="modal-btns">
       <button class="modal-cancel" onclick="closeContact()">Cancel</button>
@@ -362,9 +395,9 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 </div>
 
 <!-- SUBMIT QUESTION MODAL -->
-<div class="modal-overlay" id="submit-modal">
+<div class="modal-overlay" id="submit-modal" role="dialog" aria-modal="true" aria-labelledby="submit-modal-title">
   <div class="modal" style="max-width:540px">
-    <h3>Submit a Question</h3>
+    <h3 id="submit-modal-title">Submit a Question</h3>
     <p>Know a great local trivia question? Submit it and it may appear in the game!</p>
     <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.75rem;font-size:.82rem;color:#92400e;margin-bottom:1rem;line-height:1.6">⚠️ <strong>Please note:</strong> All submitted questions are reviewed by our team before being added to the game. We verify facts, check for accuracy, and ensure questions meet our quality standards. Submissions may be edited or declined.</div>
     <div class="lbl">Your city & state</div>
@@ -413,7 +446,7 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
     <!-- ══ HOME ══ -->
     <div id="s-home" class="screen active">
       <div class="logo-wrap">
-        <svg width="32" height="40" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+        <svg width="32" height="40" viewBox="0 0 32 40" fill="none" aria-hidden="true" focusable="false"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
         <div class="logo-txt">You From <span>Here?</span></div>
       </div>
       <p class="tagline" id="home-tagline">Think you know your city? Prove it.</p>
@@ -421,15 +454,15 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
       <div class="card">
         <div class="lbl">Game Mode</div>
         <div class="mode-grid">
-          <button class="sel-btn on" id="btn-local" onclick="setGameMode('local')">📍 Local</button>
-          <button class="sel-btn" id="btn-national" onclick="setGameMode('national')">🇺🇸 National</button>
-          <button class="sel-btn" id="btn-world" onclick="setGameMode('world')">🌍 World</button>
+          <button class="sel-btn on" id="btn-local" onclick="setGameMode('local')" aria-pressed="true">📍 Local</button>
+          <button class="sel-btn" id="btn-national" onclick="setGameMode('national')" aria-pressed="false">🇺🇸 National</button>
+          <button class="sel-btn" id="btn-world" onclick="setGameMode('world')" aria-pressed="false">🌍 World</button>
         </div>
         <div id="local-inputs">
-          <div class="lbl">Your city & state</div>
-          <div class="input-wrap"><input type="text" id="city-input" placeholder="e.g. Tucson, AZ"/><button class="mic-btn" onclick="startSpeech('city-input')">🎤</button></div>
-          <div class="lbl">College or university <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></div>
-          <div class="input-wrap"><input type="text" id="college-input" placeholder="e.g. University of Arizona" oninput="onCollege()"/><button class="mic-btn" onclick="startSpeech('college-input')">🎤</button></div>
+          <label class="lbl" for="city-input">Your city &amp; state</label>
+          <div class="input-wrap"><input type="text" id="city-input" placeholder="e.g. Tucson, AZ" autocomplete="address-level2"/><button class="mic-btn" onclick="startSpeech('city-input')" aria-label="Voice input for city">🎤</button></div>
+          <label class="lbl" for="college-input">College or university <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></label>
+          <div class="input-wrap"><input type="text" id="college-input" placeholder="e.g. University of Arizona" oninput="onCollege()"/><button class="mic-btn" onclick="startSpeech('college-input')" aria-label="Voice input for college">🎤</button></div>
         </div>
         <div id="national-inputs" style="display:none">
           <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:.75rem;font-size:.85rem;color:#0369a1;margin-bottom:.5rem">🇺🇸 Questions about American culture, history, food, music, and landmarks!</div>
@@ -437,30 +470,30 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
         <div id="world-inputs" style="display:none">
           <div class="lbl">Select a country</div>
           <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
-          <div class="lbl">City (optional)</div>
-          <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')">🎤</button></div>
+          <label class="lbl" for="world-city">City (optional)</label>
+          <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
         </div>
         <div class="tv-row">
-          <div><div class="tv-label">📺 TV Mode</div><div class="tv-sub">Larger text for big screens</div></div>
-          <label class="tog-sw"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          <div><label class="tv-label" for="tv-tog">📺 TV Mode</label><div class="tv-sub">Larger text for big screens</div></div>
+          <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
         </div>
       </div>
 
       <div class="card">
         <div class="lbl">Play Style</div>
         <div class="style-grid">
-          <div class="style-card on" id="style-multi" onclick="setStyle('multi')">
-            <span class="style-icon">📱</span>
+          <div class="style-card on" id="style-multi" onclick="setStyle('multi')" role="button" tabindex="0" aria-pressed="true" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('multi')">
+            <span class="style-icon" aria-hidden="true">📱</span>
             <span class="style-name">Multiplayer</span>
             <span class="style-desc">Tap answers on device</span>
           </div>
-          <div class="style-card" id="style-mod" onclick="setStyle('mod')">
-            <span class="style-icon">🎙️</span>
+          <div class="style-card" id="style-mod" onclick="setStyle('mod')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('mod')">
+            <span class="style-icon" aria-hidden="true">🎙️</span>
             <span class="style-name">Moderator</span>
             <span class="style-desc">Speak answers aloud</span>
           </div>
-          <div class="style-card" id="style-solo" onclick="setStyle('solo')">
-            <span class="style-icon">🧠</span>
+          <div class="style-card" id="style-solo" onclick="setStyle('solo')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('solo')">
+            <span class="style-icon" aria-hidden="true">🧠</span>
             <span class="style-name">Solo</span>
             <span class="style-desc">Practice alone</span>
           </div>
@@ -489,7 +522,7 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
         </div>
       </div>
 
-      <div class="err-box" id="err-box"></div>
+      <div class="err-box" id="err-box" role="alert" aria-live="assertive"></div>
       <button class="start-btn" onclick="startGame()">▶ Start Game</button>
       <div class="contact-bar" style="margin-top:.75rem">
         <div><strong>Own a local business?</strong><p>Get featured in You From Here questions!</p></div>
@@ -507,7 +540,7 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
     <!-- ══ LOADING ══ -->
     <div id="s-loading" class="screen">
       <div class="logo-wrap" style="margin-bottom:1.5rem">
-        <svg width="32" height="40" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+        <svg width="32" height="40" viewBox="0 0 32 40" fill="none" aria-hidden="true" focusable="false"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
         <div class="logo-txt">You From <span>Here?</span></div>
       </div>
       <div class="load-box">
@@ -533,9 +566,9 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
           </div>
         </div>
-        <div class="scores-wrap" id="scores-wrap"></div>
-        <div class="turn-bar" id="turn-bar" style="display:none"></div>
-        <div class="steal-bar" id="steal-bar" style="display:none"></div>
+        <div class="scores-wrap" id="scores-wrap" aria-label="Scores" aria-live="polite"></div>
+        <div class="turn-bar" id="turn-bar" style="display:none" aria-live="polite" aria-atomic="true"></div>
+        <div class="steal-bar" id="steal-bar" style="display:none" aria-live="assertive" aria-atomic="true"></div>
       </div>
       <div class="game-body">
         <div class="board-section" id="board-section"></div>
@@ -551,7 +584,7 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
     <!-- ══ RESULTS ══ -->
     <div id="s-results" class="screen">
       <div class="logo-wrap" style="margin-bottom:.25rem">
-        <svg width="30" height="38" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+        <svg width="30" height="38" viewBox="0 0 32 40" fill="none" aria-hidden="true" focusable="false"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
         <div class="logo-txt">You From <span>Here?</span></div>
       </div>
       <p class="tagline" id="res-loc"></p>
@@ -690,7 +723,7 @@ const TAGLINES={local:'Think you know your city? Prove it.',national:'Think you 
 // ── GAME MODE ──
 function setGameMode(m){
   G.gameMode=m;
-  ['local','national','world'].forEach(x=>document.getElementById('btn-'+x).className='sel-btn'+(m===x?' on':''));
+  ['local','national','world'].forEach(x=>{const b=document.getElementById('btn-'+x);b.className='sel-btn'+(m===x?' on':'');b.setAttribute('aria-pressed',String(m===x));});
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
   document.getElementById('world-inputs').style.display=m==='world'?'block':'none';
@@ -708,7 +741,7 @@ function getCats(){
 
 function setStyle(s){
   G.style=s;
-  ['multi','mod','solo'].forEach(x=>{document.getElementById('style-'+x).className='style-card'+(s===x?' on':'');});
+  ['multi','mod','solo'].forEach(x=>{const el=document.getElementById('style-'+x);el.className='style-card'+(s===x?' on':'');el.setAttribute('aria-pressed',String(s===x));});
   const isSolo=s==='solo';
   document.getElementById('teams-section').style.display=isSolo?'none':'block';
   document.getElementById('solo-cats').style.display=isSolo?'block':'none';
@@ -755,12 +788,12 @@ function addTeam(){
   const idx=tc++;const list=document.getElementById('teams-list');
   const div=document.createElement('div');div.className='team-box';div.dataset.idx=String(idx);
   const ltr=String.fromCharCode(65+idx);const cols=['tc0','tc1','tc2','tc3'];
-  div.innerHTML='<div class="team-hdr"><span class="team-lbl '+cols[idx%4]+'">Team '+ltr+'</span>'+(idx>=2?'<button class="rm-btn" onclick="this.closest(\'.team-box\').remove();updAddBtn()">✕ Remove</button>':'')+'</div><input type="text" class="tname" placeholder="Team name (optional)" style="width:100%;padding:.65rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:DM Sans,sans-serif;font-size:.95rem;outline:none;margin-bottom:.4rem"/><div class="lbl" style="font-size:.72rem;margin-bottom:.3rem">Players</div><div class="plist"></div><button class="add-p-btn" onclick="addP(this)">+ Add player</button><div style="margin-top:.65rem"><div class="lbl" style="font-size:.72rem;margin-bottom:.25rem">Pick 3 categories</div><div class="tcat-wrap"></div><div class="cat-count" id="cc-'+idx+'">0 / 3 selected</div></div>';
+  div.innerHTML='<div class="team-hdr"><span class="team-lbl '+cols[idx%4]+'">Team '+ltr+'</span>'+(idx>=2?'<button class="rm-btn" onclick="this.closest(\'.team-box\').remove();updAddBtn()" aria-label="Remove Team '+ltr+'">✕ Remove</button>':'')+'</div><input type="text" class="tname" placeholder="Team name (optional)" style="width:100%;padding:.65rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:DM Sans,sans-serif;font-size:.95rem;outline:none;margin-bottom:.4rem"/><div class="lbl" style="font-size:.72rem;margin-bottom:.3rem">Players</div><div class="plist"></div><button class="add-p-btn" onclick="addP(this)">+ Add player</button><div style="margin-top:.65rem"><div class="lbl" style="font-size:.72rem;margin-bottom:.25rem">Pick 3 categories</div><div class="tcat-wrap"></div><div class="cat-count" id="cc-'+idx+'">0 / 3 selected</div></div>';
   list.appendChild(div);addPTo(div.querySelector('.plist'));addPTo(div.querySelector('.plist'));buildTeamCats(div,idx);updAddBtn();
 }
 function updAddBtn(){document.getElementById('add-team-btn').style.display=document.querySelectorAll('.team-box').length>=4?'none':'flex';}
 function addP(btn){addPTo(btn.previousElementSibling);}
-function addPTo(list){const n=list.children.length+1;const r=document.createElement('div');r.className='p-row';r.innerHTML='<input type="text" placeholder="Player '+n+'"/><button class="p-rm" onclick="this.parentElement.remove()">✕</button>';list.appendChild(r);}
+function addPTo(list){const n=list.children.length+1;const r=document.createElement('div');r.className='p-row';r.innerHTML='<input type="text" placeholder="Player '+n+'" aria-label="Player '+n+' name"/><button class="p-rm" onclick="this.parentElement.remove()" aria-label="Remove player '+n+'">✕</button>';list.appendChild(r);}
 function getPicked(wrap){return Array.from(wrap.querySelectorAll('.sel-btn.on')).map(b=>b.dataset.id);}
 
 function buildTeamCats(section,idx){
@@ -932,7 +965,7 @@ function renderBoard(){
   // Scores
   const sw=document.getElementById('scores-wrap');
   sw.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
-  sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+(G.style==='mod'?'':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts '+SCOLS[i%4]+'">'+G.scores[i]+'</div></div>').join('');
+  sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(i===t&&G.style!=='mod'?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div>').join('');
 
   // Turn bar
   const tb=document.getElementById('turn-bar');
@@ -951,7 +984,7 @@ function renderBoard(){
     G.board.map(col=>'<div class="board-col"><div class="board-cat-hdr">'+col.icon+' '+col.label+'</div><div class="board-pts-col">'+
       [200,400,600].map(pts=>{
         const used=col.cells[pts];
-        return '<button class="board-cell pts-'+pts+(used?' used':'')+'" '+(used?'disabled':'')+' onclick="pickCell(\''+col.catId+'\','+pts+')">'+pts+'</button>';
+        return '<button class="board-cell pts-'+pts+(used?' used':'')+'" '+(used?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\','+pts+')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+(used?'✓':pts)+'</button>';
       }).join('')+'</div></div>'
     ).join('')+'</div>';
   document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
@@ -1187,6 +1220,15 @@ async function submitQuestion(){
   }catch(e){alert('Error submitting. Please try again!');}
   btn.textContent='Submit Question →';btn.disabled=false;
 }
+
+// ── ACCESSIBILITY MODE ──
+function toggleA11y(){
+  const on=document.body.classList.toggle('a11y');
+  const btn=document.getElementById('a11y-btn');
+  if(btn){btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',String(on));btn.title=on?'Accessibility Mode ON (click to turn off)':'Toggle Accessibility Mode';}
+  try{localStorage.setItem('yfh_a11y',on?'1':'0');}catch(e){}
+}
+(function(){try{if(localStorage.getItem('yfh_a11y')==='1')toggleA11y();}catch(e){}})();
 
 // Init
 buildSoloCats();setGameMode('local');setStyle('multi');addTeam();addTeam();
