@@ -303,6 +303,14 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 #s-game .pts-badge{margin-bottom:.3rem;font-size:.95rem}
 #s-game .q-txt{margin-bottom:.6rem}
 
+/* ── PHOTO QUESTIONS ── */
+.q-img-wrap{border-radius:12px;overflow:hidden;margin-bottom:.85rem;position:relative;background:#1a1a2e;line-height:0}
+.q-img{width:100%;height:260px;object-fit:cover;display:block;transition:opacity .3s}
+.q-img-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.75));pointer-events:none}
+.q-img-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.55);color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;letter-spacing:.05em;backdrop-filter:blur(4px)}
+.q-img-loading{height:200px;display:flex;align-items:center;justify-content:center;background:#f0f0ee;border-radius:12px;margin-bottom:.85rem;color:#9ca3af;font-size:.85rem;gap:.5rem}
+#s-game .q-img{height:200px}
+
 /* ── FOCUS RINGS (WCAG 2.1 AA) ── */
 :focus-visible{outline:3px solid #e8b84b;outline-offset:2px;border-radius:4px}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #e8b84b;outline-offset:2px}
@@ -917,10 +925,9 @@ async function genQsForCategory(catId){
     +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false: (1) the question MUST be a clear factual statement the player agrees or disagrees with, (2) NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice, (3) CRITICAL: before setting the answer field, verify it is factually correct — if your explanation confirms the statement is true, the answer MUST be "true"; if false, "false". Never contradict your own explanation.'
     +'\nFor multiple choice: the `answer` field must exactly match one of the strings in the `options` array.'
     +'\nAvoid questions with ambiguous, contested, or overly nuanced answers — only ask things with a single clear correct answer.'
-    +(catId==='you_know_place'?'\nDescribe a well-known local spot without naming it.':'')
-    +(catId==='spot_it'?'\nDescribe a scene and ask about specific details.':'')
+    +(catId==='you_know_place'?'\nUse question type "photo" for ALL questions in this category. Include a "wikiTitle" field with the EXACT Wikipedia article title for the landmark/place (e.g. "Tucson Convention Center" or "University of Arizona"). The question should ask "Where is this?" or "What place is shown here?" as multiple choice, with the place name as the answer. Options should be 4 real places in or near '+G.city+'.':catId==='spot_it'?'\nUse question type "photo" for ALL questions in this category. Include a "wikiTitle" field with the exact Wikipedia article title for a well-known local attraction or landmark. Ask "What is this landmark?" or "Where in '+G.city+' is this?" as multiple choice.':catId==='loc_landmarks'?'\nFor up to 3 of the 6 questions, use question type "photo" and include a "wikiTitle" field with the exact Wikipedia article title for the landmark. Ask "What landmark is this?" as multiple choice.':catId==='w_landmarks'?'\nFor up to 3 of the 6 questions, use question type "photo" and include a "wikiTitle" field with the exact Wikipedia article title for the world-famous attraction. Ask "What famous landmark is this?" as multiple choice.':'')
     +'\nMark genuinely surprising facts with surprising:true.'
-    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false}]}';
+    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"photo","wikiTitle":"Exact Wikipedia Article Title","category":"'+catLabel+'","difficulty":"medium","points":400,"question":"Where is this?","options":["Place A","Place B","Place C","Place D"],"answer":"Place A","explanation":"fact.","surprising":false}]}';
   const response=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
   if(!response.ok){const e=await response.json().catch(()=>({}));throw new Error(e?.error?.message||'HTTP '+response.status);}
   const data=await response.json();
@@ -940,6 +947,19 @@ async function saveQsToDb(qs){
   await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
 }
 
+// ── WIKIPEDIA IMAGE FETCH ──
+async function fetchWikiImage(title){
+  try{
+    const url='https://en.wikipedia.org/w/api.php?action=query&titles='+encodeURIComponent(title)+'&prop=pageimages&format=json&pithumbsize=900&origin=*';
+    const r=await fetch(url);
+    const d=await r.json();
+    const pages=d?.query?.pages;
+    if(!pages)return null;
+    const page=Object.values(pages)[0];
+    return page?.thumbnail?.source||null;
+  }catch(e){return null;}
+}
+
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
 function getNextQ(pts,catId){
@@ -950,8 +970,8 @@ function getNextQ(pts,catId){
   if(idx<0)return null;
   const q={...G.bank[pts][idx]};
   G.usedQs[q.question]=true;
-  // Shuffle MC options so correct answer isn't always in position A
-  if(q.type==='mc'&&Array.isArray(q.options)){
+  // Shuffle MC/photo options so correct answer isn't always in position A
+  if((q.type==='mc'||q.type==='photo')&&Array.isArray(q.options)){
     q.options=shuffle([...q.options]);
   }
   return q;
@@ -1014,9 +1034,11 @@ function renderQuestion(q,pts){
   // Hide board while question is showing
   document.getElementById('board-section').style.display='none';
 
+  const isPhoto=q.type==='photo';
   let html='<div class="q-card">'
     +'<div class="timer-wrap"><div class="t-lbl"><span class="t-cat" id="t-cat">'+q.category+'</span><span class="t-num" id="t-num">1:00</span></div><div class="t-bg"><div class="t-bar" id="t-bar" style="width:100%;background:#22c55e"></div></div></div>'
     +'<div><span class="pts-badge '+pbClass+'">'+pts+' PTS</span></div>'
+    +(isPhoto?'<div class="q-img-loading" id="q-img-container"><span>🖼</span> Loading image...</div>':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
     +'<div class="q-txt">'+q.question+'</div>';
 
@@ -1044,7 +1066,7 @@ function renderQuestion(q,pts){
       +'</div>';
 
     let ans='';
-    if(q.type==='mc'){
+    if(q.type==='mc'||q.type==='photo'){
       ans='<div class="opts">'+(q.options||[]).map(o=>{
         const se=o.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
         const sa=(q.answer||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
@@ -1066,6 +1088,21 @@ function renderQuestion(q,pts){
   }
   html+='</div>';
   document.getElementById('q-area').innerHTML=html;
+  // Async load Wikipedia image for photo questions
+  if(isPhoto&&q.wikiTitle){
+    fetchWikiImage(q.wikiTitle).then(imgUrl=>{
+      const wrap=document.getElementById('q-img-container');
+      if(!wrap)return;
+      if(imgUrl){
+        wrap.className='q-img-wrap';
+        wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager" onerror="this.closest(\'.q-img-wrap\').style.display=\'none\'"/>'
+          +'<div class="q-img-overlay"></div>'
+          +'<div class="q-img-badge">📸 Where is this?</div>';
+      } else {
+        wrap.style.display='none'; // hide gracefully if no image found
+      }
+    });
+  }
   if(!isMod)startTmr();
 }
 
@@ -1118,7 +1155,7 @@ function doStealTimer(){
 function doTimeout(){
   if(G.answered)return;G.answered=true;sOut();
   const q=G.curQ;
-  document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer||b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('ok');});
+  document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer||b.textContent.toLowerCase()===q.answer.toLowerCase()||b.dataset.opt===q.answer)b.classList.add('ok');});
   const fb=document.getElementById('fb');
   if(fb){fb.className='fb show tout';fb.textContent='⏱ Time\'s up! Answer: '+q.answer+'. '+q.explanation;}
   const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
