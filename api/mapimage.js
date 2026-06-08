@@ -1,8 +1,9 @@
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { intersection, zoom = '17' } = req.query;
-  let { lat, lng } = req.query;
+  const { intersection } = req.query;
+  let { lat, lng, zoom = '17' } = req.query;
+  let geocoded = false;
 
   const key = process.env.GOOGLE_MAPS_KEY;
   if (!key) return res.status(503).json({ error: 'Maps not configured' });
@@ -17,10 +18,13 @@ export default async function handler(req, res) {
       if (loc) {
         lat = loc.lat;
         lng = loc.lng;
+        geocoded = true;
       }
     } catch (_) {
-      // Fall through to use Claude's lat/lng if geocoding fails
+      // Fall through to use Claude's lat/lng
     }
+    // If geocoding failed, zoom out to show more context so the intersection is likely in frame
+    if (!geocoded) zoom = Math.max(14, parseInt(zoom) - 2);
   }
 
   if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
