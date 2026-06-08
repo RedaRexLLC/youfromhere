@@ -1142,8 +1142,11 @@ function renderQuestion(q,pts){
     html+='<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>';
   } else {
     // Regular mode — show answer buttons
+    const isSolo=G.style==='solo';
     let acts='<div class="acts">'
-      +'<button class="act-btn" onclick="doPass()">→ Pass</button>'
+      +(isSolo
+        ?'<button class="act-btn" onclick="nextTurn()">⏭ Skip</button>'
+        :'<button class="act-btn" onclick="doPass()">→ Pass</button>')
       +'<button class="act-btn" style="background:#fef2f2;border-color:#fecaca;color:#991b1b" onclick="confirmEndGame()">⏹ End</button>'
       +'</div>';
 
@@ -1177,11 +1180,16 @@ function renderQuestion(q,pts){
       if(!wrap)return;
       if(imgUrl){
         wrap.className='q-img-wrap';
-        wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager" onerror="this.closest(\'.q-img-wrap\').style.display=\'none\'"/>'
+        wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager" '
+          +'onerror="this.className=\'q-img-loading\';this.outerHTML=\'<div style=&quot;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px;margin-bottom:.85rem&quot;><div style=&quot;font-size:2.5rem&quot;>📍</div><div style=&quot;font-size:.78rem;color:rgba(255,255,255,.6)&quot;>Image could not load — use your local knowledge!</div></div>\'"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-badge">📸 Where is this?</div>';
       } else {
-        wrap.style.display='none';
+        wrap.className='q-img-wrap';
+        wrap.innerHTML='<div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px">'
+          +'<div style="font-size:2.5rem">📍</div>'
+          +'<div style="font-size:.78rem;color:rgba(255,255,255,.6)">Image unavailable — use your local knowledge!</div>'
+          +'</div>';
       }
     });
   }
