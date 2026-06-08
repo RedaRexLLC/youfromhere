@@ -142,8 +142,8 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .board-cell.pts-400{background:#fffbeb;color:#92400e}
 .board-cell.pts-600{background:#fef2f2;color:#991b1b}
 .board-cell:hover:not(.used){filter:brightness(.92);transform:scale(.98)}
-.board-cell.used{background:#f8f7f4 !important;color:#d1d5db !important;cursor:not-allowed;text-decoration:line-through}
-.board-cell.used::after{content:'✓';position:absolute;top:2px;right:4px;font-size:.6rem;color:#d1d5db}
+.board-cell.used{background:#1a1a2e !important;color:#e8b84b !important;cursor:not-allowed;font-size:1.4rem !important;opacity:.85}
+.board-cell.used::after{content:'';display:none}
 .end-game-bar{display:flex;justify-content:flex-end;margin-bottom:.5rem}
 .end-btn-small{background:none;border:1.5px solid #fecaca;color:#991b1b;border-radius:8px;padding:.4rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
 
