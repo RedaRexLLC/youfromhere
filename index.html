@@ -1153,12 +1153,15 @@ async function fetchPlaceImage(placeName,city){
   try{
     const url='/api/placeimage?name='+encodeURIComponent(placeName)+'&location='+encodeURIComponent(city||'');
     const r=await fetch(url);
-    if(!r.ok)return null;
-    // Returns binary image — convert to object URL for display
+    if(!r.ok){
+      const txt=await r.text().catch(()=>'');
+      console.warn('placeimage failed',r.status,txt,{placeName,city});
+      return null;
+    }
     const blob=await r.blob();
-    if(!blob.size)return null;
+    if(!blob.size){console.warn('placeimage empty blob',{placeName,city});return null;}
     return URL.createObjectURL(blob);
-  }catch(e){return null;}
+  }catch(e){console.warn('placeimage error',e,{placeName,city});return null;}
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
