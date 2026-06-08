@@ -7,10 +7,11 @@ export default async function handler(req, res) {
   const key = process.env.GOOGLE_MAPS_KEY;
   if (!key) return res.status(503).json({ error: 'Maps not configured' });
 
-  // Satellite view with ALL text labels hidden — players can't read the business name
+  // Satellite view with business/POI labels hidden — street names stay visible for orientation
   const styles = [
-    'feature:all|element:labels|visibility:off',
-    'feature:road|element:geometry|color:0x333333',
+    'feature:poi|element:labels|visibility:off',
+    'feature:poi.business|element:labels|visibility:off',
+    'feature:transit|element:labels|visibility:off',
   ].map(s => `&style=${encodeURIComponent(s)}`).join('');
 
   const mapUrl =
