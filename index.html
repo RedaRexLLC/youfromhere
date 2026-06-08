@@ -954,33 +954,91 @@ function startGame(){
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
 }
 
-const LOAD_QUIPS=[
-  'Bribing the locals for insider info...',
-  'Consulting the wise elders of the neighborhood...',
-  'Googling things so you don\'t have to...',
-  'Asking someone\'s abuela — she knows everything...',
-  'Dusting off the trivia scrolls...',
-  'Arguing with the AI about what counts as "local"...',
-  'Pretending we knew this all along...',
-  'Cross-referencing rumors and half-truths...',
-  'Waking up the night-shift trivia goblins...',
-  'Running very fast to check — almost there...',
-  'Summoning the spirits of Yelp reviewers past...',
-  'Interrogating a pigeon who was definitely there...',
-  'The AI is thinking. Hard. Give it a moment...',
-  'Definitely not just making this up...',
-  'Checking with the guy who knows a guy...',
-  'Sifting through the archives of people who actually go outside...',
-  'Your patience is appreciated. Mostly by us.',
-  'Loading local knowledge... and a little gossip...',
-  'Almost done. Probably. We think.',
-  'Shaking the magic trivia 8-ball...',
-];
+function buildQuips(){
+  const city=G.city||'';
+  const country=G.country||'';
+  const mode=G.gameMode||'local';
+
+  const universal=[
+    'Dusting off the trivia scrolls...',
+    'Arguing with the AI about what counts as a good question...',
+    'Pretending we knew this all along...',
+    'Cross-referencing rumors and half-truths...',
+    'Waking up the night-shift trivia goblins...',
+    'The AI is thinking. Hard. Give it a moment...',
+    'Definitely not just making this up...',
+    'Almost done. Probably. We think.',
+    'Shaking the magic trivia 8-ball...',
+    'Your patience is appreciated. Mostly by us.',
+    'Running very fast to check — almost there...',
+  ];
+
+  const local=city?[
+    `Asking the most opinionated person in ${city}...`,
+    `Checking what ${city} locals actually argue about online...`,
+    `Bribing a ${city} insider for the good stuff...`,
+    `Consulting the regulars at a ${city} dive bar...`,
+    `Rifling through ${city} neighborhood Facebook groups...`,
+    `Finding the one person in ${city} who knows everything...`,
+    `${city} is a small town. Everyone knows. We just have to ask.`,
+    `Googling "${city} things to know" so you don\'t have to...`,
+    `Loading ${city} knowledge... and a little local gossip...`,
+  ]:[];
+
+  const national=[
+    'Fact-checking with someone who watches too much news...',
+    'Consulting the road-trippers and diner regulars...',
+    'Flipping through a mental copy of Americana...',
+    'Asking folks from all 50 states. Well, most of them...',
+    'Checking with the guy at the hardware store — he knows stuff...',
+    'Digging through the archives of people who actually go outside...',
+    'Coast to coast coverage. Mountain time may vary.',
+    'Loading up the United States of Trivia...',
+    'Somewhere a history teacher is proud of us right now.',
+  ];
+
+  // World quips keyed by country for regional flavor
+  const worldByCountry={
+    'France':['Consulting a Parisian who is mildly annoyed by the question...','Oui, we are working on it...','Checking if this question pairs well with cheese...'],
+    'Italy':['Asking a nonno who has very strong opinions...','Settling a heated family debate about the answer...','Checking three different sources and they all disagree...'],
+    'Japan':['Deeply, respectfully, working on your questions...','Precision takes time. Patience is appreciated...','The answer exists. We are finding it with great care...'],
+    'Mexico':['Checking with someone whose family has lived here for generations...','This knowledge runs deep. Almost ready...','The best answers come from the people, not the internet...'],
+    'United Kingdom':['Consulting someone who is very polite but also very judgmental...','Putting the kettle on while we work this out...','Keeping calm and generating questions...','Checking the answer. Then checking again. Very thoroughly.'],
+    'Australia':['Checking with someone who has strong opinions and no filter...','No worries — almost ready, mate...','Somewhere a kookaburra knows the answer. We\'re asking it now...'],
+    'Canada':['Generating questions, sorry for the wait...','Politely double-checking every single fact...','Almost done, eh?'],
+    'Germany':['Everything is on schedule. Trust the process...','Quality control in progress. This will take exactly as long as it takes...','Efficiency is the goal. We are nearly there.'],
+    'Brazil':['The energy here is incredible. So are the questions...','Almost ready — this one was worth the wait...'],
+    'Spain':['Taking the appropriate amount of time to do this right...','Checking the facts. Then checking them again over lunch...'],
+  };
+
+  const worldGeneric=country?[
+    `Reaching out to our contacts in ${country}...`,
+    `Loading ${country} knowledge from the source...`,
+    `${country} has a lot going on. Almost got it all...`,
+    `Consulting the well-traveled for ${country} facts...`,
+    `Cross-referencing everything we know about ${country}...`,
+  ]:[];
+
+  let pool=[...universal];
+  if(mode==='local')pool=[...pool,...local];
+  else if(mode==='national')pool=[...pool,...national];
+  else if(mode==='world'){
+    const match=worldByCountry[country]||[];
+    pool=[...pool,...match,...worldGeneric];
+  }
+
+  // Shuffle
+  for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
+  return pool;
+}
+
 let _quipTimer=null;
 function startQuips(){
   const el=document.getElementById('load-sub');
-  let i=Math.floor(Math.random()*LOAD_QUIPS.length);
-  _quipTimer=setInterval(()=>{i=(i+1)%LOAD_QUIPS.length;if(el)el.textContent=LOAD_QUIPS[i];},2800);
+  const quips=buildQuips();
+  let i=0;
+  if(el)el.textContent=quips[0];
+  _quipTimer=setInterval(()=>{i=(i+1)%quips.length;if(el)el.textContent=quips[i];},2800);
 }
 function stopQuips(){clearInterval(_quipTimer);_quipTimer=null;}
 
