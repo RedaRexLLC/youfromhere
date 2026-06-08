@@ -266,6 +266,27 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
   .board-cell{font-size:1.1rem;padding:.55rem .25rem}
 }
 
+/* ── PORTRAIT PHONE — wrap board into 3-column rows ── */
+@media(max-width:599px) and (orientation:portrait){
+  /* Force 3 columns regardless of how many categories JS sets */
+  body.in-game .board-grid{
+    grid-template-columns:repeat(3,1fr) !important;
+    gap:.3rem !important;
+  }
+  body.in-game .board-col{min-width:0}
+  body.in-game .board-cat-hdr{
+    height:46px;
+    font-size:.6rem;
+    padding:.2rem .15rem;
+    line-height:1.3;
+    word-break:break-word;
+    hyphens:auto;
+  }
+  body.in-game .board-pts-col{height:108px}
+  body.in-game .board-cell{font-size:.95rem}
+  body.in-game .board-title{font-size:.85rem;margin-bottom:.25rem}
+}
+
 /* ── LANDSCAPE PHONE — compact game top so board is always visible ── */
 @media(orientation:landscape)and(max-height:520px){
   body.in-game .game-top{padding:.15rem .5rem .1rem}
