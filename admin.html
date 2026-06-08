@@ -149,6 +149,7 @@ textarea{height:80px;resize:vertical}
       <button class="tab flagged-tab" id="tab-btn-flagged" onclick="switchTab('flagged')">🚩 Flagged <span id="flagged-badge"></span></button>
       <button class="tab pending-tab" id="tab-btn-pending" onclick="switchTab('pending')">📬 Pending <span id="pending-badge"></span></button>
       <button class="tab" onclick="switchTab('generate')">⚡ Bulk Generate</button>
+      <button class="tab" onclick="switchTab('review')">🔍 Review Queue <span id="review-badge"></span></button>
     </div>
 
     <!-- ══ ADD QUESTION ══ -->
@@ -285,6 +286,16 @@ textarea{height:80px;resize:vertical}
       </div>
     </div>
 
+    <!-- ══ REVIEW QUEUE ══ -->
+    <div id="tab-review" class="tab-content">
+      <div class="card">
+        <h2>🔍 Claude Review Queue</h2>
+        <p style="font-size:.85rem;color:#6b7280;margin-bottom:1rem">Questions flagged as outdated by Claude's automatic 6-month review. Approve to keep (with Claude's suggested update) or delete to remove from the pool.</p>
+        <button onclick="runReviewNow()" style="background:#1a1a2e;color:#fff;border:none;border-radius:8px;padding:.6rem 1.2rem;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;margin-bottom:1.25rem">▶ Run Review Now</button>
+        <div id="review-list"><div class="empty-state">No questions in review queue.</div></div>
+      </div>
+    </div>
+
     <!-- ══ BULK GENERATE ══ -->
     <div id="tab-generate" class="tab-content">
       <div class="card">
@@ -395,12 +406,58 @@ function switchTab(t){
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  // find tab button by onclick
-  const map={add:0,browse:1,flagged:2,pending:3,generate:4};
+  const map={add:0,browse:1,flagged:2,pending:3,generate:4,review:5};
   document.querySelectorAll('.tab')[map[t]]?.classList.add('active');
   if(t==='browse')loadQuestions();
   if(t==='flagged')loadFlagged();
   if(t==='pending')loadPending();
+  if(t==='review')loadReviewQueue();
+}
+
+async function loadReviewQueue(){
+  const el=document.getElementById('review-list');
+  el.innerHTML='<div class="empty-state"><div class="spinner"></div></div>';
+  // Questions flagged by auto-review (flagged=true, source=claude, active=false)
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?flagged=eq.true&source=eq.claude&active=eq.false&select=*&order=created_at.desc`,{headers:sbHeaders()});
+  const qs=await r.json();
+  const badge=document.getElementById('review-badge');
+  if(badge)badge.textContent=qs.length?` (${qs.length})`:'';
+  if(!qs.length){el.innerHTML='<div class="empty-state">✅ No questions in review queue.</div>';return;}
+  el.innerHTML=qs.map(q=>`
+    <div class="flag-card" id="rq-${q.id}">
+      <div class="flag-meta">${q.location} · ${q.category} · ${q.points} pts</div>
+      <div class="flag-q">${q.question}</div>
+      <div style="font-size:.8rem;color:#6b7280;margin:.25rem 0">Answer: <strong>${q.answer}</strong></div>
+      <div style="font-size:.8rem;color:#6b7280;margin-bottom:.75rem">${q.explanation||''}</div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <button onclick="restoreReview('${q.id}')" style="background:#1a1a2e;color:#fff;border:none;border-radius:6px;padding:.4rem .9rem;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;font-size:.82rem">✅ Restore</button>
+        <button onclick="deleteReview('${q.id}')" style="background:#fef2f2;color:#991b1b;border:1.5px solid #fecaca;border-radius:6px;padding:.4rem .9rem;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;font-size:.82rem">🗑 Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+async function restoreReview(id){
+  const sixMonths=new Date(Date.now()+183*24*60*60*1000).toISOString();
+  await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`,{method:'PATCH',headers:sbHeaders(),body:JSON.stringify({active:true,flagged:false,review_due_at:sixMonths})});
+  document.getElementById('rq-'+id)?.remove();
+  showAlert('✅ Question restored to pool.');
+}
+
+async function deleteReview(id){
+  if(!confirm('Permanently delete this question?'))return;
+  await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`,{method:'DELETE',headers:sbHeaders()});
+  document.getElementById('rq-'+id)?.remove();
+  showAlert('🗑 Question deleted.');
+}
+
+async function runReviewNow(){
+  showAlert('⏳ Running Claude review — this may take a minute...');
+  try{
+    const r=await fetch('/api/review');
+    const d=await r.json();
+    showAlert(`✅ Review complete: ${d.valid||0} valid, ${d.updated||0} updated, ${d.retired||0} flagged for review.`);
+    loadReviewQueue();
+  }catch(e){showAlert('❌ Review failed: '+e.message);}
 }
 
 function showAlert(msg,type='ok'){

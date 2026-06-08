@@ -1065,17 +1065,61 @@ function startQuips(){
 }
 function stopQuips(){clearInterval(_quipTimer);_quipTimer=null;}
 
+// ── POOL HELPERS ──
+const MIN_POOL=18; // minimum questions per category before topping up with Claude
+const SEEN_KEY='yfh_seen_ids';
+function getSeenIds(){try{return new Set(JSON.parse(localStorage.getItem(SEEN_KEY)||'[]'));}catch(e){return new Set();}}
+function addSeenIds(ids){try{const s=getSeenIds();ids.forEach(id=>s.add(id));const arr=[...s].slice(-200);localStorage.setItem(SEEN_KEY,JSON.stringify(arr));}catch(e){}}
+
+async function fetchPool(catId){
+  const cat=ALL.find(c=>c.id===catId);
+  const catLabel=cat?.label||catId;
+  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city;
+  try{
+    const r=await fetch('/api/pool?location='+encodeURIComponent(loc)+'&game_mode='+encodeURIComponent(G.gameMode)+'&category='+encodeURIComponent(catLabel));
+    if(!r.ok)return[];
+    const rows=await r.json();
+    // Parse options JSON and restore mapview/photo fields
+    return rows.map(q=>({
+      ...q,
+      options:q.options?(typeof q.options==='string'?JSON.parse(q.options):q.options):null,
+      mapviewHint:q.mapview_hint,
+      placeName:q.place_name,
+      wikiTitle:q.wiki_title,
+    }));
+  }catch(e){return[];}
+}
+
+async function savePool(qs,catId){
+  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city;
+  const rows=qs.map(q=>({...q,location:loc,game_mode:G.gameMode}));
+  try{await fetch('/api/pool',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({questions:rows})});}catch(e){}
+}
+
 // ── PRE-GENERATE ALL QUESTIONS ──
 async function preGenAll(){
   const cats=[...new Set(G.teams.flatMap(t=>t.cats))];
   G.bank={200:[],400:[],600:[]};
+  const seenIds=getSeenIds();
   let done=0;
   startQuips();
   for(const catId of cats){
-    const cat=ALL.find(c=>c.id===catId);
-    const qs=await genQsForCategory(catId);
-    [200,400,600].forEach(pts=>{G.bank[pts].push(...qs.filter(q=>q.points===pts));});
-    addRecentTopics(qs);
+    // 1. Try fetching from the pool first
+    let poolQs=await fetchPool(catId);
+    // Filter out questions this device has already seen
+    const fresh=poolQs.filter(q=>!seenIds.has(q.id));
+    const needsTopUp=fresh.length<MIN_POOL;
+    // 2. Top up with Claude if pool is thin
+    if(needsTopUp){
+      const newQs=await genQsForCategory(catId);
+      addRecentTopics(newQs);
+      savePool(newQs,catId); // save in background, don't await
+      // Merge: prefer fresh pool questions, fill with new ones
+      const merged=[...fresh,...newQs];
+      [200,400,600].forEach(pts=>{G.bank[pts].push(...merged.filter(q=>q.points===pts));});
+    } else {
+      [200,400,600].forEach(pts=>{G.bank[pts].push(...fresh.filter(q=>q.points===pts));});
+    }
     done++;
     document.getElementById('load-prog').style.width=Math.round(done/cats.length*100)+'%';
   }
@@ -1192,6 +1236,8 @@ function getNextQ(pts,catId){
   G.usedQs[q.question]=true;
   if(q.wikiTitle)G.usedImgs[q.wikiTitle]=true;
   if(q.lat&&q.lng)G.usedImgs[q.lat+','+q.lng]=true;
+  // Track seen question IDs so pool won't repeat them next game
+  if(q.id)addSeenIds([q.id]);
   // Shuffle MC/photo/mapview options so correct answer isn't always position A
   if((q.type==='mc'||q.type==='photo'||q.type==='mapview')&&Array.isArray(q.options)){
     q.options=shuffle([...q.options]);
