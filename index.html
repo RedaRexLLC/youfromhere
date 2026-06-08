@@ -575,6 +575,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
         <div class="lbl" style="margin-top:.5rem">Categories <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.85rem" id="cat-hint">(each team picks 3)</span></div>
         <div id="solo-cats" style="display:none"></div>
+        <div id="solo-cats-note" style="display:none;font-size:.82rem;color:#e57320;margin-top:.25rem;font-weight:500">You must choose a minimum of 3 categories.</div>
         <div id="teams-cats-note" style="font-size:.82rem;color:#6b7280;margin-top:.25rem">Each team selects their own 3 categories above ↑</div>
 
         <button class="rules-btn" onclick="toggleRules()"><span>ℹ How to play</span><span class="chev" id="chev">▼</span></button>
@@ -849,7 +850,8 @@ function buildSoloCats(){
     if(nat.length)sec(nat,G.gameMode==='world'?'World':'National');
     if(loc.length)sec(loc,'Local'+(colOn?' & College':''));
   }
-  const cnt=document.createElement('div');cnt.className='cat-count';cnt.textContent=soloCats.length+' / 6 selected'+(soloCats.length<3?' (min 3)':'');c.appendChild(cnt);
+  const cnt=document.createElement('div');cnt.className='cat-count';cnt.textContent=soloCats.length+' / 6 selected';c.appendChild(cnt);
+  const note=document.getElementById('solo-cats-note');if(note)note.style.display=soloCats.length<3?'block':'none';
 }
 
 function addTeam(){
@@ -919,7 +921,7 @@ function startGame(){
   else{G.city='the United States';}
 
   if(G.style==='solo'){
-    if(soloCats.length<3){showErr('Please select at least 3 categories!');return;}
+    if(soloCats.length<3){const note=document.getElementById('solo-cats-note');if(note)note.style.display='block';return;}
     G.teams=[{name:'You',players:['Solo'],cats:[...soloCats]}];
   } else {
     const boxes=document.querySelectorAll('.team-box');
