@@ -266,6 +266,43 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
   .board-cell{font-size:1.1rem;padding:.55rem .25rem}
 }
 
+/* ── LANDSCAPE PHONE — compact game top so board is always visible ── */
+@media(orientation:landscape)and(max-height:520px){
+  body.in-game .game-top{padding:.15rem .5rem .1rem}
+  /* collapse logo + action buttons into one tight row */
+  #s-game .game-header{margin-bottom:.15rem}
+  .game-logo{font-size:.95rem;letter-spacing:1px}
+  /* scores: single horizontal row, ultra-compact */
+  #s-game .scores-wrap{gap:.2rem;margin-bottom:.15rem}
+  #s-game .s-card{padding:.15rem .45rem;border-radius:8px;min-width:0}
+  #s-game .s-pts{font-size:1rem;line-height:1}
+  #s-game .s-name{font-size:.68rem}
+  #s-game .s-player{display:none}
+  /* turn/steal bar */
+  #s-game .turn-bar{padding:.18rem .5rem;font-size:.72rem;margin-bottom:.15rem;border-radius:8px}
+  #s-game .steal-bar{padding:.18rem .5rem;font-size:.72rem;margin-bottom:.15rem;border-radius:8px}
+  /* board */
+  #s-game .board-title{font-size:.8rem;margin-bottom:.2rem}
+  #s-game .board-cat-hdr{height:36px;font-size:.6rem;padding:.2rem .15rem}
+  #s-game .board-pts-col{height:96px}
+  #s-game .board-cell{font-size:.95rem}
+  /* question card */
+  #s-game .q-card{padding:.55rem .65rem;margin-bottom:.35rem}
+  #s-game .q-txt{font-size:.9rem;margin-bottom:.45rem}
+  #s-game .timer-wrap{margin-bottom:.35rem}
+  #s-game .opts{gap:.3rem}
+  #s-game .opt-btn{padding:.45rem .5rem;font-size:.82rem}
+  #s-game .tf-btn{padding:.6rem;font-size:1.2rem}
+  #s-game .fb{font-size:.8rem;padding:.5rem .65rem;margin-top:.35rem}
+  #s-game .nxt-btn{margin-top:.35rem;padding:.5rem}
+  #s-game .pts-badge{font-size:.8rem;margin-bottom:.2rem}
+  /* photo/map images shorter in landscape */
+  .q-img{height:140px}
+  #s-game .q-img{height:140px}
+  /* a11y button even smaller in landscape game */
+  body.in-game .a11y-toggle{width:28px;height:28px;font-size:.8rem;top:.35rem;right:.35rem}
+}
+
 /* ── FULL-SCREEN GAME MODE ── */
 body.in-game{overflow:hidden;height:100dvh}
 body.in-game .page-wrap{height:100dvh;overflow:hidden;align-items:stretch}
@@ -334,16 +371,17 @@ body.a11y .s-card{border-width:3px !important}
 body.a11y .s-card.cur{background:#d1fae5 !important}
 body.a11y .opt-btn.ok{background:#15803d !important;border-color:#15803d !important}
 body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !important}
-/* Accessibility toggle button */
-.a11y-toggle{position:fixed;top:.75rem;right:.75rem;z-index:999;background:#1a1a2e;color:#fff;border:2px solid #e8b84b;border-radius:10px;padding:.5rem .85rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.35rem;box-shadow:0 2px 8px rgba(0,0,0,.15)}
-.a11y-toggle.on{background:#e8b84b;color:#1a1a2e}
+/* Accessibility toggle — small icon button, never in the way */
+.a11y-toggle{position:fixed;top:.6rem;right:.6rem;z-index:999;background:rgba(26,26,46,.8);color:#fff;border:2px solid rgba(232,184,75,.5);border-radius:50%;width:34px;height:34px;padding:0;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:all .2s;backdrop-filter:blur(4px)}
+.a11y-toggle.on{background:#e8b84b;color:#1a1a2e;border-color:#e8b84b}
+.a11y-toggle:hover{transform:scale(1.1)}
 .a11y-toggle:focus-visible{outline:3px solid #e8b84b;outline-offset:3px}
 </style>
 </head>
 <body>
 
 <!-- ACCESSIBILITY TOGGLE -->
-<button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" title="Toggle Accessibility Mode">♿ A11y</button>
+<button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
 
 <!-- MIRROR MODAL -->
 <div class="modal-overlay" id="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirror-modal-title">
