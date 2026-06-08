@@ -13,8 +13,11 @@ export default async function handler(req, res) {
     const searchUrl = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${encodeURIComponent(query)}&key=${key}`;
     const searchRes = await fetch(searchUrl);
     const searchData = await searchRes.json();
+    if (searchData.status && searchData.status !== 'OK' && searchData.status !== 'ZERO_RESULTS') {
+      return res.status(502).json({ error: 'Places API error', status: searchData.status, message: searchData.error_message });
+    }
     const placeId = searchData.results?.[0]?.place_id;
-    if (!placeId) return res.status(404).json({ error: 'Place not found' });
+    if (!placeId) return res.status(404).json({ error: 'Place not found', status: searchData.status, query });
 
     // 2. Get place photos
     const detailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=photos,name&key=${key}`;
