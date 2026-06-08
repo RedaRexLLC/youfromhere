@@ -320,8 +320,6 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
   /* photo/map images shorter in landscape */
   .q-img{height:140px}
   #s-game .q-img{height:140px}
-  /* a11y button even smaller in landscape game */
-  body.in-game .a11y-toggle{width:28px;height:28px;font-size:.8rem;top:.35rem;right:.35rem}
 }
 
 /* ── FULL-SCREEN GAME MODE ── */
@@ -393,7 +391,7 @@ body.a11y .s-card.cur{background:#d1fae5 !important}
 body.a11y .opt-btn.ok{background:#15803d !important;border-color:#15803d !important}
 body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !important}
 /* Accessibility toggle — small icon button, never in the way */
-.a11y-toggle{position:fixed;top:.6rem;right:.6rem;z-index:999;background:rgba(26,26,46,.8);color:#fff;border:2px solid rgba(232,184,75,.5);border-radius:50%;width:34px;height:34px;padding:0;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:all .2s;backdrop-filter:blur(4px)}
+.a11y-toggle{background:rgba(26,26,46,.8);color:#fff;border:2px solid rgba(232,184,75,.5);border-radius:50%;width:34px;height:34px;padding:0;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.2);transition:all .2s;flex-shrink:0}
 .a11y-toggle.on{background:#e8b84b;color:#1a1a2e;border-color:#e8b84b}
 .a11y-toggle:hover{transform:scale(1.1)}
 .a11y-toggle:focus-visible{outline:3px solid #e8b84b;outline-offset:3px}
@@ -401,8 +399,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 </head>
 <body>
 
-<!-- ACCESSIBILITY TOGGLE -->
-<button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
 
 <!-- MIRROR MODAL -->
 <div class="modal-overlay" id="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirror-modal-title">
@@ -514,9 +510,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
     <!-- ══ HOME ══ -->
     <div id="s-home" class="screen active">
-      <div class="logo-wrap">
-        <svg width="32" height="40" viewBox="0 0 32 40" fill="none" aria-hidden="true" focusable="false"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
-        <div class="logo-txt">You From <span>Here?</span></div>
+      <div class="logo-wrap" style="justify-content:space-between;align-items:center">
+        <div style="display:flex;align-items:center;gap:8px">
+          <svg width="32" height="40" viewBox="0 0 32 40" fill="none" aria-hidden="true" focusable="false"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+          <div class="logo-txt">You From <span>Here?</span></div>
+        </div>
+        <button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
       </div>
       <p class="tagline" id="home-tagline">Think you know your city? Prove it.</p>
 
