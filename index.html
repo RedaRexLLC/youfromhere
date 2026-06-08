@@ -954,19 +954,50 @@ function startGame(){
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
 }
 
+const LOAD_QUIPS=[
+  'Bribing the locals for insider info...',
+  'Consulting the wise elders of the neighborhood...',
+  'Googling things so you don\'t have to...',
+  'Asking someone\'s abuela — she knows everything...',
+  'Dusting off the trivia scrolls...',
+  'Arguing with the AI about what counts as "local"...',
+  'Pretending we knew this all along...',
+  'Cross-referencing rumors and half-truths...',
+  'Waking up the night-shift trivia goblins...',
+  'Running very fast to check — almost there...',
+  'Summoning the spirits of Yelp reviewers past...',
+  'Interrogating a pigeon who was definitely there...',
+  'The AI is thinking. Hard. Give it a moment...',
+  'Definitely not just making this up...',
+  'Checking with the guy who knows a guy...',
+  'Sifting through the archives of people who actually go outside...',
+  'Your patience is appreciated. Mostly by us.',
+  'Loading local knowledge... and a little gossip...',
+  'Almost done. Probably. We think.',
+  'Shaking the magic trivia 8-ball...',
+];
+let _quipTimer=null;
+function startQuips(){
+  const el=document.getElementById('load-sub');
+  let i=Math.floor(Math.random()*LOAD_QUIPS.length);
+  _quipTimer=setInterval(()=>{i=(i+1)%LOAD_QUIPS.length;if(el)el.textContent=LOAD_QUIPS[i];},2800);
+}
+function stopQuips(){clearInterval(_quipTimer);_quipTimer=null;}
+
 // ── PRE-GENERATE ALL QUESTIONS ──
 async function preGenAll(){
   const cats=[...new Set(G.teams.flatMap(t=>t.cats))];
   G.bank={200:[],400:[],600:[]};
   let done=0;
+  startQuips();
   for(const catId of cats){
     const cat=ALL.find(c=>c.id===catId);
-    document.getElementById('load-sub').textContent='Generating '+( cat?.label||catId)+' questions...';
     const qs=await genQsForCategory(catId);
     [200,400,600].forEach(pts=>{G.bank[pts].push(...qs.filter(q=>q.points===pts));});
     done++;
     document.getElementById('load-prog').style.width=Math.round(done/cats.length*100)+'%';
   }
+  stopQuips();
 }
 
 async function genQsForCategory(catId){
