@@ -986,9 +986,9 @@ async function genQsForCategory(catId){
     +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false: (1) the question MUST be a clear factual statement the player agrees or disagrees with, (2) NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice, (3) CRITICAL: before setting the answer field, verify it is factually correct — if your explanation confirms the statement is true, the answer MUST be "true"; if false, "false". Never contradict your own explanation.'
     +'\nFor multiple choice: the `answer` field must exactly match one of the strings in the `options` array.'
     +'\nAvoid questions with ambiguous, contested, or overly nuanced answers — only ask things with a single clear correct answer.'
-    +(catId==='you_know_place'?'\nMix two visual question types for this category:\n1. Type "photo": include "wikiTitle" with the EXACT Wikipedia article title for a well-known local spot. Ask "What place is this?" MC with 4 real local places as options.\n2. Type "mapview": include "lat" (number), "lng" (number), "zoom" (17-19), and "mapviewHint" describing what corner/side to look at. Ask "What is at [intersection description]?" MC. Coordinates must be precise GPS coords for that exact spot in '+G.city+'. Each question must use a completely different location.':catId==='spot_it'?'\nUse question type "mapview" for ALL questions. Include "lat" (number), "lng" (number), "zoom" (17-19 based on how large the area is), and "mapviewHint" (e.g. "northeast corner"). The question should ask what business/landmark/feature is at that specific GPS location in '+G.city+'. Include 4 real nearby options as MC choices. Every question must be at a completely different intersection or location — no two questions share the same area.':catId==='loc_landmarks'?'\nFor 2-3 of the 6 questions, use question type "photo" with "wikiTitle" (exact Wikipedia article title). Ask "What landmark is this?" as MC.':catId==='w_landmarks'?'\nFor 2-3 of the 6 questions, use question type "photo" with "wikiTitle" (exact Wikipedia article title for the world-famous attraction). Ask "What famous landmark is this?" as MC.':'')
+    +(catId==='you_know_place'?'\nMix two visual question types for this category:\n1. Type "photo": include BOTH "placeName" (exact name as it appears on Google Maps, e.g. "Reid Park Zoo") AND "wikiTitle" (Wikipedia article title as fallback). Ask "What place is this?" MC with 4 real local places as options.\n2. Type "mapview": include "lat" (number), "lng" (number), "zoom" (17-19), and "mapviewHint" describing what corner/side to look at. Ask "What is at [intersection]?" MC. Every question must use a completely different location in '+G.city+'.':catId==='spot_it'?'\nUse question type "mapview" for ALL questions. Include "lat" (number), "lng" (number), "zoom" (17-19), and "mapviewHint" (e.g. "northeast corner"). Ask what business/landmark is at that GPS location in '+G.city+'. Every question must be at a different intersection.':catId==='loc_landmarks'?'\nFor 2-3 of the 6 questions use type "photo". Include BOTH "placeName" (exact Google Maps name, e.g. "Tucson Convention Center") AND "wikiTitle" (Wikipedia title as fallback). Ask "What landmark is this?" as MC.':catId==='loc_food'?'\nFor 2-3 of the 6 questions use type "photo". Include "placeName" (exact restaurant/food spot name as on Google Maps in '+G.city+'). Ask "What restaurant or food spot is this?" as MC with 4 real local options.':catId==='w_landmarks'?'\nFor 2-3 of the 6 questions use type "photo" with "wikiTitle" (exact Wikipedia article title). Ask "What famous landmark is this?" as MC.':'')
     +'\nMark genuinely surprising facts with surprising:true.'
-    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"photo","wikiTitle":"Exact Wikipedia Article Title","category":"'+catLabel+'","difficulty":"medium","points":400,"question":"What landmark is this?","options":["Place A","Place B","Place C","Place D"],"answer":"Place A","explanation":"fact.","surprising":false},{"type":"mapview","lat":32.2226,"lng":-110.9747,"zoom":18,"mapviewHint":"northeast corner","category":"'+catLabel+'","difficulty":"hard","points":600,"question":"What business is on the northeast corner of 4th Ave and University Blvd?","options":["Business A","Business B","Business C","Business D"],"answer":"Business A","explanation":"fact.","surprising":false}]}';
+    +'\nRespond ONLY with raw JSON starting with {:\n{"questions":[{"type":"mc","category":"'+catLabel+'","difficulty":"easy","points":200,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"photo","placeName":"Exact Google Maps Place Name","wikiTitle":"Exact Wikipedia Article Title","category":"'+catLabel+'","difficulty":"medium","points":400,"question":"What place is this?","options":["Place A","Place B","Place C","Place D"],"answer":"Place A","explanation":"fact.","surprising":false},{"type":"mapview","lat":32.2226,"lng":-110.9747,"zoom":18,"mapviewHint":"northeast corner","category":"'+catLabel+'","difficulty":"hard","points":600,"question":"What business is on the northeast corner of 4th Ave and University Blvd?","options":["Business A","Business B","Business C","Business D"],"answer":"Business A","explanation":"fact.","surprising":false}]}';
   const response=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
   if(!response.ok){const e=await response.json().catch(()=>({}));throw new Error(e?.error?.message||'HTTP '+response.status);}
   const data=await response.json();
@@ -1033,6 +1033,18 @@ async function fetchWikiImage(title){
 
 function buildMapImageUrl(lat,lng,zoom){
   return '/api/mapimage?lat='+lat+'&lng='+lng+'&zoom='+(zoom||18);
+}
+
+async function fetchPlaceImage(placeName,city){
+  try{
+    const url='/api/placeimage?name='+encodeURIComponent(placeName)+'&location='+encodeURIComponent(city||'');
+    const r=await fetch(url);
+    if(!r.ok)return null;
+    // Returns binary image — convert to object URL for display
+    const blob=await r.blob();
+    if(!blob.size)return null;
+    return URL.createObjectURL(blob);
+  }catch(e){return null;}
 }
 
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
@@ -1174,24 +1186,30 @@ function renderQuestion(q,pts){
   html+='</div>';
   document.getElementById('q-area').innerHTML=html;
   // Async load image/map for visual question types
-  if(isPhoto&&q.wikiTitle){
-    fetchWikiImage(q.wikiTitle).then(imgUrl=>{
+  if(isPhoto){
+    const city=G.gameMode==='world'?(G.city||G.country):G.city;
+    // Local mode: try Google Places first (real Google Maps photos), fall back to Wikipedia
+    // National/World: go straight to Wikipedia
+    const tryPlaces=(G.gameMode==='local'||G.gameMode==='world')&&q.placeName;
+    (async()=>{
+      let imgUrl=null;
+      if(tryPlaces)imgUrl=await fetchPlaceImage(q.placeName,city);
+      if(!imgUrl&&q.wikiTitle)imgUrl=await fetchWikiImage(q.wikiTitle);
       const wrap=document.getElementById('q-img-container');
       if(!wrap)return;
       if(imgUrl){
         wrap.className='q-img-wrap';
-        wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager" '
-          +'onerror="this.className=\'q-img-loading\';this.outerHTML=\'<div style=&quot;height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px;margin-bottom:.85rem&quot;><div style=&quot;font-size:2.5rem&quot;>📍</div><div style=&quot;font-size:.78rem;color:rgba(255,255,255,.6)&quot;>Image could not load — use your local knowledge!</div></div>\'"/>'
+        wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-badge">📸 Where is this?</div>';
-      } else {
+      }else{
         wrap.className='q-img-wrap';
         wrap.innerHTML='<div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px">'
           +'<div style="font-size:2.5rem">📍</div>'
-          +'<div style="font-size:.78rem;color:rgba(255,255,255,.6)">Image unavailable — use your local knowledge!</div>'
+          +'<div style="font-size:.78rem;color:rgba(255,255,255,.6);text-align:center;padding:0 1rem">Image unavailable — use your local knowledge!</div>'
           +'</div>';
       }
-    });
+    })();
   }
   if(isMap&&q.lat&&q.lng){
     const wrap=document.getElementById('q-img-container');
