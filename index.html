@@ -849,7 +849,7 @@ function buildSoloCats(){
     if(nat.length)sec(nat,G.gameMode==='world'?'World':'National');
     if(loc.length)sec(loc,'Local'+(colOn?' & College':''));
   }
-  const cnt=document.createElement('div');cnt.className='cat-count';cnt.textContent=soloCats.length+' / 6 selected';c.appendChild(cnt);
+  const cnt=document.createElement('div');cnt.className='cat-count';cnt.textContent=soloCats.length+' / 6 selected'+(soloCats.length<3?' (min 3)':'');c.appendChild(cnt);
 }
 
 function addTeam(){
@@ -919,7 +919,7 @@ function startGame(){
   else{G.city='the United States';}
 
   if(G.style==='solo'){
-    if(!soloCats.length){showErr('Please select at least one category!');return;}
+    if(soloCats.length<3){showErr('Please select at least 3 categories!');return;}
     G.teams=[{name:'You',players:['Solo'],cats:[...soloCats]}];
   } else {
     const boxes=document.querySelectorAll('.team-box');
