@@ -1,11 +1,29 @@
 export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { lat, lng, zoom = '18' } = req.query;
-  if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
+  const { intersection, zoom = '17' } = req.query;
+  let { lat, lng } = req.query;
 
   const key = process.env.GOOGLE_MAPS_KEY;
   if (!key) return res.status(503).json({ error: 'Maps not configured' });
+
+  // If an intersection string is provided, geocode it for accurate coordinates
+  if (intersection) {
+    try {
+      const geoUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(intersection)}&key=${key}`;
+      const geoRes = await fetch(geoUrl);
+      const geoData = await geoRes.json();
+      const loc = geoData.results?.[0]?.geometry?.location;
+      if (loc) {
+        lat = loc.lat;
+        lng = loc.lng;
+      }
+    } catch (_) {
+      // Fall through to use Claude's lat/lng if geocoding fails
+    }
+  }
+
+  if (!lat || !lng) return res.status(400).json({ error: 'lat and lng required' });
 
   // Hybrid view (satellite + road overlays) with business/POI labels hidden
   // Street names and roads remain visible for orientation; business names hidden so players must guess
