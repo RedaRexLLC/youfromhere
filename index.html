@@ -1612,6 +1612,7 @@ function renderBoard(){
     gib.style.display='block';
     gib.className='';
     document.body.classList.remove('in-question');
+    const sw=document.getElementById('scores-wrap');if(sw)sw.style.display='';
     const gibTurn=document.getElementById('gib-turn');
     const gibPts=document.getElementById('gib-pts');
     const gibCat=document.getElementById('gib-cat');
@@ -1680,6 +1681,7 @@ function renderQuestion(q,pts){
     gib.style.display='block';
     gib.className='q-mode';
     document.body.classList.add('in-question');
+    const sw=document.getElementById('scores-wrap');if(sw)sw.style.display='none';
     const gibTurn=document.getElementById('gib-turn');
     const gibPts=document.getElementById('gib-pts');
     const gibCat=document.getElementById('gib-cat');
