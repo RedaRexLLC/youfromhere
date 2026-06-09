@@ -141,6 +141,8 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .s-pts{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1}
 .sc0{color:#e8b84b}.sc1{color:#4ecdc4}.sc2{color:#a78bfa}.sc3{color:#fb923c}
 .steal-bar{background:#fffbf0;border:2px solid #e8b84b;border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;font-weight:700;font-size:.95rem;text-align:center;color:#1a1a2e}
+/* Bottom ad in game — desktop only, hidden during questions */
+#game-bottom-ad{display:none;flex-shrink:0;background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.5rem;text-align:center;margin-top:.75rem}
 /* Combined info bar: turn + pts + category + timer in one row */
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
 #game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
@@ -501,6 +503,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .fb{font-size:.92rem !important}
   #s-game .nxt-btn{padding:.85rem !important;font-size:1rem !important}
   #s-game .pts-badge{font-size:1rem}
+  body.in-game #game-bottom-ad{display:block}
 }
 
 /* ── LARGE DESKTOP / TV (1400px+) ── */
@@ -531,6 +534,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .pts-badge{font-size:1.1rem}
   body:not(.in-game) .logo-txt{font-size:3.5rem}
   body:not(.in-game) .card{padding:1.75rem}
+  body.in-game #game-bottom-ad{display:block}
 }
 
 /* ── PHOTO QUESTIONS ── */
@@ -878,6 +882,11 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       <div class="game-body">
         <div class="board-section" id="board-section"></div>
         <div id="q-area"></div>
+        <div id="game-bottom-ad">
+          <span class="ad-label">Advertisement</span>
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000005" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        </div>
       </div>
     </div>
 
@@ -1635,6 +1644,7 @@ function renderQuestion(q,pts){
 
   // Hide board while question is showing
   document.getElementById('board-section').style.display='none';
+  const gba=document.getElementById('game-bottom-ad');if(gba)gba.style.display='none';
 
   // Update combined info bar to question mode
   const gib=document.getElementById('game-info-bar');
