@@ -147,10 +147,10 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
 #game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
 /* Info bar: left=team name, right=pts+category+timer */
-.gib-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.85rem;font-weight:600}
-.gib-left{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#166534}
-#game-info-bar.q-mode .gib-left{color:#9ca3af;font-weight:500;font-size:.82rem}
-.gib-right{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.gib-row{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.85rem;font-weight:600}
+.gib-left{color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#game-info-bar.q-mode .gib-left{display:none}
+.gib-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
 #gib-pts{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px}
 #gib-pts.pb-200{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
 #gib-pts.pb-400{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
