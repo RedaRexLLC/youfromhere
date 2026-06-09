@@ -132,7 +132,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .game-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#1a1a2e}
 .game-logo span{color:#e8b84b}
 .scores-wrap{display:grid;gap:.4rem;margin-bottom:.5rem}
-.s-card{border-radius:12px;padding:.5rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;justify-content:space-between;align-items:center;transition:all .3s}
+.s-card{border-radius:12px;padding:.5rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;transition:all .3s}
 .s-card.cur{border-color:#22c55e !important;background:#f0fdf4 !important;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
 .s-card.mod-active{border-color:#e8b84b !important;background:#fffbeb !important}
 .s-left{display:flex;flex-direction:column;gap:.1rem}
@@ -145,22 +145,20 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 #game-bottom-ad{display:none;flex-shrink:0;background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.5rem;text-align:center;margin-top:.75rem}
 /* Combined info bar: turn + pts + category + timer in one row */
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
-#game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
-body.in-question #scores-wrap{display:none !important}
-/* Info bar: left=team name, right=pts+category+timer */
+/* Info bar: board mode only — question mode injects into score card instead */
 .gib-row{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.85rem;font-weight:600}
 .gib-left{color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#game-info-bar.q-mode .gib-left{display:none}
-.gib-right{display:flex;align-items:center;gap:.6rem;flex-shrink:0}
-#gib-pts{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px}
-#gib-pts.pb-200{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
-#gib-pts.pb-400{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
-#gib-pts.pb-600{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
-#gib-cat{color:#e8b84b;font-size:.8rem;font-weight:600;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
-#gib-timer{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1px;color:#e8b84b}
-#gib-timer.urgent{color:#ef4444}
-#gib-tbar-wrap{margin-top:.25rem;height:5px;background:#2e2e4e;border-radius:3px;overflow:hidden}
-#gib-tbar{height:100%;border-radius:3px;transition:width 1s linear,background .5s}
+/* In-card question info row */
+.card-qinfo{display:flex;align-items:center;gap:.5rem;margin-top:.3rem;flex-wrap:wrap}
+.card-qpts{font-family:'Bebas Neue',sans-serif;font-size:.88rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px}
+.card-qpts.pb-200{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.card-qpts.pb-400{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.card-qpts.pb-600{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.card-qcat{color:#e8b84b;font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.card-qtimer{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:1px;color:#e8b84b;margin-left:auto}
+.card-qtimer.urgent{color:#ef4444}
+.card-qtbar-wrap{margin-top:.2rem;height:4px;background:#e5e7eb;border-radius:3px;overflow:hidden}
+.card-qtbar{height:100%;border-radius:3px;width:100%;background:#22c55e;transition:width 1s linear,background .5s}
 
 /* ── SEEN JEEM BOARD ── */
 .board-section{margin-bottom:.75rem}
@@ -1683,25 +1681,26 @@ function renderQuestion(q,pts){
   // Hide board while question is showing
   document.getElementById('board-section').style.display='none';
 
-  // Update combined info bar to question mode
+  // Inject question info (pts/category/timer) directly into the green score card
   const gib=document.getElementById('game-info-bar');
-  if(gib){
-    gib.style.display='block';
-    gib.className='q-mode';
-    document.body.classList.add('in-question');
-    const sw=document.getElementById('scores-wrap');if(sw)sw.style.display='none';
-    const gibTurn=document.getElementById('gib-turn');
-    const gibPts=document.getElementById('gib-pts');
-    const gibCat=document.getElementById('gib-cat');
-    const gibTimer=document.getElementById('gib-timer');
-    const gibTbar=document.getElementById('gib-tbar-wrap');
-    const gibTbarBar=document.getElementById('gib-tbar');
-    if(gibTurn)gibTurn.textContent=G.teams[t].name;
-    if(gibPts){gibPts.className=pbClass;gibPts.textContent=pts+' PTS';gibPts.style.display='inline';}
-    if(gibCat){gibCat.textContent=q.category;gibCat.style.display='inline';}
-    if(gibTimer){gibTimer.textContent='1:00';gibTimer.className='';gibTimer.style.display='block';}
-    if(gibTbar){gibTbar.style.width='100%';gibTbar.style.background='#22c55e';}
-    if(gibTbarBar)gibTbarBar.style.display='block';
+  if(gib)gib.style.display='none'; // dark bar no longer used in question mode
+  const sw=document.getElementById('scores-wrap');
+  if(sw)sw.style.display=''; // keep score card visible
+  const curCard=document.querySelector('.s-card.cur');
+  if(curCard){
+    curCard.querySelector('.card-qinfo')?.remove();
+    curCard.querySelector('.card-qtbar-wrap')?.remove();
+    const qi=document.createElement('div');
+    qi.className='card-qinfo';
+    qi.innerHTML='<span class="card-qpts '+pbClass+'">'+pts+' PTS</span>'
+      +'<span class="card-qcat">'+q.category+'</span>'
+      +'<span class="card-qtimer" id="card-qtimer">1:00</span>';
+    curCard.appendChild(qi);
+    const tb=document.createElement('div');
+    tb.className='card-qtbar-wrap';
+    tb.style.cssText='width:100%;margin-top:.2rem;height:4px;background:#e5e7eb;border-radius:3px;overflow:hidden';
+    tb.innerHTML='<div id="card-qtbar" class="card-qtbar"></div>';
+    curCard.appendChild(tb);
   }
 
   const isPhoto=q.type==='photo';
@@ -1830,10 +1829,17 @@ function startTmr(){clearInterval(tmr);clearInterval(stealTmr);tLeft=TMAX;updTmr
 function stopTmr(){clearInterval(tmr);clearInterval(stealTmr);}
 function updTmr(){
   const m=Math.floor(tLeft/60),s=tLeft%60;
-  const tn=document.getElementById('gib-timer');
-  if(tn){tn.textContent=m+':'+(s<10?'0':'')+s;tn.className=tLeft<=10?'urgent':'';}
+  const txt=m+':'+(s<10?'0':'')+s;
   const pct=(tLeft/TMAX)*100;
-  const bar=document.getElementById('gib-tbar');if(bar){bar.style.width=pct+'%';bar.style.background=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';}
+  const bkg=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';
+  // Update in-card timer (question mode)
+  const tn=document.getElementById('card-qtimer');
+  if(tn){tn.textContent=txt;tn.className='card-qtimer'+(tLeft<=10?' urgent':'');}
+  const bar=document.getElementById('card-qtbar');
+  if(bar){bar.style.width=pct+'%';bar.style.background=bkg;}
+  // Also update hidden gib-timer (used by steal logic)
+  const gtn=document.getElementById('gib-timer');
+  if(gtn){gtn.textContent=txt;gtn.className=tLeft<=10?'urgent':'';}
 }
 
 function doStealTimer(){
