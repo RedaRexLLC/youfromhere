@@ -146,6 +146,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 /* Combined info bar: turn + pts + category + timer in one row */
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
 #game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
+body.in-question #scores-wrap{display:none !important}
 /* Info bar: left=team name, right=pts+category+timer */
 .gib-row{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.85rem;font-weight:600}
 .gib-left{color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1108,7 +1109,7 @@ function detectDevice(){
 detectDevice();
 window.addEventListener('resize',detectDevice);
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');if(id!=='s-game')document.body.classList.remove('in-question');}
 function showErr(msg){const e=document.getElementById('err-box');e.textContent='⚠ '+msg;e.className='err-box show';setTimeout(()=>e.className='err-box',6000);}
 function toggleRules(){document.getElementById('rules-body').classList.toggle('open');document.getElementById('chev').classList.toggle('open');}
 function openContact(){document.getElementById('contact-modal').className='modal-overlay show';}
@@ -1610,6 +1611,7 @@ function renderBoard(){
   if(gib){
     gib.style.display='block';
     gib.className='';
+    document.body.classList.remove('in-question');
     const gibTurn=document.getElementById('gib-turn');
     const gibPts=document.getElementById('gib-pts');
     const gibCat=document.getElementById('gib-cat');
@@ -1677,6 +1679,7 @@ function renderQuestion(q,pts){
   if(gib){
     gib.style.display='block';
     gib.className='q-mode';
+    document.body.classList.add('in-question');
     const gibTurn=document.getElementById('gib-turn');
     const gibPts=document.getElementById('gib-pts');
     const gibCat=document.getElementById('gib-cat');
