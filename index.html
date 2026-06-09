@@ -1781,6 +1781,7 @@ function renderQuestion(q,pts){
     if(wrap){
       const mapSrc=buildMapImageUrl(q.lat,q.lng,q.zoom,q.intersection);
       wrap.className='q-img-wrap';
+      document.body.classList.add('has-img');
       wrap.innerHTML='<img class="q-img" src="'+mapSrc+'" alt="Satellite map view" loading="eager" '
         +'onerror="this.closest(\'.q-img-wrap\').innerHTML=\'<div style=\\\'padding:1rem;text-align:center;color:#6b7280;font-size:.85rem\\\'>🗺 Map unavailable — answer from your local knowledge!</div>\'"'
         +'/>'
