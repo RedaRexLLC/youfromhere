@@ -302,7 +302,6 @@ body.in-game .board-cell{height:auto !important;min-height:40px}
 body.in-game #q-area{flex:0 0 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
 body.in-game #q-area:not(:empty){flex:1}
 
-body.in-game #board-ad{flex-shrink:0}
 
 /* ── PHONE (< 600px or .dev-phone) ── */
 @media(max-width:599px){
@@ -402,7 +401,6 @@ body.in-game #board-ad{flex-shrink:0}
   }
   .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
   .board-cell{min-height:0 !important;height:auto !important;font-size:.75rem !important}
-  #board-ad{display:none !important}
 
   /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
   #q-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
@@ -859,12 +857,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       </div>
       <div class="game-body">
         <div class="board-section" id="board-section"></div>
-        <!-- Ad shown on board while players pick a question -->
-        <div class="ad-board" id="board-ad">
-          <span class="ad-label">Advertisement</span>
-          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000008" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-        </div>
         <div id="q-area"></div>
       </div>
     </div>
@@ -1579,8 +1571,6 @@ function renderBoard(){
     ).join('')+'</div>';
   document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
   document.getElementById('q-area').innerHTML='';
-  // Show board ad while players pick
-  const ba=document.getElementById('board-ad');if(ba)ba.style.display='block';
 }
 
 function pickCell(catId,pts){
@@ -1608,9 +1598,8 @@ function renderQuestion(q,pts){
   const pbClass=pts===200?'pb-200':pts===400?'pb-400':'pb-600';
   const isMod=G.style==='mod';
 
-  // Hide board and board ad while question is showing
+  // Hide board while question is showing
   document.getElementById('board-section').style.display='none';
-  const ba=document.getElementById('board-ad');if(ba)ba.style.display='none';
 
   const isPhoto=q.type==='photo';
   const isMap=q.type==='mapview';
@@ -2177,7 +2166,6 @@ function mpMirrorState(st) {
     mpLastPhase='question'; mpLastCellKey=cellKey;
     G.curCell=st.curCell; G.curQ=st.curQ; G.answered=false;
     document.getElementById('board-section').style.display='none';
-    const ba=document.getElementById('board-ad'); if(ba)ba.style.display='none';
     renderQuestion(st.curQ, st.curCell.pts);
     return;
   }
