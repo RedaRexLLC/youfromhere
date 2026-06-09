@@ -285,16 +285,23 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 #s-game.active{display:flex;flex-direction:column;height:100%;overflow:hidden}
 .game-top{padding:.4rem .75rem .3rem;flex-shrink:0;background:#f8f7f4;border-bottom:1px solid #e5e7eb}
 
-/* game-body: flex column, board fills it, q-area scrolls independently */
+/* ── IN-GAME LAYOUT: board always fills available height ── */
 .game-body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:.5rem .75rem .75rem}
+
+/* Board section fills ALL remaining game-body space */
 body.in-game .board-section{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;margin-bottom:0}
 body.in-game .board-title{flex-shrink:0}
-body.in-game .board-grid{flex:1;min-height:0}
-body.in-game .board-col{display:flex;flex-direction:column;overflow:hidden}
+/* board-grid: grid that fills board-section, rows share height equally */
+body.in-game .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr;align-items:stretch}
+body.in-game .board-col{display:flex;flex-direction:column;overflow:hidden;min-height:0}
 body.in-game .board-cat-hdr{flex-shrink:0}
-body.in-game .board-pts-col{flex:1;min-height:0;height:auto !important;display:grid;grid-template-rows:1fr 1fr 1fr}
-body.in-game .board-cell{height:auto !important;min-height:44px}
-body.in-game #q-area{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.in-game .board-pts-col{flex:1;min-height:0;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
+body.in-game .board-cell{height:auto !important;min-height:40px}
+
+/* q-area: takes NO space when empty (board showing), fills all space when question is showing */
+body.in-game #q-area{flex:0 0 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.in-game #q-area:not(:empty){flex:1}
+
 body.in-game #board-ad{flex-shrink:0}
 
 /* ── PHONE (< 600px or .dev-phone) ── */
@@ -307,13 +314,19 @@ body.in-game #board-ad{flex-shrink:0}
   .game-content{padding:0 .5rem}
   .ad-banner.bottom{display:block}
 }
-/* Portrait phone board: 3 columns */
+/* Portrait phone board: 3 columns max, 2 rows of categories, fills screen */
 @media(max-width:599px) and (orientation:portrait){
-  body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.3rem !important}
+  body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.25rem !important}
   body.in-game .board-col{min-width:0}
-  body.in-game .board-cat-hdr{height:40px;font-size:.55rem;padding:.15rem .1rem;line-height:1.3;word-break:break-word;hyphens:auto}
-  body.in-game .board-cell{font-size:.9rem;min-height:52px}
-  body.in-game .board-title{font-size:.8rem;margin-bottom:.2rem}
+  body.in-game .board-cat-hdr{height:36px !important;font-size:.5rem;padding:.1rem .05rem;line-height:1.25;word-break:break-word;hyphens:auto}
+  body.in-game .board-cell{font-size:.85rem;min-height:36px}
+  body.in-game .board-title{font-size:.78rem;margin-bottom:.15rem}
+  /* Tighten header to give board more room */
+  #s-game .scores-wrap{gap:.2rem;margin-bottom:.2rem}
+  #s-game .s-card{padding:.2rem .4rem}
+  #s-game .s-pts{font-size:1.1rem}
+  #s-game .s-name{font-size:.68rem}
+  #s-game .turn-bar,#s-game .steal-bar{padding:.22rem .5rem;font-size:.7rem;margin-bottom:.2rem}
   #s-game .game-header{margin-bottom:.2rem}
   #s-game .scores-wrap{gap:.25rem;margin-bottom:.25rem}
   #s-game .s-card{padding:.25rem .55rem;border-radius:9px}
@@ -380,15 +393,15 @@ body.in-game #board-ad{flex-shrink:0}
 
   /* ── BOARD: fill height, all 3 rows always visible ── */
   .board-section{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
-  .board-title{display:none}
-  .board-grid{flex:1;min-height:0;display:grid !important;gap:.2rem}
-  .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+  .board-title{display:none !important}
+  .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr !important;gap:.2rem}
+  .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
   .board-cat-hdr{
-    flex-shrink:0;height:24px !important;font-size:.48rem !important;
-    padding:.05rem !important;line-height:1.2;
+    flex-shrink:0;height:22px !important;font-size:.46rem !important;
+    padding:.04rem !important;line-height:1.2;
   }
   .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
-  .board-cell{min-height:0 !important;height:auto !important;font-size:.78rem !important}
+  .board-cell{min-height:0 !important;height:auto !important;font-size:.75rem !important}
   #board-ad{display:none !important}
 
   /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
@@ -452,11 +465,11 @@ body.in-game #board-ad{flex-shrink:0}
   #s-game .nxt-btn{padding:.75rem}
   #s-game .pts-badge{font-size:.95rem;margin-bottom:.3rem}
 }
-/* Tablet portrait board wrap */
+/* Tablet portrait: 3 columns, fills screen */
 @media(min-width:600px) and (max-width:767px) and (orientation:portrait){
   body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.35rem !important}
-  body.in-game .board-cat-hdr{height:46px;font-size:.7rem}
-  body.in-game .board-cell{min-height:56px}
+  body.in-game .board-cat-hdr{height:44px !important;font-size:.68rem}
+  body.in-game .board-cell{font-size:1.1rem;min-height:44px}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
