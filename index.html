@@ -1494,16 +1494,21 @@ async function genQsForCategory(catId){
     :G.gameMode==='national'
     ?'\nDRAW FROM THIS BROAD TOPIC POOL (pick different ones each game): US history & founding, presidents & politicians, American geography & landmarks, national parks, US holidays & traditions, American sports teams & athletes, music genres & artists, Hollywood & film history, American literature & authors, science & inventors, space exploration, wars & military history, civil rights history, Native American history & culture, immigration & cultural diversity, American food & regional cuisine, state capitals & state facts, famous crimes & trials, American architecture, Broadway & performing arts, US economy & business, American slang & pop culture, famous speeches, constitutional history, American wildlife, weather & natural disasters, American inventions, transportation history (railroads, highways, aviation), American music (jazz, blues, country, rock), notable firsts, American humor & comedy, famous American families, US foreign policy, American art & museums.'
     :'\nDRAW FROM THIS BROAD TOPIC POOL for '+G.country+' (pick different ones each game): national history & founding, famous leaders & historical figures, geography & landmarks, national holidays & traditions, local sports & athletes, music & arts, cuisine & food culture, language & dialects, architecture & UNESCO sites, religion & customs, famous exports & industries, national animals & symbols, folklore & legends, famous films & literature, notable firsts & records, indigenous cultures, regional differences, climate & geography, transportation & infrastructure, national humor & slang, science & inventors from this country, famous crimes & mysteries, political history, colonial history, economic history, famous local markets & festivals.'
+  const isNational=G.gameMode==='national';
+  const easyDesc=isNational?'EASY — well-known facts most Americans would recognize':'EASY — well-known facts most locals would know';
+  const medDesc=isNational?'MEDIUM — requires solid American general knowledge':'MEDIUM — requires some local knowledge';
+  const nationalScope=isNational?'\nSCOPE REQUIREMENT: Every question MUST be national in scope — about the United States as a whole, its history, culture, people, or shared identity. DO NOT ask about any specific city, town, neighborhood, or local area. If a question is only relevant to residents of one city or region, it does not belong here.':'';
   const prompt=locCtx+'\nCategory: '+catLabel+'. '+collegeNote
     +(asked?'\nDo NOT reuse questions about these topics: '+asked:'')
     +(recentTopics?'\nAVOID these subjects/answers that were recently used: '+recentTopics:'')
     +localTopicPool
+    +nationalScope
     +'\nGenerate exactly 6 trivia questions for this single category:'
-    +'\n- 2 questions worth 200 points (EASY — well-known facts most locals would know)'
-    +'\n- 2 questions worth 400 points (MEDIUM — requires some local knowledge)'
+    +'\n- 2 questions worth 200 points ('+easyDesc+')'
+    +'\n- 2 questions worth 400 points ('+medDesc+')'
     +'\n- 2 questions worth 600 points (HARD — obscure, specific, or surprising facts only experts would know)'
     +'\nCRITICAL DEDUPLICATION: Each of the 6 questions MUST cover a completely different specific topic, landmark, person, or event. NEVER ask about the same subject at different point values.'
-    +'\nTOPIC DIVERSITY: Pick from the widest possible range of subjects. Every game should feel fresh — do not default to the most obvious or most famous local facts. Mix well-known with surprising and niche.'
+    +'\nTOPIC DIVERSITY: Pick from the widest possible range of subjects. Every game should feel fresh — do not default to the most obvious or most famous facts. Mix well-known with surprising and niche.'
     +'\nMix question types — use both multiple choice (mc) and true/false (tf). For true/false: (1) the question MUST be a clear factual statement the player agrees or disagrees with, (2) NEVER use true/false for "what is", "who is", "which one", or any question asking the player to identify or name something — those must be multiple choice, (3) CRITICAL: before setting the answer field, verify it is factually correct — if your explanation confirms the statement is true, the answer MUST be "true"; if false, "false". Never contradict your own explanation.'
     +'\nFor multiple choice: the `answer` field must exactly match one of the strings in the `options` array.'
     +'\nAvoid questions with ambiguous, contested, or overly nuanced answers — only ask things with a single clear correct answer.'
@@ -1524,7 +1529,7 @@ async function genQsForCategory(catId){
 }
 
 async function saveQsToDb(qs){
-  const loc=G.gameMode==='world'?(G.city||G.country):G.city;
+  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.city||G.country):G.city;
   const rows=qs.map(q=>({location:loc,game_mode:G.gameMode,category:q.category,difficulty:q.difficulty,points:q.points,type:q.type,question:q.question,options:q.options?JSON.stringify(q.options):null,answer:q.answer,explanation:q.explanation||'',surprising:!!q.surprising,pending:false}));
   await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
 }
