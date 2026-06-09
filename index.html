@@ -146,15 +146,17 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 /* Combined info bar: turn + pts + category + timer in one row */
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
 #game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
-.gib-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600}
-#gib-turn{flex:1;color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#game-info-bar.q-mode #gib-turn{color:#9ca3af;font-weight:500;font-size:.78rem}
-#gib-pts{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px;flex-shrink:0}
+/* Info bar: left=team name, right=pts+category+timer */
+.gib-row{display:flex;align-items:center;justify-content:space-between;gap:.5rem;font-size:.85rem;font-weight:600}
+.gib-left{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#166534}
+#game-info-bar.q-mode .gib-left{color:#9ca3af;font-weight:500;font-size:.82rem}
+.gib-right{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+#gib-pts{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px}
 #gib-pts.pb-200{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
 #gib-pts.pb-400{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
 #gib-pts.pb-600{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
-#gib-cat{color:#e8b84b;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:35%}
-#gib-timer{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1px;color:#e8b84b;flex-shrink:0;margin-left:auto}
+#gib-cat{color:#e8b84b;font-size:.8rem;font-weight:600;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+#gib-timer{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1px;color:#e8b84b}
 #gib-timer.urgent{color:#ef4444}
 #gib-tbar-wrap{margin-top:.25rem;height:5px;background:#2e2e4e;border-radius:3px;overflow:hidden}
 #gib-tbar{height:100%;border-radius:3px;transition:width 1s linear,background .5s}
@@ -208,7 +210,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .tf-btn.ok{background:#22c55e !important;border-color:#22c55e !important;color:#fff !important}
 .tf-btn.no{background:#ef4444 !important;border-color:#ef4444 !important;color:#fff !important}
 .tf-btn:disabled{cursor:default}
-.fb{border-radius:12px;padding:.9rem 1.1rem;margin-top:.7rem;font-size:.95rem;font-weight:500;display:none;line-height:1.5}
+.fb{border-radius:12px;padding:.9rem 1.1rem;margin-top:.7rem;font-size:.95rem;font-weight:500;display:none;line-height:1.5;word-break:break-word;overflow-wrap:break-word}
 .fb.show{display:block}
 .fb.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
 .fb.no{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
@@ -870,10 +872,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <div class="scores-wrap" id="scores-wrap" aria-label="Scores" aria-live="polite"></div>
         <div id="game-info-bar" style="display:none" aria-live="polite" aria-atomic="true">
           <div class="gib-row">
-            <span id="gib-turn"></span>
-            <span id="gib-pts" style="display:none"></span>
-            <span id="gib-cat" style="display:none"></span>
-            <span id="gib-timer" style="display:none">1:00</span>
+            <span class="gib-left" id="gib-turn"></span>
+            <div class="gib-right">
+              <span id="gib-pts" style="display:none"></span>
+              <span id="gib-cat" style="display:none"></span>
+              <span id="gib-timer" style="display:none">1:00</span>
+            </div>
           </div>
           <div id="gib-tbar-wrap" style="display:none"><div id="gib-tbar" style="width:100%;background:#22c55e"></div></div>
         </div>
