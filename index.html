@@ -145,6 +145,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 #game-bottom-ad{display:none;flex-shrink:0;background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.5rem;text-align:center;margin-top:.75rem}
 /* Combined info bar: turn + pts + category + timer in one row */
 #game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
+body.in-question #game-info-bar{display:none!important}
 /* Info bar: board mode only — question mode injects into score card instead */
 .gib-row{display:flex;align-items:center;justify-content:center;gap:.6rem;font-size:.85rem;font-weight:600}
 .gib-left{color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1604,7 +1605,7 @@ function getNextQ(pts,catId){
 // ── RENDER BOARD ──
 function renderBoard(){
   G.answered=false;
-  document.body.classList.remove('has-img');
+  document.body.classList.remove('has-img','in-question');
   const t=G.ct;
 
   // Scores
@@ -1682,8 +1683,9 @@ function renderQuestion(q,pts){
   document.getElementById('board-section').style.display='none';
 
   // Inject question info (pts/category/timer) directly into the green score card
+  document.body.classList.add('in-question'); // CSS hides #game-info-bar via body.in-question rule
   const gib=document.getElementById('game-info-bar');
-  if(gib)gib.style.display='none'; // dark bar no longer used in question mode
+  if(gib)gib.style.display='none';
   const sw=document.getElementById('scores-wrap');
   if(sw)sw.style.display=''; // keep score card visible
   const curCard=document.querySelector('.s-card.cur');
