@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You From Here?</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size:16px}
+.screen{display:none;padding:1.5rem;max-width:700px;margin:0 auto}
+.screen.active{display:block}
+.logo-wrap{display:flex;align-items:center;gap:8px;margin-bottom:.2rem}
+.logo-txt{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:3px;color:#1a1a2e;line-height:1}
+.logo-txt span{color:#e8b84b}
+.tagline{font-size:.88rem;color:#6b7280;margin-top:.2rem;margin-bottom:1.25rem}
+.card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1.25rem;margin-bottom:1rem}
+.lbl{display:block;font-size:.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.45rem}
+input{width:100%;padding:.7rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:1rem;color:#1a1a2e;background:#fff;outline:none;transition:border-color .2s;margin-bottom:.5rem}
+input:focus{border-color:#e8b84b}
+.sel-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font-family:'DM Sans',sans-serif;font-weight:600;border-radius:10px;border:2px solid #d1d5db;background:#ffffff;color:#6b7280;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;transition:background .12s,border-color .12s,color .12s;user-select:none}
+.sel-btn:hover{background:#ebebeb;border-color:#9ca3af;color:#374151}
+.sel-btn.on{background:#a6a6a6 !important;border-color:#a6a6a6 !important;color:#ffffff !important}
+.sel-btn.on:hover{background:#8f8f8f !important;border-color:#8f8f8f !important}
+.sel-btn.maxed{opacity:.3;cursor:not-allowed;pointer-events:none}
+.mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:1rem}
+.mode-grid .sel-btn{padding:.9rem;font-size:1rem;width:100%}
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin-bottom:.2rem}
+.cat-grid .sel-btn{padding:.55rem .7rem;font-size:.82rem;font-weight:500;justify-content:flex-start;width:100%}
+.sec-hdr{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#e8b84b;margin:.75rem 0 .35rem;display:flex;align-items:center;gap:.4rem}
+.sec-hdr::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.cat-count{font-size:.73rem;color:#6b7280;margin:.3rem 0 .5rem}
+.tv-row{display:flex;align-items:center;justify-content:space-between;padding:.65rem 0;border-top:1px solid #e5e7eb;margin-top:.25rem}
+.tv-label{font-size:.9rem;font-weight:600}
+.tv-sub{font-size:.75rem;color:#6b7280}
+.tog-sw{position:relative;width:44px;height:24px;cursor:pointer;flex-shrink:0}
+.tog-sw input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:#e5e7eb;border-radius:12px;transition:background .2s}
+.tog-thumb{position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:transform .2s}
+.tog-sw input:checked+.tog-track{background:#e8b84b}
+.tog-sw input:checked~.tog-thumb{transform:translateX(20px)}
+.team-box{background:#f8f7f4;border-radius:12px;padding:1rem;margin-bottom:.75rem;border:2px solid #e5e7eb}
+.team-box:nth-child(1){border-color:#e8b84b55}
+.team-box:nth-child(2){border-color:#4ecdc455}
+.team-box:nth-child(3){border-color:#a78bfa55}
+.team-box:nth-child(4){border-color:#fb923c55}
+.team-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:.65rem}
+.team-lbl{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px}
+.tc0{color:#e8b84b}.tc1{color:#4ecdc4}.tc2{color:#a78bfa}.tc3{color:#fb923c}
+.rm-btn{background:none;border:none;cursor:pointer;color:#6b7280;font-size:.82rem;padding:.2rem .45rem;font-family:'DM Sans',sans-serif}
+.p-row{display:flex;gap:.35rem;margin-bottom:.35rem}
+.p-row input{flex:1;margin-bottom:0;padding:.5rem .7rem;font-size:.85rem}
+.p-rm{background:none;border:none;cursor:pointer;color:#6b7280;font-size:.95rem;padding:.2rem;flex-shrink:0}
+.add-p-btn{background:none;border:1.5px dashed #e5e7eb;color:#6b7280;border-radius:6px;padding:.4rem;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;font-size:.78rem;margin-top:.2rem;transition:all .2s}
+.add-p-btn:hover{border-color:#e8b84b;color:#e8b84b}
+.add-team-btn{background:none;border:1.5px dashed #e5e7eb;color:#6b7280;border-radius:12px;padding:.65rem;cursor:pointer;width:100%;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:center;gap:.35rem;transition:all .2s}
+.add-team-btn:hover{border-color:#e8b84b;color:#e8b84b}
+.rules-btn{width:100%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;color:#1a1a2e;padding:.45rem 0;border-top:1px solid #e5e7eb;margin-top:.65rem}
+.chev{transition:transform .25s;color:#6b7280;font-size:13px;display:inline-block}
+.chev.open{transform:rotate(180deg)}
+.rules-body{display:none;padding-top:.9rem}
+.rules-body.open{display:block}
+.r-intro{font-size:.88rem;font-style:italic;color:#6b7280;margin-bottom:.9rem;line-height:1.6}
+.r-sec{margin-bottom:.85rem}
+.r-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#e8b84b;margin-bottom:.3rem}
+.r-sec p{font-size:.85rem;line-height:1.6}
+.r-pts{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin-top:.4rem}
+.r-pt{border-radius:7px;padding:.45rem .5rem;text-align:center;font-size:.78rem;font-weight:600}
+.pt-e{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.pt-m{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.pt-h{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.r-moves{list-style:none;margin-top:.3rem}
+.r-moves li{font-size:.84rem;line-height:1.6;padding:.18rem 0;display:flex;gap:.4rem}
+.ml{font-weight:700;color:#1a1a2e;white-space:nowrap;min-width:72px}
+.r-div{height:1px;background:#e5e7eb;margin:.65rem 0}
+.r-snap{margin-top:.9rem;padding:.8rem 1rem;background:#f8f7f4;border-radius:8px;border:1px dashed #e5e7eb;font-size:.82rem;color:#6b7280;font-style:italic;line-height:1.6;text-align:center}
+.start-btn{background:#1a1a2e;color:#fff;width:100%;padding:.95rem;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;border:none;margin-top:.5rem;transition:background .15s;display:block;outline:none;letter-spacing:.3px}
+.start-btn:hover{background:#2d3748}
+.err-box{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.9rem 1rem;margin-top:.75rem;font-size:.88rem;color:#991b1b;display:none}
+.err-box.show{display:block}
+.spin{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#e8b84b;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-box{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:2.5rem;text-align:center}
+.g-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.r-lbl{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:1px;color:#6b7280}
+.prog-bar{height:4px;background:#e5e7eb;border-radius:2px;margin-bottom:.75rem}
+.prog-fill{height:100%;background:#e8b84b;border-radius:2px;transition:width .3s}
+.timer-wrap{margin-bottom:.75rem}
+.t-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.t-cat{font-size:.75rem;color:#6b7280;font-style:italic}
+.t-num{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1px}
+.t-bg{height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden}
+.t-bar{height:100%;border-radius:4px;transition:width 1s linear,background .5s}
+.scores-grid{display:grid;gap:.5rem;margin-bottom:.75rem}
+.s-card{border-radius:12px;padding:.7rem 1rem;border:2px solid #e5e7eb;background:#fff;display:flex;justify-content:space-between;align-items:center}
+.s-card.cur{border-color:#a6a6a6;background:#f5f5f5}
+.s-left{display:flex;flex-direction:column;gap:.15rem}
+.s-name{font-weight:700;font-size:.95rem}
+.s-player{font-size:.72rem;color:#6b7280}
+.s-pts{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1}
+.sc0{color:#e8b84b}.sc1{color:#4ecdc4}.sc2{color:#a78bfa}.sc3{color:#fb923c}
+.chips{display:flex;gap:.25rem;margin-top:.25rem}
+.chip{font-size:.65rem;padding:.15rem .4rem;border-radius:4px;font-weight:700;background:#a6a6a6;color:#fff}
+.chip.used{background:#e5e7eb;color:#9ca3af;text-decoration:line-through}
+.turn-bar{border-radius:12px;padding:.7rem 1rem;margin-bottom:.75rem;font-weight:600;font-size:1rem;text-align:center;border:2px solid #a6a6a6;background:#f5f5f5;color:#1a1a2e}
+.steal-bar{background:#fffbf0;border:2px solid #e8b84b;border-radius:12px;padding:.7rem 1rem;margin-bottom:.75rem;font-weight:700;font-size:1rem;text-align:center;color:#1a1a2e}
+.diff-tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:4px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.4rem}
+.de{background:#f0fdf4;color:#166634;border:1px solid #bbf7d0}
+.dm{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.dh{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.pts-tag{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1px;margin-left:.4rem;color:#6b7280}
+.q-cat{font-size:.73rem;font-weight:700;color:#e8b84b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.3rem}
+.q-txt{font-size:1.1rem;font-weight:700;line-height:1.55;margin-bottom:1rem;color:#1a1a2e}
+.acts{display:flex;gap:.4rem;margin-bottom:.75rem;flex-wrap:wrap}
+.act-btn{padding:.5rem .9rem;border-radius:8px;border:2px solid #d1d5db;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;color:#374151;display:flex;align-items:center;gap:.3rem;transition:all .15s;outline:none}
+.act-btn:hover:not(:disabled){background:#ebebeb;border-color:#9ca3af}
+.act-btn:disabled{opacity:.3;cursor:not-allowed}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.opt-btn{padding:.85rem;border-radius:12px;border:2px solid #d1d5db;background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.95rem;font-weight:500;text-align:left;color:#374151;width:100%;transition:all .15s;outline:none}
+.opt-btn:hover:not(:disabled){background:#ebebeb;border-color:#9ca3af}
+.opt-btn.ok{background:#22c55e !important;border-color:#22c55e !important;color:#fff !important;font-weight:700}
+.opt-btn.no{background:#ef4444 !important;border-color:#ef4444 !important;color:#fff !important}
+.opt-btn:disabled{cursor:default}
+.tf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.tf-btn{padding:1.1rem;border-radius:12px;border:2px solid #d1d5db;background:#fff;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#374151;width:100%;transition:all .15s;outline:none}
+.tf-btn:hover:not(:disabled){background:#ebebeb;border-color:#9ca3af}
+.tf-btn.ok{background:#22c55e !important;border-color:#22c55e !important;color:#fff !important}
+.tf-btn.no{background:#ef4444 !important;border-color:#ef4444 !important;color:#fff !important}
+.tf-btn:disabled{cursor:default}
+.fb{border-radius:12px;padding:.9rem 1.1rem;margin-top:.7rem;font-size:.95rem;font-weight:500;display:none;line-height:1.5}
+.fb.show{display:block}
+.fb.ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.fb.no{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.fb.neu{background:#f8f7f4;color:#1a1a2e;border:1px solid #e5e7eb}
+.fb.tout{background:#fff7ed;color:#92400e;border:1px solid #fde68a}
+.share-box{margin-top:.7rem;display:none}
+.share-box.show{display:block}
+.share-card{background:#1a1a2e;color:#fff;border-radius:12px;padding:1.1rem;margin-bottom:.65rem}
+.share-fact{font-size:.95rem;font-weight:600;line-height:1.5;margin-bottom:.65rem}
+.share-city{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;color:#e8b84b}
+.share-brand{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:2px;color:rgba(255,255,255,.35);margin-top:.35rem}
+.share-btn{background:#e8b84b;color:#1a1a2e;border:none;border-radius:8px;padding:.55rem 1.1rem;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.85rem;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;margin-top:.4rem}
+.nxt-btn{width:100%;margin-top:.7rem;background:#1a1a2e;color:#fff;padding:.85rem;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;border:none;display:none;align-items:center;justify-content:center;gap:.4rem;outline:none;transition:background .15s}
+.nxt-btn:hover{background:#2d3748}
+.final{background:#fff;border-radius:12px;border:1px solid #e5e7eb;overflow:hidden;margin-bottom:1rem}
+.f-row{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.25rem;border-bottom:1px solid #e5e7eb}
+.f-row:last-child{border-bottom:none}
+.f-row.win{background:#f5f5f5}
+.f-name{font-weight:700;font-size:1.05rem}
+.f-pts{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:#a6a6a6}
+@media(max-width:480px){.screen{padding:1rem}.cat-grid{grid-template-columns:1fr}.opts{grid-template-columns:1fr}.logo-txt{font-size:2.2rem}}
+@media(min-width:900px){.screen{max-width:780px}.cat-grid{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div id="s-home" class="screen active">
+  <div class="logo-wrap">
+    <svg width="32" height="40" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+    <div class="logo-txt">You From <span>Here?</span></div>
+  </div>
+  <p class="tagline">The hyper-local trivia game for every city in America</p>
+  <div class="card">
+    <div class="lbl">Your city & state</div>
+    <input type="text" id="city-input" placeholder="e.g. Tucson, AZ" />
+    <div class="lbl">College or university <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional — unlocks campus questions)</span></div>
+    <input type="text" id="college-input" placeholder="e.g. University of Arizona" oninput="onCollege()" />
+    <div class="tv-row">
+      <div><div class="tv-label">📺 TV Mode</div><div class="tv-sub">Larger text for big screens</div></div>
+      <label class="tog-sw"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+    </div>
+    <button class="rules-btn" onclick="toggleRules()"><span>ℹ How to play</span><span class="chev" id="chev">▼</span></button>
+    <div class="rules-body" id="rules-body">
+      <p class="r-intro">Think you know your city? Prove it.</p>
+      <div class="r-sec"><div class="r-title">Getting started</div><p>Enter your city, pick your mode, choose your categories and hit Start. Mix national and local — play to your strengths.</p></div>
+      <div class="r-div"></div>
+      <div class="r-sec"><div class="r-title">Timer</div><p>2 minutes per question. Timer stops the moment you answer. Run out of time and the question is marked wrong automatically.</p></div>
+      <div class="r-div"></div>
+      <div class="r-sec"><div class="r-title">Scoring</div>
+        <div class="r-pts"><div class="r-pt pt-e">🟢 Easy · 1pt</div><div class="r-pt pt-m">🟡 Medium · 2pts</div><div class="r-pt pt-h">🔴 Hard · 3pts</div></div>
+      </div>
+      <div class="r-div"></div>
+      <div class="r-sec"><div class="r-title">Your moves</div>
+        <ul class="r-moves">
+          <li><span class="ml">Answer</span><span>Go for it and earn the points.</span></li>
+          <li><span class="ml">Pass</span><span>Other team can steal your points.</span></li>
+          <li><span class="ml">New ?</span><span>Swap for a fresh question. One per team per game.</span></li>
+          <li><span class="ml">Challenge</span><span>Win = full pts +2 bonus. Lose = -1 pt. One per team.</span></li>
+        </ul>
+      </div>
+      <div class="r-div"></div>
+      <div class="r-sec"><div class="r-title">Winning</div><p>Most points when the questions run out wins. Ties are celebrated — you're both locals.</p></div>
+      <div class="r-snap">📸 Rules not sticking? Snap a quick photo before you start — what's one more photo in your library gonna hurt.</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="lbl">Game mode</div>
+    <div class="mode-grid">
+      <button class="sel-btn on" id="btn-solo" onclick="setMode('solo')">👤 Solo</button>
+      <button class="sel-btn" id="btn-teams" onclick="setMode('teams')">👥 Teams</button>
+    </div>
+    <div id="solo-sec">
+      <div class="lbl">Categories <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.85rem">(choose as many as you like)</span></div>
+      <div id="solo-cats"></div>
+    </div>
+    <div id="teams-sec" style="display:none">
+      <div id="teams-list"></div>
+      <button class="add-team-btn" id="add-team-btn" onclick="addTeam()">+ Add team</button>
+    </div>
+  </div>
+  <div class="err-box" id="err-box"></div>
+  <button class="start-btn" onclick="startGame()">▶ Start Game</button>
+</div>
+
+<div id="s-loading" class="screen">
+  <div class="logo-wrap" style="margin-bottom:1.5rem">
+    <svg width="32" height="40" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+    <div class="logo-txt">You From <span>Here?</span></div>
+  </div>
+  <div class="load-box">
+    <div class="spin"></div>
+    <p style="font-weight:700;font-size:1.1rem;margin-bottom:.35rem" id="load-txt">Loading...</p>
+    <p style="color:#6b7280;font-size:.85rem">Generating questions for your city</p>
+  </div>
+</div>
+
+<div id="s-game" class="screen">
+  <div class="g-top">
+    <div class="logo-wrap">
+      <svg width="18" height="24" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+      <div class="logo-txt" style="font-size:1.35rem">You From <span>Here?</span></div>
+    </div>
+    <div class="r-lbl" id="r-lbl">Q 1 of 10</div>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
+  <div class="timer-wrap">
+    <div class="t-lbl"><span class="t-cat" id="t-cat"></span><span class="t-num" id="t-num">2:00</span></div>
+    <div class="t-bg"><div class="t-bar" id="t-bar" style="width:100%;background:#22c55e"></div></div>
+  </div>
+  <div class="scores-grid" id="scores-grid"></div>
+  <div class="turn-bar" id="turn-bar" style="display:none"></div>
+  <div class="steal-bar" id="steal-bar" style="display:none"></div>
+  <div id="q-area"></div>
+</div>
+
+<div id="s-results" class="screen">
+  <div class="logo-wrap" style="margin-bottom:.25rem">
+    <svg width="30" height="38" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+    <div class="logo-txt">You From <span>Here?</span></div>
+  </div>
+  <p class="tagline" id="res-city"></p>
+  <div class="final" id="final"></div>
+  <button class="start-btn" onclick="resetGame()">↺ Play Again</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const NCATS=[{id:'am_music',label:'American Music',icon:'🎵'},{id:'am_sports',label:'American Sports',icon:'🏆'},{id:'am_movies',label:'Movies & TV',icon:'🎬'},{id:'am_books',label:'Books & Authors',icon:'📚'},{id:'am_quotes',label:'American Quotes',icon:'💬'},{id:'am_slang',label:'American Slang',icon:'🗣️'},{id:'am_history',label:'American History',icon:'🇺🇸'}];
+const LCATS=[{id:'loc_landmarks',label:'Local Landmarks',icon:'📍'},{id:'loc_food',label:'Local Food',icon:'🍽️'},{id:'loc_rights',label:'Know Your Rights',icon:'⚖️'},{id:'loc_history',label:'Local History',icon:'🏛️'},{id:'loc_slang',label:'Local Slang',icon:'💭'}];
+const COL_CAT={id:'college',label:'College Life',icon:'🎓'};
+const ALL=[...NCATS,...LCATS,COL_CAT];
+const SCOLS=['sc0','sc1','sc2','sc3'];
+const TMAX=120;
+let G={city:'',college:'',mode:'solo',teams:[],solo:[],qs:[],qi:0,answered:false,ct:0,stealing:false,scores:[],newq:[],chal:[],mi:[]};
+let tc=0,tmr=null,tLeft=TMAX,actx=null,colOn=false;
+
+function au(){if(!actx)try{actx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}return actx;}
+function tone(f,d,t='sine',v=.3){try{const a=au();if(!a)return;const o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d);o.start();o.stop(a.currentTime+d);}catch(e){}}
+function sOk(){tone(523,.1);setTimeout(()=>tone(659,.1),100);setTimeout(()=>tone(784,.2),200);}
+function sNo(){tone(200,.15,'sawtooth',.2);setTimeout(()=>tone(150,.2,'sawtooth',.15),150);}
+function sTick(){tone(880,.05,'square',.1);}
+function sOut(){tone(220,.3,'sawtooth',.2);setTimeout(()=>tone(180,.4,'sawtooth',.15),300);}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function showErr(msg){const e=document.getElementById('err-box');e.textContent='⚠ '+msg;e.className='err-box show';setTimeout(()=>e.className='err-box',6000);}
+function toggleRules(){document.getElementById('rules-body').classList.toggle('open');document.getElementById('chev').classList.toggle('open');}
+function onCollege(){const v=document.getElementById('college-input').value.trim();const was=colOn;colOn=v.length>0;G.college=v;if(colOn!==was){buildSolo();document.querySelectorAll('.team-box').forEach(b=>buildTeamCats(b,+b.dataset.idx));}}
+function getCats(){return colOn?[...NCATS,...LCATS,COL_CAT]:[...NCATS,...LCATS];}
+function setMode(m){G.mode=m;document.getElementById('btn-solo').className='sel-btn'+(m==='solo'?' on':'');document.getElementById('btn-teams').className='sel-btn'+(m==='teams'?' on':'');document.getElementById('solo-sec').style.display=m==='solo'?'block':'none';document.getElementById('teams-sec').style.display=m==='teams'?'block':'none';}
+
+function buildSolo(){
+  const c=document.getElementById('solo-cats');c.innerHTML='';
+  const cats=getCats();
+  const nat=cats.filter(x=>NCATS.find(n=>n.id===x.id));
+  const loc=cats.filter(x=>!NCATS.find(n=>n.id===x.id));
+  function sec(list,label){
+    const h=document.createElement('div');h.className='sec-hdr';h.textContent=label;c.appendChild(h);
+    const g=document.createElement('div');g.className='cat-grid';
+    list.forEach(cat=>{
+      const b=document.createElement('button');
+      b.className='sel-btn'+(G.solo.includes(cat.id)?' on':'');
+      b.innerHTML='<span>'+cat.icon+'</span><span>'+cat.label+'</span>';
+      b.addEventListener('click',()=>{G.solo=G.solo.includes(cat.id)?G.solo.filter(x=>x!==cat.id):[...G.solo,cat.id];b.className='sel-btn'+(G.solo.includes(cat.id)?' on':'');});
+      g.appendChild(b);
+    });
+    c.appendChild(g);
+  }
+  sec(nat,'National');
+  sec(loc,'Local'+(colOn?' & College':''));
+}
+
+function addTeam(){
+  if(document.querySelectorAll('.team-box').length>=4)return;
+  const idx=tc++;const list=document.getElementById('teams-list');
+  const div=document.createElement('div');div.className='team-box';div.dataset.idx=String(idx);
+  const ltr=String.fromCharCode(65+idx);const cols=['tc0','tc1','tc2','tc3'];
+  div.innerHTML='<div class="team-hdr"><span class="team-lbl '+cols[idx%4]+'">Team '+ltr+'</span>'+(idx>=2?'<button class="rm-btn" onclick="this.closest(\'.team-box\').remove();updAddBtn()">✕ Remove</button>':'')+'</div><input type="text" class="tname" placeholder="Team name (optional)" style="margin-bottom:.4rem"/><div class="lbl" style="font-size:.72rem;margin-bottom:.3rem">Players</div><div class="plist"></div><button class="add-p-btn" onclick="addP(this)">+ Add player</button><div style="margin-top:.65rem"><div class="lbl" style="font-size:.72rem;margin-bottom:.25rem">Pick 3 categories</div><div class="tcat-wrap"></div><div class="cat-count" id="cc-'+idx+'">0 / 3 selected</div></div>';
+  list.appendChild(div);addPTo(div.querySelector('.plist'));addPTo(div.querySelector('.plist'));buildTeamCats(div,idx);updAddBtn();
+}
+function updAddBtn(){document.getElementById('add-team-btn').style.display=document.querySelectorAll('.team-box').length>=4?'none':'flex';}
+function addP(btn){addPTo(btn.previousElementSibling);}
+function addPTo(list){const n=list.children.length+1;const r=document.createElement('div');r.className='p-row';r.innerHTML='<input type="text" placeholder="Player '+n+'" style="margin-bottom:0"/><button class="p-rm" onclick="this.parentElement.remove()">✕</button>';list.appendChild(r);}
+function getPicked(wrap){return Array.from(wrap.querySelectorAll('.sel-btn.on')).map(b=>b.dataset.id);}
+
+function buildTeamCats(section,idx){
+  const wrap=section.querySelector('.tcat-wrap');if(!wrap)return;
+  const prev=getPicked(wrap);wrap.innerHTML='';
+  const cats=getCats();
+  const nat=cats.filter(x=>NCATS.find(n=>n.id===x.id));
+  const loc=cats.filter(x=>!NCATS.find(n=>n.id===x.id));
+  function sec(list,label){
+    const h=document.createElement('div');h.className='sec-hdr';h.style.fontSize='.63rem';h.textContent=label;wrap.appendChild(h);
+    const g=document.createElement('div');g.className='cat-grid';
+    list.forEach(cat=>{
+      const isPicked=prev.includes(cat.id);
+      const isMax=!isPicked&&prev.length>=3;
+      const b=document.createElement('button');
+      b.className='sel-btn'+(isPicked?' on':'')+(isMax?' maxed':'');
+      b.dataset.id=cat.id;
+      b.innerHTML='<span>'+cat.icon+'</span><span>'+cat.label+'</span>';
+      if(!isMax){
+        b.addEventListener('click',function(){
+          const picked=getPicked(wrap);
+          if(this.classList.contains('on')){this.classList.remove('on');}
+          else{if(picked.length>=3)return;this.classList.add('on');}
+          const now=getPicked(wrap);
+          wrap.querySelectorAll('.sel-btn').forEach(x=>{if(!x.classList.contains('on'))x.className='sel-btn'+(now.length>=3?' maxed':'');});
+          const cc=document.getElementById('cc-'+idx);if(cc)cc.textContent=now.length+' / 3 selected';
+        });
+      }
+      g.appendChild(b);
+    });
+    wrap.appendChild(g);
+  }
+  sec(nat,'National');sec(loc,'Local'+(colOn?' & College':''));
+  const cc=document.getElementById('cc-'+idx);if(cc)cc.textContent=prev.length+' / 3 selected';
+}
+
+function startGame(){
+  document.getElementById('err-box').className='err-box';
+  G.city=document.getElementById('city-input').value.trim();
+  G.college=document.getElementById('college-input').value.trim();
+  if(!G.city){showErr('Please enter your city and state!');return;}
+  if(G.mode==='solo'){
+    if(!G.solo.length){showErr('Please select at least one category!');return;}
+    G.teams=[{name:'You',players:['Solo'],cats:[...G.solo]}];
+  } else {
+    const boxes=document.querySelectorAll('.team-box');
+    if(boxes.length<2){showErr('Add at least 2 teams!');return;}
+    G.teams=[];let ok=true;
+    boxes.forEach((box,i)=>{if(!ok)return;const name=box.querySelector('.tname').value.trim()||'Team '+String.fromCharCode(65+i);const players=Array.from(box.querySelectorAll('.plist input')).map((inp,j)=>inp.value.trim()||'Player '+(j+1));const cats=getPicked(box.querySelector('.tcat-wrap'));if(cats.length<3){showErr(name+' needs to pick 3 categories!');ok=false;return;}G.teams.push({name,players,cats});});
+    if(!ok)return;
+  }
+  G.scores=G.teams.map(()=>0);G.newq=G.teams.map(()=>true);G.chal=G.teams.map(()=>true);G.mi=G.teams.map(()=>0);
+  G.qi=0;G.ct=0;G.answered=false;G.stealing=false;
+  document.getElementById('load-txt').textContent='Loading '+G.city+'...';
+  show('s-loading');
+  genQs().then(qs=>{G.qs=qs;show('s-game');renderQ();}).catch(e=>{console.error('Error:',e);show('s-home');showErr('Error: '+e.message);});
+}
+
+async function genQs(){
+  const cats=[...new Set(G.teams.flatMap(t=>t.cats))];
+  const labels=cats.map(id=>ALL.find(c=>c.id===id)?.label).filter(Boolean).join(', ');
+  const cNote=G.college?'Include 2 questions specifically about '+G.college+'.':'';
+  const prompt='Create a trivia game for '+G.city+'. Categories: '+labels+'. '+cNote+'\nGenerate exactly 10 questions: 3 easy (1pt), 4 medium (2pt), 3 hard (3pt).\nFormat: 7 multiple choice (4 options each), 3 true/false.\nNational categories = well-known American facts. Local = specific to '+G.city+'.\nFor American Quotes: show a real famous quote, give exactly 3 options for who said it.\nFor Know Your Rights: real local/state laws for '+G.city+'.\nMark genuinely surprising facts with surprising:true.\nRespond with ONLY a JSON object. No markdown. Start with { end with }.\n{"questions":[{"type":"mc","category":"Name","difficulty":"easy","points":1,"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false},{"type":"tf","category":"Name","difficulty":"hard","points":3,"question":"Statement","answer":"true","explanation":"fact.","surprising":true}]}';
+  const response=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:prompt}]})});
+  if(!response.ok){const e=await response.json().catch(()=>({}));throw new Error(e?.error?.message||'HTTP '+response.status);}
+  const data=await response.json();
+  if(!data.content?.[0]?.text)throw new Error('No content in response');
+  let txt=data.content[0].text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+  const s=txt.indexOf('{'),e=txt.lastIndexOf('}');
+  if(s<0||e<0)throw new Error('No JSON found');
+  const parsed=JSON.parse(txt.slice(s,e+1));
+  if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error('No questions');
+  return parsed.questions;
+}
+
+function startTmr(){clearInterval(tmr);tLeft=TMAX;updTmr();tmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=10&&tLeft>0)sTick();if(tLeft<=0){clearInterval(tmr);doTimeout();}},1000);}
+function stopTmr(){clearInterval(tmr);}
+function updTmr(){const m=Math.floor(tLeft/60),s=tLeft%60;document.getElementById('t-num').textContent=m+':'+(s<10?'0':'')+s;const pct=(tLeft/TMAX)*100;const bar=document.getElementById('t-bar');bar.style.width=pct+'%';bar.style.background=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';}
+function doTimeout(){if(G.answered)return;G.answered=true;sOut();const q=G.qs[G.qi];document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer||b.textContent.toLowerCase()===q.answer.toLowerCase())b.classList.add('ok');});const fb=document.getElementById('fb');if(fb){fb.className='fb show tout';fb.textContent='⏱ Time\'s up! Answer: '+q.answer+'. '+q.explanation;}const nb=document.getElementById('nb');if(nb)nb.style.display='flex';}
+
+function renderQ(){
+  if(G.qi>=G.qs.length){showResults();return;}
+  G.answered=false;const t=G.ct,q=G.qs[G.qi];
+  document.getElementById('prog').style.width=Math.round((G.qi/G.qs.length)*100)+'%';
+  document.getElementById('r-lbl').textContent='Q '+(G.qi+1)+' of '+G.qs.length;
+  document.getElementById('t-cat').textContent=q.category;
+  const sg=document.getElementById('scores-grid');sg.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
+  sg.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t?'cur':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div><div class="chips"><span class="chip '+(G.newq[i]?'':'used')+'">New ?</span><span class="chip '+(G.chal[i]?'':'used')+'">Challenge</span></div></div><div class="s-pts '+SCOLS[i%4]+'">'+G.scores[i]+'</div></div>').join('');
+  const tb=document.getElementById('turn-bar');
+  if(G.mode==='solo'){tb.style.display='none';}else{tb.style.display='block';const mem=G.teams[t].players[G.mi[t]%G.teams[t].players.length];tb.textContent=G.stealing?G.teams[t].name+' — Steal opportunity!':G.teams[t].name+'\'s turn · '+mem+' answering';}
+  document.getElementById('steal-bar').style.display='none';
+  const dc={easy:'de',medium:'dm',hard:'dh'}[q.difficulty]||'de';
+  const dl={easy:'Easy',medium:'Medium',hard:'Hard'}[q.difficulty]||'Easy';
+  const ti=G.mode==='solo'?0:t;const nqU=!G.newq[ti],chU=!G.chal[ti];
+  let acts='';
+  if(G.mode==='solo'){acts='<div class="acts"><button class="act-btn" '+(nqU?'disabled':'')+' onclick="doNewQ()">↺ New ?'+(nqU?' (used)':'')+'</button><button class="act-btn" '+(chU?'disabled':'')+' onclick="doChallenge()">⚡ Challenge'+(chU?' (used)':'')+'</button></div>';}
+  else if(!G.stealing){acts='<div class="acts"><button class="act-btn" onclick="doPass()">→ Pass</button><button class="act-btn" '+(nqU?'disabled':'')+' onclick="doNewQ()">↺ New ?'+(nqU?' (used)':'')+'</button><button class="act-btn" '+(chU?'disabled':'')+' onclick="doChallenge()">⚡ Challenge'+(chU?' (used)':'')+'</button></div>';}
+  let ans='';
+  if(q.type==='mc'){ans='<div class="opts">'+(q.options||[]).map(o=>{const se=o.replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');const sa=(q.answer||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');const sx=(q.explanation||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\n/g,' ');return '<button class="opt-btn" onclick="ansM(this,\''+se+'\',\''+sa+'\','+q.points+',\''+sx+'\','+!!q.surprising+')">'+o+'</button>';}).join('')+'</div>';}
+  else{const sx=(q.explanation||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\n/g,' ');ans='<div class="tf-grid"><button class="tf-btn" onclick="ansT(this,\'true\',\''+q.answer+'\','+q.points+',\''+sx+'\','+!!q.surprising+')">True</button><button class="tf-btn" onclick="ansT(this,\'false\',\''+q.answer+'\','+q.points+',\''+sx+'\','+!!q.surprising+')">False</button></div>';}
+  document.getElementById('q-area').innerHTML='<div class="card"><div style="display:flex;align-items:center;margin-bottom:.4rem"><span class="diff-tag '+dc+'">'+dl+'</span><span class="pts-tag">'+q.points+' pt'+(q.points>1?'s':'')+'</span></div><div class="q-cat">'+q.category+'</div><div class="q-txt">'+q.question+'</div>'+acts+ans+'<div class="fb" id="fb"></div><div class="share-box" id="sbox"></div><button class="nxt-btn" id="nb" onclick="nextQ()">Next question →</button></div>';
+  startTmr();
+}
+
+function ansM(btn,chosen,correct,pts,exp,surp){if(G.answered)return;G.answered=true;stopTmr();document.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===correct)b.classList.add('ok');});if(chosen!==correct)btn.classList.add('no');resolve(chosen===correct,pts,exp,surp);}
+function ansT(btn,chosen,correct,pts,exp,surp){if(G.answered)return;G.answered=true;stopTmr();document.querySelectorAll('.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.toLowerCase()===correct.toLowerCase())b.classList.add('ok');});if(chosen!==correct)btn.classList.add('no');resolve(chosen===correct,pts,exp,surp);}
+function resolve(ok,pts,exp,surp){const t=G.ct;if(ok){G.scores[t]+=pts;G.mi[t]++;sOk();}else sNo();const fb=document.getElementById('fb');fb.className='fb show '+(ok?'ok':'no');fb.textContent=(ok?'✓ Correct! +'+pts+' pt'+(pts>1?'s':'')+'. ':'✗ Not quite. ')+exp;if(surp&&ok)showShare(exp);document.getElementById('nb').style.display='flex';G.stealing=false;updScores();}
+function showShare(fact){const b=document.getElementById('sbox');b.className='share-box show';const sf=fact.replace(/\\/g,'\\\\').replace(/'/g,"\\'");b.innerHTML='<div class="share-card"><div class="share-fact">"'+fact+'"</div><div class="share-city">'+G.city+'</div><div id="qr-el" style="margin-top:.5rem;background:#fff;display:inline-block;padding:4px;border-radius:4px"></div><div class="share-brand">youfromhere.com</div></div><button class="share-btn" onclick="cpFact(\''+sf+'\')">📤 Share this fact</button>';try{new QRCode(document.getElementById('qr-el'),{text:'https://youfromhere.com',width:64,height:64,colorDark:'#1a1a2e',colorLight:'#fff'});}catch(e){}}
+function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.com';navigator.clipboard.writeText(t).then(()=>alert('Copied!')).catch(()=>alert(t));}
+function doPass(){if(G.answered)return;G.stealing=true;G.ct=(G.ct+1)%G.teams.length;const pts=G.qs[G.qi].points;const sb=document.getElementById('steal-bar');sb.style.display='block';sb.textContent=G.teams[G.ct].name+' — can you steal '+pts+' pt'+(pts>1?'s':'')+'?';renderQ();}
+function doNewQ(){const t=G.mode==='solo'?0:G.ct;if(!G.newq[t])return;G.newq[t]=false;stopTmr();G.qs.splice(G.qi,1);if(G.qi>=G.qs.length){showResults();return;}G.stealing=false;renderQ();}
+async function doChallenge(){const t=G.mode==='solo'?0:G.ct;if(!G.chal[t]||G.answered)return;G.chal[t]=false;G.answered=true;stopTmr();const q=G.qs[G.qi];const fb=document.getElementById('fb');fb.className='fb show neu';fb.textContent='⚡ Checking your challenge...';try{const r=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:200,messages:[{role:'user',content:'Is this trivia answer correct? Q: "'+q.question+'" A: "'+q.answer+'" '+(q.options?'Options: '+q.options.join(', '):'')+' Reply JSON only: {"correct":true,"explanation":"one sentence"}'}]})});const d=await r.json();let txt=d.content[0].text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();const res=JSON.parse(txt);if(!res.correct){G.scores[t]+=q.points+2;sOk();fb.className='fb show ok';fb.textContent='✓ Challenge won! +'+(q.points+2)+' pts. '+res.explanation;}else{G.scores[t]=Math.max(0,G.scores[t]-1);sNo();fb.className='fb show no';fb.textContent='✗ Challenge failed. -1pt. '+res.explanation;}document.getElementById('nb').style.display='flex';updScores();}catch(e){fb.className='fb show neu';fb.textContent='Challenge could not be processed.';document.getElementById('nb').style.display='flex';}}
+function updScores(){document.querySelectorAll('.s-pts').forEach((el,i)=>{if(G.scores[i]!==undefined)el.textContent=G.scores[i];});}
+function nextQ(){stopTmr();G.qi++;if(G.mode!=='solo')G.ct=(G.ct+1)%G.teams.length;G.stealing=false;if(G.qi>=G.qs.length){showResults();return;}renderQ();}
+function showResults(){stopTmr();document.getElementById('res-city').textContent='Final scores — '+G.city;const sorted=[...G.teams.map((t,i)=>({name:t.name,score:G.scores[i]}))].sort((a,b)=>b.score-a.score);const max=sorted[0].score;document.getElementById('final').innerHTML=sorted.map((t,i)=>'<div class="f-row '+(i===0?'win':'')+'"><div class="f-name">'+(i===0&&G.mode!=='solo'?'🏆 ':'')+t.name+'</div><div class="f-pts">'+t.score+' pts</div></div>').join('')+(G.mode!=='solo'&&sorted.filter(t=>t.score===max).length>1?'<div class="f-row"><div style="color:#6b7280;font-size:.85rem">It\'s a tie! 🤝</div></div>':'');show('s-results');}
+function resetGame(){stopTmr();G.solo=[];tc=0;colOn=false;G.college='';document.getElementById('college-input').value='';document.getElementById('city-input').value='';document.getElementById('teams-list').innerHTML='';setMode('solo');buildSolo();addTeam();addTeam();show('s-home');}
+
+buildSolo();setMode('solo');addTeam();addTeam();
+</script>
+</body>
+</html>

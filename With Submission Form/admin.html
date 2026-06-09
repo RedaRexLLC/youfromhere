@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You From Here? — Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size:15px}
+.top-bar{background:#1a1a2e;padding:.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between}
+.top-bar-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#fff}
+.top-bar-logo span{color:#e8b84b}
+.top-bar-right{font-size:.8rem;color:rgba(255,255,255,.5)}
+.wrap{max-width:900px;margin:0 auto;padding:1.5rem}
+.card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1.25rem;margin-bottom:1.25rem}
+h2{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px;color:#1a1a2e;margin-bottom:1rem}
+h3{font-size:.95rem;font-weight:700;margin-bottom:.75rem;color:#1a1a2e}
+.lbl{display:block;font-size:.72rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem;margin-top:.65rem}
+input,select,textarea{width:100%;padding:.65rem 1rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;color:#1a1a2e;background:#fff;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:#e8b84b}
+textarea{height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem}
+.btn{padding:.7rem 1.5rem;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.9rem;cursor:pointer;border:none;transition:all .15s;outline:none}
+.btn-primary{background:#1a1a2e;color:#fff}.btn-primary:hover{background:#2d3748}
+.btn-success{background:#22c55e;color:#fff}.btn-success:hover{background:#16a34a}
+.btn-danger{background:#ef4444;color:#fff;font-size:.78rem;padding:.4rem .8rem}.btn-danger:hover{background:#dc2626}
+.btn-sm{padding:.4rem .85rem;font-size:.78rem}
+.tag{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:4px;font-size:.7rem;font-weight:700;text-transform:uppercase}
+.tag-e{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.tag-m{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+.tag-h{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.35rem}
+.alert{padding:.75rem 1rem;border-radius:8px;font-size:.88rem;font-weight:500;margin-bottom:1rem;display:none}
+.alert.show{display:block}
+.alert-ok{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.alert-err{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.q-table{width:100%;border-collapse:collapse;font-size:.83rem}
+.q-table th{text-align:left;padding:.5rem .75rem;font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:#6b7280;border-bottom:2px solid #e5e7eb;background:#f8f7f4}
+.q-table td{padding:.65rem .75rem;border-bottom:1px solid #e5e7eb;vertical-align:top}
+.q-table tr:hover td{background:#fafaf9}
+.q-txt{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.25rem}
+.stat-card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1rem;text-align:center}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:#e8b84b;line-height:1}
+.stat-lbl{font-size:.75rem;color:#6b7280;margin-top:.2rem}
+.login-wrap{max-width:400px;margin:4rem auto;padding:1.5rem}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:3px;text-align:center;margin-bottom:.25rem}
+.login-sub{text-align:center;color:#6b7280;font-size:.85rem;margin-bottom:1.5rem}
+.tab-bar{display:flex;gap:.5rem;margin-bottom:1.25rem;border-bottom:2px solid #e5e7eb;padding-bottom:0}
+.tab{padding:.6rem 1rem;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.88rem;cursor:pointer;border:none;background:none;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active{color:#1a1a2e;border-bottom-color:#e8b84b}
+.tab-content{display:none}.tab-content.active{display:block}
+.filter-row{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;align-items:flex-end}
+.filter-row select,.filter-row input{width:auto;flex:1;min-width:120px}
+.pagination{display:flex;gap:.35rem;margin-top:1rem;align-items:center;justify-content:flex-end}
+.page-btn{padding:.35rem .65rem;border-radius:6px;border:1.5px solid #e5e7eb;background:#fff;cursor:pointer;font-size:.8rem;font-family:'DM Sans',sans-serif;font-weight:600;color:#374151}
+.page-btn.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #e5e7eb;border-top-color:#e8b84b;border-radius:50%;animation:spin .6s linear infinite;margin-right:.4rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.row,.row-3,.stats-grid{grid-template-columns:1fr}.opts-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="top-bar"><div class="top-bar-logo">You From <span>Here?</span></div></div>
+  <div class="login-wrap">
+    <div class="login-title">Admin</div>
+    <div class="login-sub">You From Here? Question Management</div>
+    <div class="card">
+      <div class="lbl">Password</div>
+      <input type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div style="margin-top:.75rem">
+        <button class="btn btn-primary" style="width:100%" onclick="doLogin()">Sign In →</button>
+      </div>
+      <div class="alert alert-err" id="login-err" style="margin-top:.75rem">Incorrect password.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen" style="display:none">
+  <div class="top-bar">
+    <div class="top-bar-logo">You From <span>Here?</span> <span style="color:rgba(255,255,255,.4);font-size:.8rem;letter-spacing:1px;margin-left:.5rem">ADMIN</span></div>
+    <div class="top-bar-right">Logged in · <a href="#" onclick="doLogout()" style="color:#e8b84b;text-decoration:none">Sign out</a></div>
+  </div>
+
+  <div class="wrap">
+    <div class="alert alert-ok" id="alert-ok"></div>
+    <div class="alert alert-err" id="alert-err"></div>
+
+    <!-- STATS -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-lbl">Total Questions</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-cities">—</div><div class="stat-lbl">Cities Covered</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-easy">—</div><div class="stat-lbl">Easy Questions</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-hard">—</div><div class="stat-lbl">Hard Questions</div></div>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('add')">➕ Add Question</button>
+      <button class="tab" onclick="switchTab('browse')">📋 Browse Questions</button>
+      <button class="tab" onclick="switchTab('pending')" id="tab-pending-btn">⏳ Pending <span id="pending-count" style="background:#ef4444;color:#fff;border-radius:10px;padding:.1rem .4rem;font-size:.65rem;margin-left:.25rem;display:none">0</span></button>
+    </div>
+
+    <!-- ADD QUESTION -->
+    <div id="tab-add" class="tab-content active">
+      <div class="card">
+        <h2>Add a Question</h2>
+        <div class="row">
+          <div>
+            <div class="lbl">Location / City</div>
+            <input type="text" id="q-location" placeholder="e.g. Tucson, AZ or United States"/>
+          </div>
+          <div>
+            <div class="lbl">Game Mode</div>
+            <select id="q-gamemode">
+              <option value="local">📍 Local</option>
+              <option value="national">🇺🇸 National</option>
+              <option value="world">🌍 World</option>
+            </select>
+          </div>
+        </div>
+        <div class="row-3">
+          <div>
+            <div class="lbl">Category</div>
+            <select id="q-category">
+              <option>American Music</option>
+              <option>American Sports</option>
+              <option>Movies & TV</option>
+              <option>Books & Authors</option>
+              <option>American Quotes</option>
+              <option>American Slang</option>
+              <option>American History</option>
+              <option>American Government</option>
+              <option>Local Landmarks</option>
+              <option>Local Food</option>
+              <option>Know Your Rights</option>
+              <option>Local History</option>
+              <option>Local Slang</option>
+              <option>You Know This Place?</option>
+              <option>Can You Spot It?</option>
+              <option>World Religions</option>
+              <option>College Life</option>
+            </select>
+          </div>
+          <div>
+            <div class="lbl">Difficulty</div>
+            <select id="q-difficulty" onchange="updPoints()">
+              <option value="easy">🟢 Easy (1pt)</option>
+              <option value="medium">🟡 Medium (2pts)</option>
+              <option value="hard">🔴 Hard (3pts)</option>
+            </select>
+          </div>
+          <div>
+            <div class="lbl">Type</div>
+            <select id="q-type" onchange="toggleType()">
+              <option value="mc">Multiple Choice</option>
+              <option value="tf">True / False</option>
+            </select>
+          </div>
+        </div>
+        <div class="lbl">Question</div>
+        <textarea id="q-question" placeholder="Type the question here..."></textarea>
+        <div id="mc-options">
+          <div class="lbl">Answer Options</div>
+          <div class="opts-grid">
+            <input type="text" id="q-opt-a" placeholder="Option A"/>
+            <input type="text" id="q-opt-b" placeholder="Option B"/>
+            <input type="text" id="q-opt-c" placeholder="Option C"/>
+            <input type="text" id="q-opt-d" placeholder="Option D"/>
+          </div>
+        </div>
+        <div class="lbl">Correct Answer</div>
+        <input type="text" id="q-answer" placeholder="Type the exact correct answer"/>
+        <div class="lbl">Explanation <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(shown after answer)</span></div>
+        <textarea id="q-explanation" placeholder="Fun fact or explanation..."></textarea>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-top:.75rem">
+          <input type="checkbox" id="q-surprising" style="width:auto"/>
+          <label for="q-surprising" style="font-size:.85rem;color:#6b7280">Mark as surprising fact (shows share card)</label>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.5rem">
+          <button class="btn btn-success" onclick="saveQuestion()">💾 Save Question</button>
+          <button class="btn btn-primary" style="background:#f8f7f4;color:#6b7280;border:1.5px solid #e5e7eb" onclick="clearForm()">Clear</button>
+        </div>
+      </div>
+
+      <!-- BULK GENERATE -->
+      <div class="card">
+        <h2>Bulk Generate via Claude</h2>
+        <p style="font-size:.85rem;color:#6b7280;margin-bottom:1rem">Generate a batch of questions for a city and save them all to the database automatically.</p>
+        <div class="row">
+          <div>
+            <div class="lbl">Location</div>
+            <input type="text" id="bulk-location" placeholder="e.g. San Antonio, TX"/>
+          </div>
+          <div>
+            <div class="lbl">Game Mode</div>
+            <select id="bulk-gamemode">
+              <option value="local">📍 Local</option>
+              <option value="national">🇺🇸 National</option>
+              <option value="world">🌍 World</option>
+            </select>
+          </div>
+        </div>
+        <div class="lbl">Questions per difficulty (Easy / Medium / Hard)</div>
+        <div class="row-3">
+          <input type="number" id="bulk-easy" value="10" min="1" max="30" placeholder="Easy"/>
+          <input type="number" id="bulk-medium" value="10" min="1" max="30" placeholder="Medium"/>
+          <input type="number" id="bulk-hard" value="10" min="1" max="30" placeholder="Hard"/>
+        </div>
+        <div style="margin-top:1rem">
+          <button class="btn btn-primary" onclick="bulkGenerate()" id="bulk-btn">⚡ Generate & Save to Database</button>
+        </div>
+        <div id="bulk-progress" style="display:none;margin-top:.75rem">
+          <div style="background:#e5e7eb;border-radius:4px;height:6px;overflow:hidden;margin-bottom:.5rem">
+            <div id="bulk-prog-fill" style="height:100%;background:#e8b84b;border-radius:4px;transition:width .5s;width:0%"></div>
+          </div>
+          <div id="bulk-status" style="font-size:.83rem;color:#6b7280"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PENDING SUBMISSIONS -->
+    <div id="tab-pending" class="tab-content">
+      <div class="card">
+        <h2>Pending Submissions</h2>
+        <p style="font-size:.85rem;color:#6b7280;margin-bottom:1rem">Questions submitted by players. Review, approve or reject each one.</p>
+        <div id="pending-list"><p style="color:#9ca3af;text-align:center;padding:2rem">Loading...</p></div>
+      </div>
+    </div>
+
+    <!-- BROWSE QUESTIONS -->
+    <div id="tab-browse" class="tab-content">
+      <div class="card">
+        <h2>Browse Questions</h2>
+        <div class="filter-row">
+          <div>
+            <div class="lbl">Search</div>
+            <input type="text" id="filter-search" placeholder="Search questions..." oninput="loadQuestions()"/>
+          </div>
+          <div>
+            <div class="lbl">Difficulty</div>
+            <select id="filter-diff" onchange="loadQuestions()">
+              <option value="">All</option>
+              <option value="easy">Easy</option>
+              <option value="medium">Medium</option>
+              <option value="hard">Hard</option>
+            </select>
+          </div>
+          <div>
+            <div class="lbl">Game Mode</div>
+            <select id="filter-mode" onchange="loadQuestions()">
+              <option value="">All</option>
+              <option value="local">Local</option>
+              <option value="national">National</option>
+              <option value="world">World</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:flex-end">
+            <button class="btn btn-primary btn-sm" onclick="loadQuestions()">🔍 Search</button>
+          </div>
+        </div>
+        <div id="q-table-wrap">
+          <table class="q-table">
+            <thead><tr><th>Question</th><th>Location</th><th>Category</th><th>Diff</th><th>Used</th><th></th></tr></thead>
+            <tbody id="q-tbody"><tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem">Click Search to load questions</td></tr></tbody>
+          </table>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL='https://mukasqppyafjdhujoapl.supabase.co';
+const SUPABASE_KEY='sb_secret_MYOkA-yV75McUyGiJARGMg_9qzOkpry';
+const ADMIN_PASSWORD='YouFromHere2025!';
+let currentPage=0;const PAGE_SIZE=20;
+
+function doLogin(){
+  const pw=document.getElementById('pw-input').value;
+  if(pw===ADMIN_PASSWORD){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-screen').style.display='block';
+    loadStats();
+  } else {
+    document.getElementById('login-err').className='alert alert-err show';
+  }
+}
+function doLogout(){
+  document.getElementById('admin-screen').style.display='none';
+  document.getElementById('login-screen').style.display='block';
+  document.getElementById('pw-input').value='';
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='browse')loadQuestions();
+  if(t==='pending')loadPending();
+}
+
+async function loadPending(){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?pending=eq.true&order=created_at.desc`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  const data=await r.json();
+  const el=document.getElementById('pending-list');
+  const badge=document.getElementById('pending-count');
+  if(data.length){badge.style.display='inline';badge.textContent=data.length;}
+  else{badge.style.display='none';}
+  if(!data.length){el.innerHTML='<p style="color:#9ca3af;text-align:center;padding:2rem">No pending submissions 🎉</p>';return;}
+  el.innerHTML=data.map(q=>`
+    <div style="border:1px solid #e5e7eb;border-radius:10px;padding:1rem;margin-bottom:.75rem;background:#fff">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;flex-wrap:wrap">
+        <div style="flex:1">
+          <div style="font-size:.7rem;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.25rem">${q.location||'Unknown'} · ${q.category||'—'} · Submitted by ${q.submitted_by||'Anonymous'}</div>
+          <div style="font-weight:700;font-size:.95rem;margin-bottom:.35rem">${q.question}</div>
+          <div style="font-size:.85rem;color:#166534"><strong>Answer:</strong> ${q.answer}</div>
+          ${q.explanation?`<div style="font-size:.82rem;color:#6b7280;margin-top:.2rem">${q.explanation}</div>`:''}
+        </div>
+        <div style="display:flex;gap:.35rem;flex-shrink:0">
+          <button class="btn btn-success btn-sm" onclick="approveQ(${q.id})">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" onclick="rejectQ(${q.id})">✗ Reject</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function approveQ(id){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`,{method:'PATCH',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify({pending:false})});
+  if(r.ok){showAlert('✅ Question approved and added to the game!');loadPending();loadStats();}
+  else showAlert('Error approving.','err');
+}
+
+async function rejectQ(id){
+  if(!confirm('Reject and delete this submission?'))return;
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  if(r.ok){showAlert('Submission rejected and deleted.');loadPending();}
+  else showAlert('Error rejecting.','err');
+}
+
+function showAlert(msg,type='ok'){
+  const el=document.getElementById('alert-'+type);el.textContent=msg;el.className='alert alert-'+(type==='ok'?'ok':'err')+' show';
+  setTimeout(()=>el.className='alert alert-'+(type==='ok'?'ok':'err'),4000);
+}
+
+function toggleType(){
+  const isMC=document.getElementById('q-type').value==='mc';
+  document.getElementById('mc-options').style.display=isMC?'block':'none';
+  document.getElementById('q-answer').placeholder=isMC?'Type the exact correct answer':'true or false';
+}
+
+function updPoints(){}
+
+function clearForm(){
+  ['q-location','q-question','q-opt-a','q-opt-b','q-opt-c','q-opt-d','q-answer','q-explanation'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('q-surprising').checked=false;
+}
+
+async function saveQuestion(){
+  const location=document.getElementById('q-location').value.trim();
+  const question=document.getElementById('q-question').value.trim();
+  const answer=document.getElementById('q-answer').value.trim();
+  if(!location||!question||!answer){showAlert('Please fill in Location, Question and Answer!','err');return;}
+  const diff=document.getElementById('q-difficulty').value;
+  const type=document.getElementById('q-type').value;
+  const options=type==='mc'?[document.getElementById('q-opt-a').value.trim(),document.getElementById('q-opt-b').value.trim(),document.getElementById('q-opt-c').value.trim(),document.getElementById('q-opt-d').value.trim()].filter(Boolean):null;
+  const row={
+    location,
+    game_mode:document.getElementById('q-gamemode').value,
+    category:document.getElementById('q-category').value,
+    difficulty:diff,
+    points:diff==='easy'?1:diff==='medium'?2:3,
+    type,
+    question,
+    options:options?JSON.stringify(options):null,
+    answer,
+    explanation:document.getElementById('q-explanation').value.trim(),
+    surprising:document.getElementById('q-surprising').checked
+  };
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(row)});
+  if(r.ok){showAlert('✅ Question saved!');clearForm();loadStats();}
+  else{showAlert('Error saving question. Try again.','err');}
+}
+
+async function loadStats(){
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?select=difficulty,id,pending`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  const data=await r.json();
+  const approved=data.filter(q=>!q.pending);
+  const pending=data.filter(q=>q.pending);
+  const easy=approved.filter(q=>q.difficulty==='easy').length;
+  const hard=approved.filter(q=>q.difficulty==='hard').length;
+  document.getElementById('stat-total').textContent=approved.length;
+  document.getElementById('stat-easy').textContent=easy;
+  document.getElementById('stat-hard').textContent=hard;
+  const badge=document.getElementById('pending-count');
+  if(pending.length){badge.style.display='inline';badge.textContent=pending.length;}
+  const r2=await fetch(`${SUPABASE_URL}/rest/v1/questions?select=location&pending=eq.false`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  const locs=await r2.json();
+  const unique=new Set(locs.map(l=>l.location)).size;
+  document.getElementById('stat-cities').textContent=unique;
+}
+
+async function loadQuestions(){
+  const search=document.getElementById('filter-search').value.trim();
+  const diff=document.getElementById('filter-diff').value;
+  const mode=document.getElementById('filter-mode').value;
+  let url=`${SUPABASE_URL}/rest/v1/questions?select=*&order=created_at.desc&limit=${PAGE_SIZE}&offset=${currentPage*PAGE_SIZE}`;
+  if(diff)url+=`&difficulty=eq.${diff}`;
+  if(mode)url+=`&game_mode=eq.${mode}`;
+  if(search)url+=`&question=ilike.*${encodeURIComponent(search)}*`;
+  const r=await fetch(url,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Prefer':'count=exact'}});
+  const data=await r.json();
+  const tbody=document.getElementById('q-tbody');
+  if(!data.length){tbody.innerHTML='<tr><td colspan="6" style="text-align:center;color:#9ca3af;padding:2rem">No questions found</td></tr>';return;}
+  tbody.innerHTML=data.map(q=>`
+    <tr>
+      <td class="q-txt" title="${q.question}">${q.question}</td>
+      <td style="font-size:.78rem;color:#6b7280">${q.location||'—'}</td>
+      <td style="font-size:.78rem">${q.category||'—'}</td>
+      <td><span class="tag tag-${q.difficulty?.charAt(0)||'e'}">${q.difficulty||'—'}</span></td>
+      <td style="font-size:.78rem;color:#6b7280">${q.times_used||0}×</td>
+      <td><button class="btn btn-danger" onclick="deleteQ(${q.id})">Delete</button></td>
+    </tr>
+  `).join('');
+}
+
+async function deleteQ(id){
+  if(!confirm('Delete this question?'))return;
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions?id=eq.${id}`,{method:'DELETE',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});
+  if(r.ok){showAlert('Question deleted.');loadQuestions();loadStats();}
+  else showAlert('Error deleting.','err');
+}
+
+async function bulkGenerate(){
+  const location=document.getElementById('bulk-location').value.trim();
+  const gameMode=document.getElementById('bulk-gamemode').value;
+  if(!location){showAlert('Please enter a location!','err');return;}
+  const counts={easy:+document.getElementById('bulk-easy').value,medium:+document.getElementById('bulk-medium').value,hard:+document.getElementById('bulk-hard').value};
+  document.getElementById('bulk-btn').disabled=true;
+  document.getElementById('bulk-progress').style.display='block';
+  let done=0;const total=3;
+  const allQs=[];
+  for(const diff of ['easy','medium','hard']){
+    document.getElementById('bulk-status').textContent='Generating '+diff+' questions for '+location+'...';
+    const pts=diff==='easy'?1:diff==='medium'?2:3;
+    const prompt=`Generate exactly ${counts[diff]} ${diff} trivia questions about ${location} for a game called "You From Here?". Mix multiple choice (4 options) and true/false. Cover a variety of topics.\nRespond ONLY with raw JSON:\n{"questions":[{"type":"mc","category":"Category","difficulty":"${diff}","points":${pts},"question":"Q?","options":["A","B","C","D"],"answer":"A","explanation":"fact.","surprising":false}]}`;
+    try{
+      const r=await fetch('/api/questions',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:prompt}]})});
+      const d=await r.json();
+      let txt=d.content[0].text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+      const s=txt.indexOf('{'),e=txt.lastIndexOf('}');
+      const parsed=JSON.parse(txt.slice(s,e+1));
+      allQs.push(...(parsed.questions||[]));
+      done++;
+      document.getElementById('bulk-prog-fill').style.width=Math.round(done/total*100)+'%';
+    }catch(err){showAlert('Error generating '+diff+' questions.','err');}
+  }
+  // Save all to Supabase
+  document.getElementById('bulk-status').textContent='Saving '+allQs.length+' questions to database...';
+  const rows=allQs.map(q=>({location,game_mode:gameMode,category:q.category,difficulty:q.difficulty,points:q.points,type:q.type,question:q.question,options:q.options?JSON.stringify(q.options):null,answer:q.answer,explanation:q.explanation||'',surprising:q.surprising||false}));
+  const r=await fetch(`${SUPABASE_URL}/rest/v1/questions`,{method:'POST',headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
+  if(r.ok){showAlert('✅ Generated and saved '+allQs.length+' questions for '+location+'!');loadStats();}
+  else showAlert('Error saving to database.','err');
+  document.getElementById('bulk-btn').disabled=false;
+  document.getElementById('bulk-prog-fill').style.width='100%';
+  document.getElementById('bulk-status').textContent='Done!';
+}
+</script>
+</body>
+</html>
