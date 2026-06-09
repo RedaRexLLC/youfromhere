@@ -534,34 +534,33 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .a11y-toggle.on{background:#e8b84b;color:#1a1a2e;border-color:#e8b84b}
 .a11y-toggle:hover{transform:scale(1.1)}
 .a11y-toggle:focus-visible{outline:3px solid #e8b84b;outline-offset:3px}
-/* ══ MULTIPLAYER SCREENS ══ */
-.mp-tabs{display:flex;gap:.5rem;margin-bottom:1rem}
-.mp-tab{flex:1;padding:.6rem;border-radius:10px;border:2px solid #2e2e4e;background:transparent;color:#9ca3af;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .15s}
-.mp-tab.on{border-color:#e8b84b;background:#e8b84b22;color:#e8b84b}
-.mp-pane{display:none}.mp-pane.on{display:block}
-.room-code-display{background:#e8b84b;color:#1a1a2e;border-radius:16px;padding:1.2rem;text-align:center;margin:1rem 0}
-.room-code-display .code-label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.25rem}
-.room-code-display .code-val{font-size:3rem;font-weight:900;letter-spacing:.25em;line-height:1}
-.room-code-display .code-hint{font-size:.75rem;margin-top:.4rem;opacity:.7}
+/* ══ MULTIPLAYER ROOM ══ */
 .player-chip{display:flex;align-items:center;gap:.5rem;background:#12122a;border-radius:10px;padding:.5rem .75rem;margin-bottom:.4rem}
-.player-chip .pc-name{flex:1;font-weight:700;font-size:.9rem}
-.player-chip .pc-host{font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.1rem .4rem;font-weight:700}
-.player-chip .pc-cats{font-size:.75rem;color:#9ca3af}
 .player-chip .pc-dot{width:10px;height:10px;border-radius:50%;background:#22c55e;flex-shrink:0}
 .player-chip .pc-dot.away{background:#6b7280}
+.player-chip .pc-name{flex:1;font-weight:700;font-size:.9rem}
+.player-chip .pc-host{font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.1rem .4rem;font-weight:700}
 .mp-start-btn{width:100%;padding:.85rem;background:#e8b84b;color:#1a1a2e;border:none;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1.05rem;font-weight:900;cursor:pointer;margin-top:.75rem;letter-spacing:.03em}
 .mp-start-btn:disabled{background:#2e2e4e;color:#6b7280;cursor:not-allowed}
 .mp-secondary-btn{width:100%;padding:.65rem;background:transparent;color:#9ca3af;border:2px solid #2e2e4e;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;margin-top:.4rem}
-.mp-online-btn{width:100%;padding:.75rem;background:transparent;color:#e8b84b;border:2px solid #e8b84b;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:900;cursor:pointer;margin-top:.5rem;letter-spacing:.03em;display:flex;align-items:center;justify-content:center;gap:.4rem}
-.mp-cat-picker .cat-btn{display:inline-flex;align-items:center;gap:.3rem;padding:.4rem .65rem;border-radius:8px;border:2px solid #2e2e4e;background:transparent;color:#e2e8f0;font-size:.8rem;cursor:pointer;margin:.2rem;transition:all .15s;font-family:'DM Sans',sans-serif}
-.mp-cat-picker .cat-btn.on{border-color:#e8b84b;background:#e8b84b22;color:#e8b84b;font-weight:700}
-.mp-cat-count{font-size:.8rem;color:#9ca3af;margin-bottom:.4rem}
-.mp-wait-note{font-size:.82rem;color:#9ca3af;text-align:center;padding:.5rem;margin-top:.25rem}
-.mp-share-row{display:flex;gap:.5rem;margin-top:.5rem}
-.mp-share-row input{flex:1;background:#12122a;border:1px solid #2e2e4e;border-radius:8px;padding:.5rem .75rem;color:#e2e8f0;font-size:.9rem;font-family:'DM Sans',sans-serif;font-weight:700;letter-spacing:.1em}
-.mp-share-row button{padding:.5rem .85rem;background:#2e2e4e;color:#e8b84b;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700}
-#mp-watch-bar{background:#12122a;border-radius:10px;padding:.6rem .85rem;text-align:center;font-size:.85rem;font-weight:700;color:#9ca3af;margin-bottom:.5rem;display:none}
-#mp-watch-bar.show{display:block}
+.mp-share-row{display:flex;gap:.5rem;margin-top:.75rem}
+.mp-share-row input{flex:1;background:#12122a;border:1px solid #2e2e4e;border-radius:8px;padding:.6rem .75rem;color:#e8b84b;font-size:1.4rem;font-family:'DM Sans',sans-serif;font-weight:900;letter-spacing:.18em;text-align:center}
+.mp-share-row button{padding:.6rem 1rem;background:#2e2e4e;color:#e8b84b;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700}
+/* Join Room modal */
+.join-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
+.join-modal .jm-box{background:#1a1a2e;border:2px solid #2e2e4e;border-radius:20px;padding:1.5rem;width:100%;max-width:360px}
+.join-modal .jm-title{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:2px;color:#e8b84b;margin-bottom:.25rem}
+.join-modal .jm-sub{font-size:.82rem;color:#9ca3af;margin-bottom:1rem}
+/* Room code banner in loading screen */
+#room-code-banner{display:none;background:#e8b84b;color:#1a1a2e;border-radius:16px;padding:1rem 1.25rem;margin:1rem 0;text-align:center}
+#room-code-banner .rcb-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem}
+#room-code-banner .rcb-code{font-size:2.8rem;font-weight:900;letter-spacing:.25em;line-height:1}
+#room-code-banner .rcb-hint{font-size:.72rem;margin-top:.3rem;opacity:.8}
+/* Room indicator in game header */
+#room-badge{display:none;background:#1a3a1a;color:#22c55e;border-radius:8px;padding:.2rem .55rem;font-size:.7rem;font-weight:700;letter-spacing:.05em;align-items:center;gap:.3rem}
+#room-badge.show{display:inline-flex}
+#room-badge .rb-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 </style>
 </head>
 <body>
@@ -716,11 +715,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
       <div class="card">
         <div class="lbl">Play Style</div>
-        <div class="style-grid">
+        <div class="style-grid" style="grid-template-columns:repeat(2,1fr)">
           <div class="style-card on" id="style-multi" onclick="setStyle('multi')" role="button" tabindex="0" aria-pressed="true" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('multi')">
             <span class="style-icon" aria-hidden="true">📱</span>
-            <span class="style-name">Multiplayer</span>
-            <span class="style-desc">Tap answers on device</span>
+            <span class="style-name">Pass &amp; Play</span>
+            <span class="style-desc">One device, pass it around</span>
+          </div>
+          <div class="style-card" id="style-room" onclick="setStyle('room')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('room')">
+            <span class="style-icon" aria-hidden="true">🏠</span>
+            <span class="style-name">Multiplayer Room</span>
+            <span class="style-desc">Everyone uses their own device</span>
           </div>
           <div class="style-card" id="style-mod" onclick="setStyle('mod')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('mod')">
             <span class="style-icon" aria-hidden="true">🎙️</span>
@@ -732,6 +736,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <span class="style-name">Solo</span>
             <span class="style-desc">Practice alone</span>
           </div>
+        </div>
+        <!-- Room style: join link shown below style grid -->
+        <div id="join-room-hint" style="display:none;text-align:center;margin-top:.6rem;font-size:.82rem;color:#9ca3af">
+          Already have a room code? <button onclick="openJoinModal()" style="background:none;border:none;color:#e8b84b;font-weight:700;cursor:pointer;font-size:.82rem;font-family:'DM Sans',sans-serif;padding:0">Join a room →</button>
         </div>
 
         <div id="teams-section">
@@ -760,7 +768,9 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
       <div class="err-box" id="err-box" role="alert" aria-live="assertive"></div>
       <button class="start-btn" onclick="startGame()">▶ Start Game</button>
-      <button class="mp-online-btn" onclick="openMpSetup()">🌐 Play Online — Use Your Own Devices</button>
+      <div id="join-room-home" style="display:none;text-align:center;margin-top:.4rem">
+        <button onclick="openJoinModal()" style="background:none;border:none;color:#e8b84b;font-weight:700;cursor:pointer;font-size:.9rem;font-family:'DM Sans',sans-serif;text-decoration:underline;padding:0">🔗 Join an existing room with a code</button>
+      </div>
       <div class="contact-bar" style="margin-top:.75rem">
         <div><strong>Own a business?</strong><p>Get featured in You From Here questions!</p></div>
         <button class="contact-btn" onclick="openContact()">Get Featured →</button>
@@ -786,6 +796,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <p style="color:#6b7280;font-size:.85rem" id="load-sub">Generating your questions</p>
         <div class="load-progress"><div class="load-progress-fill" id="load-prog" style="width:0%"></div></div>
       </div>
+      <!-- Room code shown to host while loading, so others can join early -->
+      <div id="room-code-banner">
+        <div class="rcb-label">Share this code with your players</div>
+        <div class="rcb-code" id="rcb-code-val">----</div>
+        <div class="rcb-hint">Go to youfromhere.vercel.app → Join a room</div>
+        <div class="mp-share-row" style="justify-content:center;margin-top:.6rem">
+          <input type="text" id="rcb-share-input" readonly onclick="this.select()" style="max-width:120px"/>
+          <button onclick="rcbCopy()">📋 Copy</button>
+        </div>
+      </div>
       <div class="ad-inline show" style="margin-top:1rem">
         <div class="ad-label">Advertisement</div>
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000004" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
@@ -798,7 +818,8 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       <div class="game-top">
         <div class="game-header">
           <div class="game-logo">You From <span>Here?</span></div>
-          <div style="display:flex;gap:.4rem;align-items:center">
+          <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+            <span id="room-badge"><span class="rb-dot"></span> <span id="room-badge-code"></span></span>
             <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'">📺 Mirror</button>
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
           </div>
@@ -815,7 +836,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000008" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
           <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
         </div>
-        <div id="mp-watch-bar"></div>
         <div id="q-area"></div>
         <!-- Ad shown after answering in the feedback area -->
         <div class="ad-inline" id="post-ans-ad">
@@ -854,69 +874,9 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       </div>
     </div>
 
-    <!-- ══ MULTIPLAYER SETUP ══ -->
-    <div id="s-mp" class="screen">
-      <div class="logo-wrap" style="justify-content:space-between;align-items:center">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg width="28" height="35" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
-          <div class="logo-txt" style="font-size:1.6rem">You From <span>Here?</span></div>
-        </div>
-        <button class="end-btn-small" onclick="show('s-home')">← Back</button>
-      </div>
-      <p class="tagline" style="margin-bottom:1rem">Play together — each on your own device</p>
-
-      <div class="card">
-        <div class="mp-tabs">
-          <button class="mp-tab on" id="mp-tab-create" onclick="mpSwitchTab('create')">🎮 Create Room</button>
-          <button class="mp-tab" id="mp-tab-join" onclick="mpSwitchTab('join')">🔗 Join Room</button>
-        </div>
-
-        <!-- CREATE PANE -->
-        <div class="mp-pane on" id="mp-pane-create">
-          <label class="lbl">Your name</label>
-          <div class="input-wrap"><input type="text" id="mp-host-name" placeholder="e.g. Michelle" maxlength="20"/></div>
-          <label class="lbl" style="margin-top:.6rem">Game Mode</label>
-          <div class="mode-grid">
-            <button class="sel-btn on" id="mp-btn-local" onclick="mpSetMode('local')">📍 Local</button>
-            <button class="sel-btn" id="mp-btn-national" onclick="mpSetMode('national')">🇺🇸 National</button>
-            <button class="sel-btn" id="mp-btn-world" onclick="mpSetMode('world')">🌍 World</button>
-          </div>
-          <div id="mp-local-inputs">
-            <label class="lbl">Your city &amp; state</label>
-            <div class="input-wrap"><input type="text" id="mp-city" placeholder="e.g. Tucson, AZ"/></div>
-          </div>
-          <div id="mp-national-inputs" style="display:none">
-            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:.6rem;font-size:.82rem;color:#0369a1;margin-top:.4rem">🇺🇸 American culture, history &amp; landmarks</div>
-          </div>
-          <div id="mp-world-inputs" style="display:none">
-            <label class="lbl">Country</label>
-            <select class="country-sel" id="mp-country"><option value="">Choose a country...</option></select>
-            <label class="lbl">City (optional)</label>
-            <div class="input-wrap"><input type="text" id="mp-world-city" placeholder="e.g. Paris"/></div>
-          </div>
-          <label class="lbl" style="margin-top:.6rem">Your 3 categories <span id="mp-create-cat-count" style="font-weight:400;text-transform:none;font-size:.82rem;color:#9ca3af">(0 / 3 selected)</span></label>
-          <div class="mp-cat-picker" id="mp-create-cats"></div>
-          <div class="err-box" id="mp-create-err"></div>
-          <button class="mp-start-btn" onclick="mpCreate()">🚀 Create Room</button>
-        </div>
-
-        <!-- JOIN PANE -->
-        <div class="mp-pane" id="mp-pane-join">
-          <label class="lbl">Room code</label>
-          <div class="input-wrap"><input type="text" id="mp-join-code" placeholder="e.g. MESA" maxlength="4" style="text-transform:uppercase;letter-spacing:.15em;font-size:1.3rem;font-weight:900" oninput="this.value=this.value.toUpperCase()"/></div>
-          <label class="lbl" style="margin-top:.6rem">Your name</label>
-          <div class="input-wrap"><input type="text" id="mp-join-name" placeholder="e.g. Alex" maxlength="20"/></div>
-          <label class="lbl" style="margin-top:.6rem">Your 3 categories <span id="mp-join-cat-count" style="font-weight:400;text-transform:none;font-size:.82rem;color:#9ca3af">(0 / 3 selected)</span></label>
-          <div class="mp-cat-picker" id="mp-join-cats"></div>
-          <div class="err-box" id="mp-join-err"></div>
-          <button class="mp-start-btn" onclick="mpJoin()">🔗 Join Game</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ MULTIPLAYER WAITING ROOM ══ -->
+    <!-- ══ MULTIPLAYER ROOM: WAITING SCREEN ══ -->
     <div id="s-mp-wait" class="screen">
-      <div class="logo-wrap" style="justify-content:space-between;align-items:center">
+      <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.75rem">
         <div style="display:flex;align-items:center;gap:8px">
           <svg width="28" height="35" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
           <div class="logo-txt" style="font-size:1.6rem">You From <span>Here?</span></div>
@@ -924,23 +884,40 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
       </div>
 
-      <div class="card" style="text-align:center;padding:1rem">
-        <div class="code-label" style="font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:.25rem">Room Code — share with friends</div>
-        <div id="mp-wait-code" style="font-size:3rem;font-weight:900;color:#e8b84b;letter-spacing:.25em;line-height:1">----</div>
-        <div style="font-size:.75rem;color:#9ca3af;margin-top:.3rem">youfromhere.vercel.app</div>
-        <div class="mp-share-row">
-          <input type="text" id="mp-share-input" readonly onclick="this.select()"/>
+      <div class="card" style="text-align:center">
+        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.3rem">Share this code with your players</div>
+        <div id="mp-wait-code" style="font-size:3.5rem;font-weight:900;color:#e8b84b;letter-spacing:.3em;line-height:1">----</div>
+        <div style="font-size:.75rem;color:#9ca3af;margin-top:.3rem">youfromhere.vercel.app → Join a room</div>
+        <div class="mp-share-row" style="justify-content:center">
+          <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:130px"/>
           <button onclick="mpCopyCode()">📋 Copy</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="lbl" style="margin-bottom:.5rem">Players in room <span id="mp-player-count" style="font-weight:400;color:#9ca3af"></span></div>
+        <div class="lbl" style="margin-bottom:.5rem">Who's in the room <span id="mp-player-count" style="font-weight:400;color:#9ca3af;text-transform:none;letter-spacing:0;font-size:.85rem"></span></div>
         <div id="mp-player-list"></div>
-        <div class="mp-wait-note" id="mp-wait-status">Waiting for players to join...</div>
-        <button class="mp-start-btn" id="mp-start-game-btn" onclick="mpStartGame()" style="display:none">▶ Start Game</button>
-        <div class="mp-wait-note" id="mp-join-wait" style="display:none">Waiting for host to start the game...</div>
+        <p id="mp-wait-status" style="font-size:.82rem;color:#9ca3af;text-align:center;margin:.4rem 0 0"></p>
+        <button class="mp-start-btn" id="mp-start-game-btn" onclick="mpStartGame()" style="display:none">▶ Begin Game</button>
+        <p id="mp-join-wait" style="display:none;font-size:.85rem;color:#9ca3af;text-align:center;margin:.75rem 0 0">Waiting for the host to begin...</p>
         <button class="mp-secondary-btn" onclick="mpLeave()">Leave Room</button>
+      </div>
+    </div>
+
+    <!-- ══ JOIN ROOM MODAL ══ -->
+    <div class="join-modal" id="join-modal" style="display:none" onclick="if(event.target===this)closeJoinModal()">
+      <div class="jm-box">
+        <div class="jm-title">🏠 Join a Room</div>
+        <div class="jm-sub">Enter the 4-letter code from the host's screen</div>
+        <label class="lbl">Room code</label>
+        <div class="input-wrap" style="margin-bottom:.75rem">
+          <input type="text" id="jm-code" placeholder="e.g. MESA" maxlength="4"
+            style="text-transform:uppercase;letter-spacing:.2em;font-size:1.5rem;font-weight:900;text-align:center"
+            oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
+        </div>
+        <div class="err-box" id="jm-err"></div>
+        <button class="mp-start-btn" onclick="mpJoinRoom()">🔗 Join Room</button>
+        <button class="mp-secondary-btn" onclick="closeJoinModal()">Cancel</button>
       </div>
     </div>
 
@@ -1092,12 +1069,18 @@ function getCats(){
 
 function setStyle(s){
   G.style=s;
-  ['multi','mod','solo'].forEach(x=>{const el=document.getElementById('style-'+x);el.className='style-card'+(s===x?' on':'');el.setAttribute('aria-pressed',String(s===x));});
+  ['multi','room','mod','solo'].forEach(x=>{const el=document.getElementById('style-'+x);if(el){el.className='style-card'+(s===x?' on':'');el.setAttribute('aria-pressed',String(s===x));}});
   const isSolo=s==='solo';
+  const isRoom=s==='room';
   document.getElementById('teams-section').style.display=isSolo?'none':'block';
   document.getElementById('solo-cats').style.display=isSolo?'block':'none';
   document.getElementById('teams-cats-note').style.display=isSolo?'none':'block';
   document.getElementById('cat-hint').textContent=isSolo?'(choose up to 6)':'(each team picks 3)';
+  // Show "Join a room" hint when Room style is selected
+  const joinHint=document.getElementById('join-room-hint');
+  const joinHome=document.getElementById('join-room-home');
+  if(joinHint)joinHint.style.display=isRoom?'block':'none';
+  if(joinHome)joinHome.style.display=isRoom?'block':'none';
   if(isSolo)buildSoloCats();
 }
 
@@ -1232,6 +1215,23 @@ function startGame(){
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
+
+  if(G.style==='room'){
+    // Create a multiplayer room, show code while loading, then show wait room
+    mpCreateRoom().then(()=>{
+      // Show waiting room for host after creating room (before questions load)
+      const waitState={phase:'lobby',game_mode:G.gameMode,city:G.city,country:G.country,
+        college:G.college,teams:G.teams,board:G.board,scores:G.scores,ct:0,mi:G.mi,players:[{id:MP.playerId,isHost:true,connected:true}]};
+      mpPatch(waitState);
+      // Show wait room screen with code visible; questions load in background
+      document.getElementById('mp-wait-code').textContent=MP.code||'----';
+      const si=document.getElementById('mp-share-input');if(si)si.value=MP.code||'';
+      show('s-mp-wait');
+      mpRenderWaitRoom(waitState);
+    });
+    return; // host will start from "Begin Game" button
+  }
+
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
 }
 
@@ -1527,7 +1527,6 @@ function getNextQ(pts,catId){
 function renderBoard(){
   G.answered=false;
   document.body.classList.remove('has-img');
-  updateWatchBar();
   const t=G.ct;
 
   // Scores
@@ -1576,7 +1575,7 @@ function pickCell(catId,pts){
   if(MP.active){
     mpLastPhase='question';
     mpLastCellKey=G.board.findIndex(c=>c.catId===catId)+'_'+pts;
-    mpBroadcast({phase:'question',board:G.board,curCell:G.curCell,curQ:q,ct:G.ct,mi:G.mi,scores:G.scores,answered:false,lastAnswer:null});
+    mpPatch({phase:'question',board:G.board,curCell:G.curCell,curQ:q,ct:G.ct,mi:G.mi,scores:G.scores,answered:false,lastAnswer:null});
   }
   renderQuestion(q,pts);
 }
@@ -1692,24 +1691,7 @@ function renderQuestion(q,pts){
         +'<div class="q-map-credit">© Google Maps</div>';
     }
   }
-  if(!isMod){
-    startTmr();
-    // In multiplayer, hide answer options for watchers
-    if(MP.active && !isMyMPTurn()){
-      const optsEl=document.querySelector('#q-area .opts, #q-area .tf-grid');
-      if(optsEl)optsEl.style.display='none';
-      const actsEl=document.querySelector('#q-area .acts');
-      if(actsEl)actsEl.style.display='none';
-      const watchMsg=document.createElement('div');
-      watchMsg.className='mp-wait-note';
-      watchMsg.style.cssText='margin:.5rem 0;font-size:.9rem;font-weight:700;color:#e8b84b';
-      const teamName=G.teams[G.ct]?.name||'Player';
-      watchMsg.textContent='⏳ '+teamName+' is answering...';
-      const fb=document.getElementById('fb');
-      if(fb)fb.parentNode.insertBefore(watchMsg,fb);
-    }
-  }
-  updateWatchBar();
+  if(!isMod) startTmr();
 }
 
 // ── MODERATOR MODE ──
@@ -1785,7 +1767,7 @@ function resolve(ok,pts,exp,surp){
   // Broadcast result to all players
   if(MP.active){
     mpLastPhase='reveal';
-    mpBroadcast({phase:'reveal',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,curCell:G.curCell,curQ:G.curQ,answered:true,lastAnswer:{ok,pts,exp},stealing:false});
+    mpPatch({phase:'reveal',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,curCell:G.curCell,curQ:G.curQ,answered:true,lastAnswer:{ok,pts,exp},stealing:false});
   }
 }
 
@@ -1824,7 +1806,7 @@ function nextTurn(){
   renderBoard();
   if(MP.active){
     mpLastPhase='board'; mpLastCellKey=null;
-    mpBroadcast({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,stealing:false,curCell:null,curQ:null,answered:false,lastAnswer:null});
+    mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,stealing:false,curCell:null,curQ:null,answered:false,lastAnswer:null});
   }
 }
 
@@ -1841,7 +1823,7 @@ function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.
 function showResults(){
   stopTmr();
   if(MP.active){
-    mpBroadcast({phase:'results',scores:G.scores,teams:G.teams});
+    mpPatch({phase:'results',scores:G.scores,teams:G.teams});
     mpStopPolling();
   }
   const loc=G.gameMode==='national'?'National Mode':G.gameMode==='world'?(G.city||G.country):G.city;
@@ -1856,8 +1838,7 @@ function showResults(){
 
 function resetGame(){
   stopTmr();
-  if(MP.active){mpStopPolling();MP.active=false;MP.code=null;MP.playerId=null;MP.isHost=false;}
-  const bar=document.getElementById('mp-watch-bar');if(bar){bar.textContent='';bar.classList.remove('show');}
+  if(MP.active)mpLeave();
   soloCats=[];tc=0;colOn=false;G.college='';G.city='';G.country='';
   document.getElementById('teams-list').innerHTML='';
   ['city-input','college-input','world-city'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
@@ -1881,194 +1862,132 @@ async function submitQuestion(){
 }
 
 // ══════════════════════════════════════════════
-//  MULTIPLAYER
+//  MULTIPLAYER ROOM
 // ══════════════════════════════════════════════
 
 const MP = {
-  active: false,
-  code: null,
-  playerId: null,
-  playerName: null,
-  isHost: false,
-  mode: 'local',   // local|national|world
-  city: '',
-  country: '',
+  active: false,    // true when in a live room session
+  code: null,       // 4-letter room code
+  playerId: null,   // this device's player UUID
+  isHost: false,    // did this device create the room?
   pollInterval: null,
   lastUpdated: null,
-  myCats: [],
+  syncing: false,   // true while applying received state (suppresses re-broadcast)
 };
 
-let mpMode = 'local'; // create-pane mode selector
-let mpCreateCats = [];
-let mpJoinCats = [];
+// State fingerprints to detect what changed
+let mpLastPhase = null;
+let mpLastCellKey = null;
+let mpLastCt = -1;
 
-function openMpSetup() {
-  mpBuildCatPickers();
-  mpPopulateCountries();
-  show('s-mp');
+// ── JOIN MODAL ──
+function openJoinModal() {
+  document.getElementById('join-modal').style.display = 'flex';
+  setTimeout(()=>document.getElementById('jm-code')?.focus(), 100);
+}
+function closeJoinModal() {
+  document.getElementById('join-modal').style.display = 'none';
+  const err = document.getElementById('jm-err');
+  if(err) err.className = 'err-box';
 }
 
-function mpSwitchTab(tab) {
-  ['create','join'].forEach(t => {
-    document.getElementById('mp-tab-'+t).classList.toggle('on', t===tab);
-    document.getElementById('mp-pane-'+t).classList.toggle('on', t===tab);
-  });
-}
+async function mpJoinRoom() {
+  const code = (document.getElementById('jm-code').value||'').trim().toUpperCase();
+  const errEl = document.getElementById('jm-err');
+  if(!code || code.length !== 4) { errEl.textContent='Enter the 4-letter room code'; errEl.className='err-box show'; return; }
 
-function mpSetMode(m) {
-  mpMode = m;
-  ['local','national','world'].forEach(x => {
-    document.getElementById('mp-btn-'+x).classList.toggle('on', x===m);
-    const el = document.getElementById('mp-'+x+'-inputs');
-    if(el) el.style.display = x===m ? '' : 'none';
-  });
-  mpBuildCatPickers();
-}
-
-function mpPopulateCountries() {
-  const sel = document.getElementById('mp-country');
-  if(sel && sel.options.length <= 1) {
-    const srcSel = document.getElementById('country-select');
-    if(srcSel) {
-      Array.from(srcSel.options).forEach(opt => {
-        const o = document.createElement('option');
-        o.value = opt.value; o.textContent = opt.textContent;
-        sel.appendChild(o);
-      });
-    }
-  }
-}
-
-function mpBuildCatPickers() {
-  ['mp-create-cats','mp-join-cats'].forEach((id,i) => {
-    const wrap = document.getElementById(id);
-    if(!wrap) return;
-    const sel = i===0 ? mpCreateCats : mpJoinCats;
-    const countId = i===0 ? 'mp-create-cat-count' : 'mp-join-cat-count';
-    wrap.innerHTML = ALL.map(cat =>
-      `<button class="cat-btn${sel.includes(cat.id)?' on':''}" onclick="mpToggleCat('${cat.id}','${id}','${countId}')">${cat.icon} ${cat.label}</button>`
-    ).join('');
-  });
-}
-
-function mpToggleCat(catId, wrapperId, countId) {
-  const arr = wrapperId === 'mp-create-cats' ? mpCreateCats : mpJoinCats;
-  const idx = arr.indexOf(catId);
-  if(idx >= 0) arr.splice(idx,1);
-  else if(arr.length < 3) arr.push(catId);
-  else return; // max 3
-  mpBuildCatPickers();
-  const countEl = document.getElementById(countId);
-  if(countEl) countEl.textContent = `(${arr.length} / 3 selected)`;
-}
-
-function mpShowErr(id, msg) {
-  const el = document.getElementById(id);
-  if(el){el.textContent=msg;el.className='err-box show';}
-}
-function mpClearErr(id){const el=document.getElementById(id);if(el)el.className='err-box';}
-
-async function mpCreate() {
-  mpClearErr('mp-create-err');
-  const name = document.getElementById('mp-host-name').value.trim();
-  if(!name){mpShowErr('mp-create-err','Enter your name!');return;}
-  if(mpCreateCats.length < 3){mpShowErr('mp-create-err','Choose exactly 3 categories!');return;}
-
-  let city='', country='', locationLabel='';
-  if(mpMode==='local'){
-    city = document.getElementById('mp-city').value.trim();
-    if(!city){mpShowErr('mp-create-err','Enter your city!');return;}
-    locationLabel = city;
-  } else if(mpMode==='national'){
-    city = 'the United States'; locationLabel = 'National';
-  } else {
-    country = document.getElementById('mp-country').value;
-    city = document.getElementById('mp-world-city').value.trim();
-    if(!country){mpShowErr('mp-create-err','Select a country!');return;}
-    locationLabel = city ? city+', '+country : country;
-  }
-
-  const btn = document.querySelector('#mp-pane-create .mp-start-btn');
-  btn.textContent = 'Creating...'; btn.disabled = true;
-  try {
-    const res = await fetch('/api/room', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ host_name:name, game_mode:mpMode, location:locationLabel, location_label:locationLabel, categories:mpCreateCats })
-    });
-    const room = await res.json();
-    if(room.error){mpShowErr('mp-create-err',room.error);return;}
-
-    MP.active = true; MP.code = room.code; MP.playerId = room.player_id;
-    MP.playerName = name; MP.isHost = true; MP.mode = mpMode;
-    MP.city = city; MP.country = country; MP.myCats = [...mpCreateCats];
-    mpStartPolling();
-    showWaitRoom(room);
-  } catch(e){
-    mpShowErr('mp-create-err','Error creating room. Try again.');
-  } finally {
-    btn.textContent = '🚀 Create Room'; btn.disabled = false;
-  }
-}
-
-async function mpJoin() {
-  mpClearErr('mp-join-err');
-  const code = document.getElementById('mp-join-code').value.trim().toUpperCase();
-  const name = document.getElementById('mp-join-name').value.trim();
-  if(!code || code.length !== 4){mpShowErr('mp-join-err','Enter the 4-letter room code!');return;}
-  if(!name){mpShowErr('mp-join-err','Enter your name!');return;}
-  if(mpJoinCats.length < 3){mpShowErr('mp-join-err','Choose exactly 3 categories!');return;}
-
-  const btn = document.querySelector('#mp-pane-join .mp-start-btn');
+  const btn = document.querySelector('#join-modal .mp-start-btn');
   btn.textContent = 'Joining...'; btn.disabled = true;
   try {
-    // Fetch current room state
-    const roomRes = await fetch('/api/room?code='+code);
-    if(!roomRes.ok){const e=await roomRes.json();mpShowErr('mp-join-err',e.error||'Room not found!');return;}
-    const room = await roomRes.json();
-    if(room.state.phase !== 'lobby'){mpShowErr('mp-join-err','This game has already started!');return;}
+    const res = await fetch('/api/room?code='+code);
+    if(!res.ok) { const e=await res.json(); errEl.textContent=e.error||'Room not found!'; errEl.className='err-box show'; return; }
+    const room = await res.json();
+    const st = room.state;
 
-    // Add this player to the room state
+    // Joiners don't need to set anything up — they just mirror the room state
     const pid = crypto.randomUUID();
-    const state = room.state;
-    state.players.push({ id:pid, name, isHost:false, connected:true });
-    // Add this player's team+categories
-    if(!state.teams) state.teams = [];
-    state.teams.push({ name, players:[name], cats:mpJoinCats });
+    st.players = (st.players||[]).filter(p=>p.id!==pid);
+    st.players.push({ id:pid, connected:true });
 
-    // PATCH the room
-    const patchRes = await fetch('/api/room', {
-      method:'PATCH',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ code, state, player_id:pid })
-    });
-    if(!patchRes.ok){mpShowErr('mp-join-err','Error joining room.');return;}
-    const updated = await patchRes.json();
+    await fetch('/api/room',{ method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ code, state:st }) });
 
-    MP.active = true; MP.code = code; MP.playerId = pid;
-    MP.playerName = name; MP.isHost = false;
-    MP.mode = state.game_mode; MP.city = state.city||''; MP.country = state.country||'';
-    MP.myCats = [...mpJoinCats];
+    MP.active = true; MP.code = code; MP.playerId = pid; MP.isHost = false;
+    closeJoinModal();
+
+    if(st.phase === 'lobby' || st.phase === 'loading') {
+      // Game not started yet — show waiting room
+      mpShowWaitRoom(room);
+    } else {
+      // Game in progress — jump in
+      mpApplyGameConfig(st, true);
+    }
     mpStartPolling();
-    showWaitRoom(updated);
-  } catch(e){
-    mpShowErr('mp-join-err','Error joining room. Try again.');
+  } catch(e) {
+    errEl.textContent = 'Error joining. Try again.'; errEl.className = 'err-box show';
   } finally {
-    btn.textContent = '🔗 Join Game'; btn.disabled = false;
+    btn.textContent = '🔗 Join Room'; btn.disabled = false;
   }
 }
 
-function showWaitRoom(room) {
-  const state = room.state || room;
-  const code = room.code || MP.code;
-  document.getElementById('mp-wait-code').textContent = code;
-  const shareInput = document.getElementById('mp-share-input');
-  if(shareInput) shareInput.value = code;
-  show('s-mp-wait');
-  renderWaitRoom(state);
+// ── ROOM CREATION: triggered by startGame() when style==='room' ──
+async function mpCreateRoom() {
+  try {
+    const res = await fetch('/api/room', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        host_name: G.teams[0]?.name || 'Host',
+        game_mode: G.gameMode,
+        location: G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city,
+        categories: [...new Set(G.teams.flatMap(t=>t.cats))],
+      })
+    });
+    const room = await res.json();
+    if(room.error) throw new Error(room.error);
+
+    MP.active = true; MP.code = room.code; MP.playerId = room.player_id; MP.isHost = true;
+
+    // Show room code on the loading screen so players can join while questions generate
+    const banner = document.getElementById('room-code-banner');
+    const codeVal = document.getElementById('rcb-code-val');
+    const shareInput = document.getElementById('rcb-share-input');
+    if(banner){ banner.style.display = 'block'; }
+    if(codeVal){ codeVal.textContent = room.code; }
+    if(shareInput){ shareInput.value = room.code; }
+
+    // Also show in game header badge
+    const badge = document.getElementById('room-badge');
+    const badgeCode = document.getElementById('room-badge-code');
+    if(badge){ badge.classList.add('show'); }
+    if(badgeCode){ badgeCode.textContent = 'ROOM '+room.code; }
+
+    mpStartPolling();
+    return room.code;
+  } catch(e) {
+    console.error('mpCreateRoom failed', e);
+    return null;
+  }
 }
 
-function renderWaitRoom(state) {
+function rcbCopy() {
+  const code = MP.code||'';
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn = document.querySelector('#room-code-banner .mp-share-row button');
+    if(btn){const old=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=old,2000);}
+  }).catch(()=>alert('Code: '+code));
+}
+
+// ── WAITING ROOM (for joiners before game starts) ──
+function mpShowWaitRoom(room) {
+  const code = room.code || MP.code;
+  document.getElementById('mp-wait-code').textContent = code;
+  const si = document.getElementById('mp-share-input');
+  if(si){ si.value = code; }
+  show('s-mp-wait');
+  mpRenderWaitRoom(room.state);
+}
+
+function mpRenderWaitRoom(state) {
   const players = state.players || [];
   const list = document.getElementById('mp-player-list');
   const count = document.getElementById('mp-player-count');
@@ -2076,43 +1995,71 @@ function renderWaitRoom(state) {
   const startBtn = document.getElementById('mp-start-game-btn');
   const joinWait = document.getElementById('mp-join-wait');
 
-  if(count) count.textContent = '('+players.length+')';
-  if(list) list.innerHTML = players.map(p => {
-    const cats = (state.teams||[]).find(t=>t.name===p.name)?.cats||[];
-    const catLabels = cats.map(c=>ALL.find(a=>a.id===c)?.icon||c).join(' ');
-    return `<div class="player-chip">
-      <div class="pc-dot${p.connected===false?' away':''}"></div>
-      <div class="pc-name">${p.name}${p.id===MP.playerId?' (you)':''}</div>
+  if(count) count.textContent = '('+players.length+' connected)';
+  if(list) list.innerHTML = players.map(p =>
+    `<div class="player-chip">
+      <div class="pc-dot"></div>
+      <div class="pc-name">${p.name||'Player'}${p.id===MP.playerId?' (you)':''}</div>
       ${p.isHost?'<div class="pc-host">Host</div>':''}
-      <div class="pc-cats">${catLabels||'picking...'}</div>
-    </div>`;
-  }).join('');
+    </div>`
+  ).join('');
 
-  const allReady = players.length >= 2 && (state.teams||[]).length >= 2;
   if(MP.isHost) {
-    if(startBtn) startBtn.style.display = allReady ? 'block' : 'none';
+    if(startBtn) startBtn.style.display = 'block';
     if(joinWait) joinWait.style.display = 'none';
-    if(status) status.textContent = allReady ? 'Everyone\'s in! Start when ready.' : 'Waiting for players to join...';
+    if(status) status.textContent = players.length < 2 ? 'Waiting for others to join...' : 'Ready! Tap Begin Game when everyone\'s in.';
   } else {
     if(startBtn) startBtn.style.display = 'none';
     if(joinWait) joinWait.style.display = 'block';
-    if(status) status.style.display = 'none';
+    if(status) status.textContent = '';
   }
 }
 
 function mpCopyCode() {
-  const code = MP.code || '';
+  const code = MP.code||'';
   navigator.clipboard.writeText(code).then(()=>{
-    const btn = document.querySelector('.mp-share-row button');
+    const btn = document.querySelector('#s-mp-wait .mp-share-row button');
     if(btn){const old=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=old,2000);}
   }).catch(()=>alert('Code: '+code));
 }
 
+// ── HOST: begin game from waiting room ──
+async function mpStartGame() {
+  const btn = document.getElementById('mp-start-game-btn');
+  btn.textContent = 'Starting...'; btn.disabled = true;
+
+  const loc = G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
+  document.getElementById('load-txt').textContent = 'Loading '+loc+'...';
+  document.getElementById('load-prog').style.width = '0%';
+
+  // Show room code banner on loading screen
+  const banner = document.getElementById('room-code-banner');
+  const codeVal = document.getElementById('rcb-code-val');
+  const shareInput = document.getElementById('rcb-share-input');
+  if(banner) banner.style.display = 'block';
+  if(codeVal) codeVal.textContent = MP.code;
+  if(shareInput) shareInput.value = MP.code;
+
+  // Broadcast loading state
+  await mpPatch({ phase:'loading', game_mode:G.gameMode, city:G.city, country:G.country,
+    college:G.college, teams:G.teams, board:G.board, scores:G.scores, ct:0, mi:G.mi });
+
+  show('s-loading');
+  preGenAll().then(()=>{
+    mpLastPhase='board'; mpLastCellKey=null; mpLastCt=0;
+    // Broadcast game started → board
+    mpPatch({ phase:'board', board:G.board, scores:G.scores, ct:0, mi:G.mi, curCell:null, curQ:null, answered:false, lastAnswer:null });
+    show('s-game');
+    renderBoard();
+    mpShowRoomBadge();
+  }).catch(e=>{console.error(e);mpLeave();});
+}
+
+// ── POLLING ──
 function mpStartPolling() {
   if(MP.pollInterval) clearInterval(MP.pollInterval);
   MP.pollInterval = setInterval(mpPoll, 1500);
 }
-
 function mpStopPolling() {
   if(MP.pollInterval) clearInterval(MP.pollInterval);
   MP.pollInterval = null;
@@ -2126,228 +2073,47 @@ async function mpPoll() {
     const room = await res.json();
     if(room.updated_at === MP.lastUpdated) return;
     MP.lastUpdated = room.updated_at;
-    const state = room.state;
+    const st = room.state;
 
-    // If we're in the waiting room, update the player list
-    if(document.getElementById('s-mp-wait').classList.contains('active')) {
-      renderWaitRoom(state);
-    }
-
-    // If host started game and we're a joiner, begin
-    if(state.phase === 'loading' && !MP.isHost && document.getElementById('s-mp-wait').classList.contains('active')) {
-      mpApplyGameConfig(state);
-    }
-
-    // If in-game, apply state changes from other players
-    if(state.phase !== 'lobby' && state.phase !== 'loading' && document.getElementById('s-game').classList.contains('active')) {
-      mpApplyInGame(state);
-    }
-
-    // Results sync
-    if(state.phase === 'results' && !document.getElementById('s-results').classList.contains('active')) {
-      applyMPResults(state);
-    }
-  } catch(e) { /* silent */ }
-}
-
-async function mpBroadcast(stateUpdate) {
-  if(!MP.active || !MP.code) return;
-  try {
-    const res = await fetch('/api/room?code='+MP.code);
-    if(!res.ok) return;
-    const room = await res.json();
-    const newState = Object.assign({}, room.state, stateUpdate);
-    MP.lastUpdated = null; // force re-apply on next poll
-    await fetch('/api/room', {
-      method:'PATCH',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ code:MP.code, state:newState, player_id:MP.playerId })
-    });
-  } catch(e) { /* silent */ }
-}
-
-function mpApplyGameConfig(state) {
-  // Non-host devices get game config from room state and start loading
-  G.gameMode = state.game_mode || 'local';
-  G.city = state.city || '';
-  G.country = state.country || '';
-  G.college = state.college || '';
-  G.teams = state.teams || [];
-  G.scores = G.teams.map(()=>0);
-  G.mi = G.teams.map(()=>0);
-  G.bank={}; G.usedQs={}; G.usedImgs={}; G.ct=0; G.answered=false; G.stealing=false; G.curCell=null; G.curQ=null;
-
-  // Build board from teams
-  const allCats=[...new Set(G.teams.flatMap(t=>t.cats))];
-  G.board=allCats.map(catId=>{
-    const cat=ALL.find(c=>c.id===catId);
-    return {catId,label:cat?.label||catId,icon:cat?.icon||'❓',cells:{200:false,400:false,600:false}};
-  });
-
-  const loc = G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
-  document.getElementById('load-txt').textContent = 'Loading '+loc+'...';
-  document.getElementById('load-prog').style.width = '0%';
-  show('s-loading');
-  preGenAll().then(()=>{
-    show('s-game');
-    // Apply the full game state once loaded
-    mpApplyInGame(state);
-  }).catch(e=>{console.error(e);mpLeave();});
-}
-
-let mpLastPhase = null;
-let mpLastCt = -1;
-let mpLastCellKey = null;
-
-function mpApplyInGame(state) {
-  // Sync board cells used state
-  if(state.board) {
-    state.board.forEach((col,ci) => {
-      if(G.board[ci]) {
-        G.board[ci].cells = col.cells;
+    // Waiting room — update player list
+    if(document.getElementById('s-mp-wait')?.classList.contains('active')) {
+      mpRenderWaitRoom(st);
+      // If host started → begin for joiner
+      if((st.phase==='loading'||st.phase==='board') && !MP.isHost) {
+        mpApplyGameConfig(st, false);
       }
-    });
-  }
-  if(state.scores) G.scores = [...state.scores];
-  if(typeof state.ct === 'number') G.ct = state.ct;
-  if(state.mi) G.mi = [...state.mi];
-  if(typeof state.stealing === 'boolean') G.stealing = state.stealing;
-
-  const phase = state.phase;
-  const cellKey = state.curCell ? state.curCell.colIdx+'_'+state.curCell.pts : null;
-
-  // Board phase — just re-render board
-  if(phase === 'board') {
-    if(mpLastPhase !== 'board') {
-      mpLastPhase = 'board';
-      document.getElementById('board-section').style.display = 'block';
-      document.body.classList.remove('has-img');
-      renderBoard(true); // true = suppress re-broadcast
-    } else if(state.ct !== mpLastCt) {
-      mpLastCt = state.ct;
-      renderBoard(true);
+      return;
     }
-    updateWatchBar();
-    return;
-  }
 
-  // Question phase — someone picked a cell
-  if(phase === 'question' && state.curQ && cellKey !== mpLastCellKey) {
-    mpLastPhase = 'question';
-    mpLastCellKey = cellKey;
-    G.curCell = state.curCell;
-    G.curQ = state.curQ;
-    G.answered = false;
-    document.getElementById('board-section').style.display = 'none';
-    renderQ(G.curQ, G.curCell.pts);
-    updateWatchBar();
-    return;
-  }
-
-  // Reveal phase — answer was given, show result to watchers
-  if(phase === 'reveal' && state.lastAnswer && mpLastPhase !== 'reveal') {
-    mpLastPhase = 'reveal';
-    G.answered = true;
-    if(state.curQ) G.curQ = state.curQ;
-    if(state.curCell) G.curCell = state.curCell;
-    // Show the result feedback on watcher screen
-    const teamName = G.teams[state.ct]?.name || 'Player';
-    const la = state.lastAnswer;
-    // Update or insert feedback bar
-    let fb = document.getElementById('fb');
-    if(!fb){
-      // Question might not be rendered on this device yet — render it first
-      renderQuestion(G.curQ, G.curCell.pts);
-      fb = document.getElementById('fb');
+    // In-game — mirror all state changes
+    if(document.getElementById('s-game')?.classList.contains('active')) {
+      MP.syncing = true;
+      mpMirrorState(st);
+      MP.syncing = false;
+      return;
     }
-    // Remove watcher waiting message
-    document.querySelectorAll('.mp-wait-note').forEach(el=>el.remove());
-    // Show answer options highlighted
-    document.querySelectorAll('.opt-btn').forEach(b=>{
-      b.disabled=true;
-      if(b.textContent.trim()===G.curQ.answer)b.classList.add('ok');
-    });
-    document.querySelectorAll('.tf-btn').forEach(b=>{
-      b.disabled=true;
-      if(b.textContent.toLowerCase()===G.curQ.answer.toLowerCase())b.classList.add('ok');
-    });
-    if(fb){fb.className='fb show '+(la.ok?'ok':'no');fb.textContent=(la.ok?'✓ '+teamName+' got it! +'+la.pts+' pts. ':'✗ '+teamName+' missed it. ')+la.exp;}
-    const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
-    updScores();
-    updateWatchBar();
-    return;
-  }
+
+    // Results
+    if(st.phase==='results' && !document.getElementById('s-results')?.classList.contains('active')) {
+      if(st.scores) G.scores=[...st.scores];
+      showResults();
+    }
+  } catch(e) { /* silent */ }
 }
 
-function applyMPResults(state) {
-  if(state.scores) G.scores = [...state.scores];
-  if(state.teams) G.teams = [...state.teams];
-  showResults();
-}
-
-function updateWatchBar() {
-  const bar = document.getElementById('mp-watch-bar');
-  if(!bar || !MP.active) return;
-  const currentTeam = G.teams[G.ct];
-  const currentPlayerName = currentTeam?.name || 'Player';
-  const isMyTurn = isMyMPTurn();
-  if(isMyTurn) {
-    bar.textContent = '';
-    bar.classList.remove('show');
-  } else {
-    bar.textContent = `🎯 ${currentPlayerName}'s turn — watch the screen!`;
-    bar.classList.add('show');
-  }
-}
-
-function isMyMPTurn() {
-  if(!MP.active) return true; // local game, always "your turn"
-  const currentTeam = G.teams[G.ct];
-  return currentTeam && currentTeam.name === MP.playerName;
-}
-
-async function mpStartGame() {
-  if(!MP.isHost) return;
-  const btn = document.getElementById('mp-start-game-btn');
-  btn.textContent = 'Starting...'; btn.disabled = true;
-
-  // Fetch current room to get latest teams from all joiners
-  const res = await fetch('/api/room?code='+MP.code);
-  const room = await res.json();
-  const state = room.state;
-
-  // Make sure host's team is in the list
-  if(!state.teams) state.teams = [];
-  const hostTeamExists = state.teams.find(t => t.name === MP.playerName);
-  if(!hostTeamExists) {
-    state.teams.unshift({ name:MP.playerName, players:[MP.playerName], cats:MP.myCats });
-  }
-
-  // Apply config to local G
-  G.gameMode = state.game_mode || 'local';
-  G.city = state.city || state.location || '';
-  G.country = state.country || '';
-  G.college = '';
-  G.teams = state.teams;
+// ── APPLY GAME CONFIG ON JOINER DEVICE ──
+function mpApplyGameConfig(st, alreadyInLobby) {
+  G.gameMode = st.game_mode||'local';
+  G.city = st.city||''; G.country = st.country||''; G.college = st.college||'';
+  G.style = 'room';
+  G.teams = st.teams||[];
   G.scores = G.teams.map(()=>0);
   G.mi = G.teams.map(()=>0);
   G.bank={}; G.usedQs={}; G.usedImgs={}; G.ct=0; G.answered=false; G.stealing=false; G.curCell=null; G.curQ=null;
-
   const allCats=[...new Set(G.teams.flatMap(t=>t.cats))];
   G.board=allCats.map(catId=>{
     const cat=ALL.find(c=>c.id===catId);
     return {catId,label:cat?.label||catId,icon:cat?.icon||'❓',cells:{200:false,400:false,600:false}};
-  });
-
-  // Broadcast "loading" state so joiners start loading too
-  const loadState = {
-    phase:'loading', game_mode:G.gameMode, city:G.city, country:G.country,
-    teams:G.teams, board:G.board, scores:G.scores, ct:0, mi:G.mi,
-    players:state.players
-  };
-  await fetch('/api/room',{
-    method:'PATCH', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({code:MP.code, state:loadState})
   });
 
   const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
@@ -2355,22 +2121,102 @@ async function mpStartGame() {
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
   preGenAll().then(()=>{
-    show('s-game');
-    mpLastPhase = 'board';
-    mpLastCt = 0;
-    mpLastCellKey = null;
-    renderBoard();
-    mpBroadcast({ phase:'board', board:G.board, scores:G.scores, ct:0, mi:G.mi });
+    mpLastPhase='board'; mpLastCellKey=null; mpLastCt=-1;
+    show('s-game'); renderBoard(); mpShowRoomBadge();
+    // Apply any in-progress state
+    MP.syncing=true; mpMirrorState(st); MP.syncing=false;
   }).catch(e=>{console.error(e);mpLeave();});
+}
+
+// ── MIRROR STATE: apply room state to this device ──
+function mpMirrorState(st) {
+  if(!st) return;
+  const phase = st.phase;
+
+  // Always sync scores + board cells
+  if(st.scores) G.scores = [...st.scores];
+  if(st.board) st.board.forEach((col,ci)=>{ if(G.board[ci]) G.board[ci].cells={...col.cells}; });
+  if(typeof st.ct==='number') G.ct = st.ct;
+  if(st.mi) G.mi = [...st.mi];
+  if(typeof st.stealing==='boolean') G.stealing = st.stealing;
+  updScores();
+
+  if(phase==='board') {
+    const ctChanged = st.ct !== mpLastCt;
+    if(mpLastPhase!=='board' || ctChanged) {
+      mpLastPhase='board'; mpLastCt=st.ct;
+      document.getElementById('board-section').style.display='block';
+      document.getElementById('q-area').innerHTML='';
+      document.body.classList.remove('has-img');
+      renderBoard();
+    }
+    return;
+  }
+
+  const cellKey = st.curCell ? (G.board.findIndex(c=>c.catId===st.curCell.catId))+'_'+st.curCell.pts : null;
+
+  if(phase==='question' && st.curQ && cellKey!==mpLastCellKey) {
+    mpLastPhase='question'; mpLastCellKey=cellKey;
+    G.curCell=st.curCell; G.curQ=st.curQ; G.answered=false;
+    document.getElementById('board-section').style.display='none';
+    const ba=document.getElementById('board-ad'); if(ba)ba.style.display='none';
+    renderQuestion(st.curQ, st.curCell.pts);
+    return;
+  }
+
+  if(phase==='reveal' && st.lastAnswer && mpLastPhase!=='reveal') {
+    mpLastPhase='reveal';
+    G.answered=true;
+    const la=st.lastAnswer;
+    // Highlight correct answer + show feedback
+    document.querySelectorAll('.opt-btn').forEach(b=>{
+      b.disabled=true;
+      if(b.textContent.trim()===st.curQ?.answer) b.classList.add('ok');
+    });
+    document.querySelectorAll('.tf-btn').forEach(b=>{
+      b.disabled=true;
+      if(b.textContent.toLowerCase()===st.curQ?.answer?.toLowerCase()) b.classList.add('ok');
+    });
+    const fb=document.getElementById('fb');
+    if(fb){
+      const teamName=G.teams[st.ct]?.name||'Player';
+      fb.className='fb show '+(la.ok?'ok':'no');
+      fb.textContent=(la.ok?'✓ '+teamName+' got it! +'+la.pts+' pts. ':'✗ '+teamName+' missed it. ')+la.exp;
+    }
+    const nb=document.getElementById('nb'); if(nb)nb.style.display='flex';
+    return;
+  }
+}
+
+// ── BROADCAST STATE UPDATE ──
+async function mpPatch(stateUpdate) {
+  if(!MP.active||!MP.code||MP.syncing) return;
+  try {
+    // Merge with current room state to avoid overwriting other fields
+    const res=await fetch('/api/room?code='+MP.code);
+    if(!res.ok) return;
+    const room=await res.json();
+    const newState=Object.assign({},room.state,stateUpdate);
+    MP.lastUpdated=null;
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code:MP.code,state:newState,player_id:MP.playerId})});
+  } catch(e){/*silent*/}
+}
+
+function mpShowRoomBadge() {
+  const badge=document.getElementById('room-badge');
+  const code=document.getElementById('room-badge-code');
+  if(badge) badge.classList.add('show');
+  if(code) code.textContent='ROOM '+MP.code;
 }
 
 function mpLeave() {
   mpStopPolling();
   MP.active=false; MP.code=null; MP.playerId=null; MP.isHost=false;
-  MP.playerName=null; MP.myCats=[];
-  mpCreateCats=[]; mpJoinCats=[];
-  const bar = document.getElementById('mp-watch-bar');
-  if(bar){bar.textContent='';bar.classList.remove('show');}
+  const banner=document.getElementById('room-code-banner');
+  if(banner) banner.style.display='none';
+  const badge=document.getElementById('room-badge');
+  if(badge) badge.classList.remove('show');
   show('s-home');
 }
 
