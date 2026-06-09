@@ -497,10 +497,10 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .fb{font-size:.88rem;padding:.7rem .9rem}
   #s-game .nxt-btn{padding:.75rem}
   /* Side-by-side image layout */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:42% 1fr;column-gap:1rem;align-items:start}
+  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:42% 1fr;column-gap:1rem}
   body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/span 10;margin-bottom:0;height:100%;min-height:200px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:200px}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:200px}
+  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:200px;object-fit:cover}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
@@ -522,10 +522,10 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .nxt-btn{padding:.85rem !important;font-size:1rem !important}
   body.in-game #game-bottom-ad{display:block}
   /* Side-by-side image layout — saves ~200px vertical space */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:45% 1fr;column-gap:1.25rem;align-items:start}
+  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:45% 1fr;column-gap:1.25rem}
   body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/span 10;margin-bottom:0;height:100%;min-height:240px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:240px}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:240px}
+  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:240px;object-fit:cover}
 }
 
 /* ── LARGE DESKTOP / TV (1400px+) ── */
@@ -556,10 +556,10 @@ body.in-game #q-area:not(:empty){flex:1}
   body:not(.in-game) .card{padding:1.75rem}
   body.in-game #game-bottom-ad{display:block}
   /* Side-by-side image layout for TV */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:48% 1fr;column-gap:1.5rem;align-items:start}
+  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:48% 1fr;column-gap:1.5rem}
   body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/span 10;margin-bottom:0;height:100%;min-height:280px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:280px}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:280px}
+  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:280px;object-fit:cover}
 }
 
 /* ── PHOTO QUESTIONS ── */
