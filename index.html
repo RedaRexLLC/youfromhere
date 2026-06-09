@@ -323,32 +323,96 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
   #s-game .nxt-btn{padding:.65rem}
   #s-game .pts-badge{font-size:.88rem;margin-bottom:.25rem}
 }
-/* Landscape phone: ultra-compact */
-@media(max-width:900px) and (orientation:landscape) and (max-height:520px){
-  body.in-game .game-top{padding:.1rem .5rem .08rem}
-  #s-game .game-header{margin-bottom:.1rem}
-  .game-logo{font-size:.9rem}
-  #s-game .scores-wrap{gap:.15rem;margin-bottom:.1rem;flex-direction:row;flex-wrap:nowrap}
-  #s-game .s-card{padding:.1rem .35rem;border-radius:6px;flex:1;min-width:0}
-  #s-game .s-pts{font-size:.9rem;line-height:1}
-  #s-game .s-name{font-size:.6rem}
+/* ══════════════════════════════════════════════
+   LANDSCAPE PHONE — everything fits, no scroll
+   ══════════════════════════════════════════════ */
+@media(max-height:520px) and (orientation:landscape){
+
+  /* Root: lock to viewport, no scroll */
+  body.in-game{overflow:hidden !important;height:100dvh !important}
+  body.in-game .page-wrap{height:100dvh;overflow:hidden}
+  body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
+  #s-game.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+
+  /* ── TOP BAR: logo + scores + turn all in ONE slim row ── */
+  .game-top{
+    display:flex;flex-direction:row;align-items:center;
+    padding:.18rem .5rem;gap:.4rem;flex-shrink:0;
+    border-bottom:1px solid #e5e7eb;background:#f8f7f4;
+  }
+  #s-game .game-header{margin-bottom:0;flex-shrink:0}
+  .game-logo{font-size:.8rem;letter-spacing:.5px;white-space:nowrap}
+  #s-game .scores-wrap{
+    flex:1;display:flex;flex-direction:row;gap:.25rem;
+    margin-bottom:0;align-items:center;min-width:0;
+  }
+  #s-game .s-card{
+    flex:1;min-width:0;padding:.12rem .4rem;
+    border-radius:6px;display:flex;
+    justify-content:space-between;align-items:center;
+  }
+  #s-game .s-pts{font-size:.95rem;line-height:1}
+  #s-game .s-name{font-size:.62rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #s-game .s-player{display:none}
-  #s-game .turn-bar,#s-game .steal-bar{padding:.12rem .45rem;font-size:.68rem;margin-bottom:.1rem;border-radius:6px}
-  #s-game .board-title{font-size:.75rem;margin-bottom:.15rem}
-  #s-game .board-cat-hdr{height:32px;font-size:.55rem;padding:.15rem .1rem}
-  #s-game .board-pts-col{height:80px}
-  #s-game .board-cell{font-size:.85rem}
-  #s-game .q-card{padding:.45rem .55rem;margin-bottom:.25rem}
-  #s-game .q-txt{font-size:.82rem;margin-bottom:.35rem}
-  #s-game .timer-wrap{margin-bottom:.25rem}
-  #s-game .opts{gap:.25rem}
-  #s-game .opt-btn{padding:.38rem .45rem;font-size:.78rem}
-  #s-game .tf-btn{padding:.5rem;font-size:1.05rem}
-  #s-game .fb{font-size:.75rem;padding:.4rem .55rem;margin-top:.25rem}
-  #s-game .nxt-btn{margin-top:.25rem;padding:.42rem}
-  #s-game .pts-badge{font-size:.75rem;margin-bottom:.15rem}
-  .q-img{height:120px}
-  #s-game .q-img{height:120px}
+  #s-game .turn-bar,#s-game .steal-bar{
+    flex-shrink:0;margin-bottom:0;padding:.12rem .5rem;
+    font-size:.62rem;border-radius:5px;white-space:nowrap;
+    max-width:38%;overflow:hidden;text-overflow:ellipsis;
+  }
+
+  /* ── GAME BODY: fill remaining height, no scroll ── */
+  .game-body{
+    flex:1;overflow:hidden;padding:.3rem .4rem;
+    display:flex;flex-direction:column;
+  }
+
+  /* ── BOARD VIEW: fill height, cells scale to fit ── */
+  .board-section{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  #s-game .board-title{font-size:.7rem;margin-bottom:.2rem;flex-shrink:0}
+  .board-grid{flex:1;display:grid !important;gap:.25rem}
+  .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0}
+  .board-cat-hdr{
+    flex-shrink:0;height:28px !important;font-size:.52rem !important;
+    padding:.1rem .1rem !important;line-height:1.2;
+  }
+  .board-pts-col{flex:1 !important;height:auto !important}
+  .board-cell{flex:1 !important;font-size:.85rem !important;height:auto !important;min-height:0}
+  #board-ad{display:none !important}
+
+  /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
+  #q-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
+  .q-img-wrap{
+    /* In landscape: image becomes LEFT column */
+    position:absolute;left:.4rem;top:0;bottom:0;
+    width:42%;border-radius:8px;margin-bottom:0;
+  }
+  .q-img{height:100% !important;object-fit:cover}
+  /* Question card shifts RIGHT when image present */
+  body.in-game.has-img .q-card{margin-left:44%;padding:.45rem .5rem}
+  body.in-game .q-card{
+    padding:.4rem .55rem;margin-bottom:.25rem;
+    overflow:hidden;flex-shrink:0;
+  }
+  /* q-area relative for absolute image positioning */
+  body.in-game #q-area{position:relative}
+
+  #s-game .pts-badge{font-size:.78rem;margin-bottom:.15rem}
+  #s-game .q-cat-lbl{font-size:.58rem;margin-bottom:.15rem}
+  #s-game .timer-wrap{margin-bottom:.2rem}
+  #s-game .t-num{font-size:1rem}
+  #s-game .q-txt{font-size:.82rem !important;line-height:1.4 !important;margin-bottom:.3rem}
+  #s-game .opts{gap:.2rem;display:grid;grid-template-columns:1fr 1fr}
+  #s-game .opt-btn{padding:.35rem .4rem;font-size:.76rem;border-radius:8px}
+  #s-game .tf-btn{padding:.45rem .3rem;font-size:1rem;flex:1}
+  #s-game .acts{margin-bottom:.2rem;gap:.3rem}
+  #s-game .act-btn,.end-btn-small{padding:.3rem .6rem;font-size:.72rem}
+  #s-game .fb{font-size:.72rem !important;padding:.35rem .5rem;margin-top:.2rem;line-height:1.35}
+  #s-game .nxt-btn{margin-top:.2rem;padding:.4rem;font-size:.82rem}
+  #s-game .mod-bar{padding:.35rem .5rem;margin-bottom:.2rem}
+  #s-game .mod-btn{padding:.35rem .3rem;font-size:.7rem}
+  #s-game .mod-answer{padding:.25rem .5rem;font-size:.75rem;margin-bottom:.25rem}
+  .post-ans-ad{display:none !important}
+  #post-ans-ad{display:none !important}
 }
 
 /* ── TABLET (600px–1023px) ── */
@@ -1342,6 +1406,7 @@ function getNextQ(pts,catId){
 // ── RENDER BOARD ──
 function renderBoard(){
   G.answered=false;
+  document.body.classList.remove('has-img');
   const t=G.ct;
 
   // Scores
@@ -1472,6 +1537,7 @@ function renderQuestion(q,pts){
       if(!wrap)return;
       if(imgUrl){
         wrap.className='q-img-wrap';
+        document.body.classList.add('has-img');
         wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-overlay-top"></div>'
