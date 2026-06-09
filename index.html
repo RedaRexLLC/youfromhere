@@ -140,8 +140,22 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .s-player{font-size:.72rem;color:#6b7280}
 .s-pts{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:1}
 .sc0{color:#e8b84b}.sc1{color:#4ecdc4}.sc2{color:#a78bfa}.sc3{color:#fb923c}
-.turn-bar{border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;font-weight:600;font-size:.95rem;text-align:center;border:2px solid #22c55e;background:#f0fdf4;color:#166534}
 .steal-bar{background:#fffbf0;border:2px solid #e8b84b;border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;font-weight:700;font-size:.95rem;text-align:center;color:#1a1a2e}
+/* Combined info bar: turn + pts + category + timer in one row */
+#game-info-bar{border-radius:10px;padding:.45rem .75rem;margin-bottom:.5rem;background:#f0fdf4;border:1.5px solid #22c55e}
+#game-info-bar.q-mode{background:#1a1a2e;border-color:#2e2e4e}
+.gib-row{display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600}
+#gib-turn{flex:1;color:#166534;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#game-info-bar.q-mode #gib-turn{color:#9ca3af;font-weight:500;font-size:.78rem}
+#gib-pts{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:.5px;padding:.1rem .35rem;border-radius:5px;flex-shrink:0}
+#gib-pts.pb-200{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+#gib-pts.pb-400{background:#fffbeb;color:#92400e;border:1px solid #fde68a}
+#gib-pts.pb-600{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+#gib-cat{color:#e8b84b;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:35%}
+#gib-timer{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:1px;color:#e8b84b;flex-shrink:0;margin-left:auto}
+#gib-timer.urgent{color:#ef4444}
+#gib-tbar-wrap{margin-top:.25rem;height:5px;background:#2e2e4e;border-radius:3px;overflow:hidden}
+#gib-tbar{height:100%;border-radius:3px;transition:width 1s linear,background .5s}
 
 /* ── SEEN JEEM BOARD ── */
 .board-section{margin-bottom:.75rem}
@@ -325,14 +339,15 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .s-card{padding:.2rem .4rem}
   #s-game .s-pts{font-size:1.1rem}
   #s-game .s-name{font-size:.68rem}
-  #s-game .turn-bar,#s-game .steal-bar{padding:.22rem .5rem;font-size:.7rem;margin-bottom:.2rem}
+  #s-game .steal-bar{padding:.22rem .5rem;font-size:.7rem;margin-bottom:.2rem}
+  #game-info-bar{padding:.3rem .5rem;margin-bottom:.25rem;font-size:.78rem}
   #s-game .game-header{margin-bottom:.2rem}
   #s-game .scores-wrap{gap:.25rem;margin-bottom:.25rem}
   #s-game .s-card{padding:.25rem .55rem;border-radius:9px}
   #s-game .s-pts{font-size:1.2rem}
   #s-game .s-name{font-size:.75rem}
   #s-game .s-player{font-size:.62rem}
-  #s-game .turn-bar,#s-game .steal-bar{padding:.28rem .6rem;font-size:.76rem;margin-bottom:.25rem}
+  #s-game .steal-bar{padding:.28rem .6rem;font-size:.76rem;margin-bottom:.25rem}
   .q-img{height:200px}
   #s-game .q-img{height:200px}
   #s-game .q-card{padding:.7rem;margin-bottom:.4rem}
@@ -378,11 +393,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .s-pts{font-size:.88rem;line-height:1}
   #s-game .s-name{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px}
   #s-game .s-player{display:none}
-  #s-game .turn-bar,#s-game .steal-bar{
-    flex-shrink:0;margin-bottom:0;padding:.1rem .45rem;
-    font-size:.6rem;border-radius:5px;
-    max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  }
+  #s-game .steal-bar{flex-shrink:0;margin-bottom:0;padding:.1rem .45rem;font-size:.6rem;border-radius:5px;}
 
   /* ── GAME BODY ── */
   .game-body{
@@ -421,8 +432,7 @@ body.in-game #q-area:not(:empty){flex:1}
 
   #s-game .pts-badge{font-size:.78rem;margin-bottom:.15rem}
   #s-game .q-cat-lbl{font-size:.58rem;margin-bottom:.15rem}
-  #s-game .timer-wrap{margin-bottom:.2rem}
-  #s-game .t-num{font-size:1rem}
+  #gib-timer{font-size:.9rem !important}
   #s-game .q-txt{font-size:.82rem !important;line-height:1.4 !important;margin-bottom:.3rem}
   #s-game .opts{gap:.2rem;display:grid;grid-template-columns:1fr 1fr}
   #s-game .opt-btn{padding:.35rem .4rem;font-size:.76rem;border-radius:8px}
@@ -450,7 +460,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .s-pts{font-size:1.45rem}
   #s-game .s-name{font-size:.82rem}
   #s-game .s-player{font-size:.67rem}
-  #s-game .turn-bar,#s-game .steal-bar{padding:.35rem .75rem;font-size:.85rem;margin-bottom:.3rem}
+  #s-game .steal-bar{padding:.35rem .75rem;font-size:.85rem;margin-bottom:.3rem}
   #s-game .board-title{font-size:1rem;margin-bottom:.35rem}
   .q-img{height:260px}
   #s-game .q-img{height:260px}
@@ -481,7 +491,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .s-pts{font-size:1.6rem}
   #s-game .s-name{font-size:.88rem}
   #s-game .s-player{font-size:.72rem}
-  #s-game .turn-bar,#s-game .steal-bar{font-size:.95rem;padding:.45rem .9rem}
+  #s-game .steal-bar{font-size:.95rem;padding:.45rem .9rem}
   /* Question view */
   .q-img{height:300px}
   #s-game .q-img{height:300px}
@@ -509,7 +519,7 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .s-pts{font-size:2rem}
   #s-game .s-name{font-size:1rem}
   #s-game .s-player{font-size:.78rem}
-  #s-game .turn-bar,#s-game .steal-bar{font-size:1.05rem;padding:.55rem 1rem}
+  #s-game .steal-bar{font-size:1.05rem;padding:.55rem 1rem}
   /* Question view */
   .q-img{height:380px}
   #s-game .q-img{height:380px}
@@ -546,11 +556,11 @@ body.a11y .opt-btn{font-size:1.05rem !important;padding:1rem !important;line-hei
 body.a11y .tf-btn{font-size:2.2rem !important;padding:1.3rem !important}
 body.a11y .s-name{font-size:1rem !important}
 body.a11y .s-pts{font-size:2.2rem !important}
-body.a11y .turn-bar,.a11y .steal-bar{font-size:1.05rem !important}
+body.a11y .steal-bar,body.a11y #game-info-bar{font-size:1.05rem !important}
 body.a11y .board-cat-hdr{font-size:.88rem !important}
 body.a11y .board-cell{font-size:1.4rem !important}
 body.a11y .fb{font-size:1rem !important}
-body.a11y .t-num{font-size:1.6rem !important}
+body.a11y #gib-timer{font-size:1.6rem !important}
 body.a11y button:focus-visible,body.a11y input:focus-visible,body.a11y select:focus-visible,body.a11y textarea:focus-visible{outline:4px solid #1a1a2e;outline-offset:3px}
 body.a11y .s-card{border-width:3px !important}
 body.a11y .s-card.cur{background:#d1fae5 !important}
@@ -736,7 +746,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
         <div class="tv-row">
           <div><label class="tv-label" for="tv-tog">📺 TV Mode</label><div class="tv-sub">Larger text for big screens</div></div>
-          <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          <div style="display:flex;align-items:center;gap:.6rem">
+            <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'" style="font-size:.78rem;padding:.35rem .7rem">📺 Mirror</button>
+            <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+          </div>
         </div>
       </div>
 
@@ -847,12 +860,19 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div class="game-logo">You From <span>Here?</span></div>
           <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-end">
             <span id="room-badge"><span class="rb-dot"></span> <span id="room-badge-code"></span></span>
-            <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'">📺 Mirror</button>
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
           </div>
         </div>
         <div class="scores-wrap" id="scores-wrap" aria-label="Scores" aria-live="polite"></div>
-        <div class="turn-bar" id="turn-bar" style="display:none" aria-live="polite" aria-atomic="true"></div>
+        <div id="game-info-bar" style="display:none" aria-live="polite" aria-atomic="true">
+          <div class="gib-row">
+            <span id="gib-turn"></span>
+            <span id="gib-pts" style="display:none"></span>
+            <span id="gib-cat" style="display:none"></span>
+            <span id="gib-timer" style="display:none">1:00</span>
+          </div>
+          <div id="gib-tbar-wrap" style="display:none"><div id="gib-tbar" style="width:100%;background:#22c55e"></div></div>
+        </div>
         <div class="steal-bar" id="steal-bar" style="display:none" aria-live="assertive" aria-atomic="true"></div>
       </div>
       <div class="game-body">
@@ -1549,11 +1569,26 @@ function renderBoard(){
   sw.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
   sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(i===t&&G.style!=='mod'?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div>').join('');
 
-  // Turn bar
-  const tb=document.getElementById('turn-bar');
-  if(G.style==='solo'){tb.style.display='none';}
-  else if(G.style==='mod'){tb.style.display='block';tb.textContent='🎙️ Moderator Mode — pick a question for any team';}
-  else{tb.style.display='block';const mem=G.teams[t].players[G.mi[t]%G.teams[t].players.length];tb.textContent=G.teams[t].name+'\'s turn · '+mem+' — pick from the board!';}
+  // Combined info bar — board phase
+  const gib=document.getElementById('game-info-bar');
+  if(gib){
+    gib.style.display='block';
+    gib.className='';
+    const gibTurn=document.getElementById('gib-turn');
+    const gibPts=document.getElementById('gib-pts');
+    const gibCat=document.getElementById('gib-cat');
+    const gibTimer=document.getElementById('gib-timer');
+    const gibTbar=document.getElementById('gib-tbar-wrap');
+    if(gibPts)gibPts.style.display='none';
+    if(gibCat)gibCat.style.display='none';
+    if(gibTimer)gibTimer.style.display='none';
+    if(gibTbar)gibTbar.style.display='none';
+    if(gibTurn){
+      if(G.style==='solo')gib.style.display='none';
+      else if(G.style==='mod')gibTurn.textContent='🎙️ Moderator — pick a question for any team';
+      else{const mem=G.teams[t].players[G.mi[t]%G.teams[t].players.length];gibTurn.textContent='🎯 '+G.teams[t].name+'\'s turn · '+mem;}
+    }
+  }
   document.getElementById('steal-bar').style.display='none';
 
   // Check if board is complete
@@ -1601,12 +1636,29 @@ function renderQuestion(q,pts){
   // Hide board while question is showing
   document.getElementById('board-section').style.display='none';
 
+  // Update combined info bar to question mode
+  const gib=document.getElementById('game-info-bar');
+  if(gib){
+    gib.style.display='block';
+    gib.className='q-mode';
+    const gibTurn=document.getElementById('gib-turn');
+    const gibPts=document.getElementById('gib-pts');
+    const gibCat=document.getElementById('gib-cat');
+    const gibTimer=document.getElementById('gib-timer');
+    const gibTbar=document.getElementById('gib-tbar-wrap');
+    const gibTbarBar=document.getElementById('gib-tbar');
+    if(gibTurn)gibTurn.textContent=G.teams[t].name;
+    if(gibPts){gibPts.className=pbClass;gibPts.textContent=pts+' PTS';gibPts.style.display='inline';}
+    if(gibCat){gibCat.textContent=q.category;gibCat.style.display='inline';}
+    if(gibTimer){gibTimer.textContent='1:00';gibTimer.className='';gibTimer.style.display='block';}
+    if(gibTbar){gibTbar.style.width='100%';gibTbar.style.background='#22c55e';}
+    if(gibTbarBar)gibTbarBar.style.display='block';
+  }
+
   const isPhoto=q.type==='photo';
   const isMap=q.type==='mapview';
   const hasImg=isPhoto||isMap;
   let html='<div class="q-card">'
-    +'<div class="timer-wrap"><div class="t-lbl"><span class="t-cat" id="t-cat">'+q.category+'</span><span class="t-num" id="t-num">1:00</span></div><div class="t-bg"><div class="t-bar" id="t-bar" style="width:100%;background:#22c55e"></div></div></div>'
-    +'<div><span class="pts-badge '+pbClass+'">'+pts+' PTS</span></div>'
     +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div>':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
     +'<div class="q-txt">'+q.question+'</div>';
@@ -1726,9 +1778,10 @@ function startTmr(){clearInterval(tmr);clearInterval(stealTmr);tLeft=TMAX;updTmr
 function stopTmr(){clearInterval(tmr);clearInterval(stealTmr);}
 function updTmr(){
   const m=Math.floor(tLeft/60),s=tLeft%60;
-  const tn=document.getElementById('t-num');if(tn)tn.textContent=m+':'+(s<10?'0':'')+s;
+  const tn=document.getElementById('gib-timer');
+  if(tn){tn.textContent=m+':'+(s<10?'0':'')+s;tn.className=tLeft<=10?'urgent':'';}
   const pct=(tLeft/TMAX)*100;
-  const bar=document.getElementById('t-bar');if(bar){bar.style.width=pct+'%';bar.style.background=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';}
+  const bar=document.getElementById('gib-tbar');if(bar){bar.style.width=pct+'%';bar.style.background=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';}
 }
 
 function doStealTimer(){
@@ -1740,8 +1793,8 @@ function doStealTimer(){
   sb.textContent=G.teams[stealTeam].name+' — steal opportunity! 10 seconds!';
   G.stealing=true;G.ct=stealTeam;
   let stLeft=STEAL_TIME;
-  const tn=document.getElementById('t-num');const bar=document.getElementById('t-bar');
-  if(tn)tn.textContent='0:'+STEAL_TIME;if(tn)tn.className='t-num urgent';
+  const tn=document.getElementById('gib-timer');const bar=document.getElementById('gib-tbar');
+  if(tn)tn.textContent='0:'+STEAL_TIME;if(tn)tn.className='urgent';
   stealTmr=setInterval(()=>{
     stLeft--;
     if(tn)tn.textContent='0:'+(stLeft<10?'0':'')+stLeft;
@@ -1791,7 +1844,7 @@ function doPass(){
   updScores();
   // Restart timer for steal team
   tLeft=STEAL_TIME;updTmr();
-  const tn=document.getElementById('t-num');if(tn)tn.className='t-num urgent';
+  const tn=document.getElementById('gib-timer');if(tn)tn.className='urgent';
   stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);doTimeout();}},1000);
 }
 
