@@ -1061,7 +1061,7 @@ function startQuips(){
   const quips=buildQuips();
   let i=0;
   if(el)el.textContent=quips[0];
-  _quipTimer=setInterval(()=>{i=(i+1)%quips.length;if(el)el.textContent=quips[i];},4500);
+  _quipTimer=setInterval(()=>{i=(i+1)%quips.length;if(el)el.textContent=quips[i];},10000);
 }
 function stopQuips(){clearInterval(_quipTimer);_quipTimer=null;}
 
