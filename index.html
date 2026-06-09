@@ -36,8 +36,6 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 @media(max-width:599px){.ad-banner.bottom{display:block}.game-content{padding:0 .5rem}}
 /* Desktop image & board scaling */
 @media(min-width:768px){
-  .q-img{height:380px}
-  #s-game .q-img{height:380px}
   .board-cell{height:72px;font-size:1.8rem}
   .board-cat-hdr{height:72px;font-size:.88rem}
   .q-txt{font-size:1.15rem !important;line-height:1.6 !important}
@@ -286,7 +284,18 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 #s-game{padding:0 !important}
 #s-game.active{display:flex;flex-direction:column;height:100%;overflow:hidden}
 .game-top{padding:.4rem .75rem .3rem;flex-shrink:0;background:#f8f7f4;border-bottom:1px solid #e5e7eb}
-.game-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:.5rem .75rem .75rem}
+
+/* game-body: flex column, board fills it, q-area scrolls independently */
+.game-body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:.5rem .75rem .75rem}
+body.in-game .board-section{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;margin-bottom:0}
+body.in-game .board-title{flex-shrink:0}
+body.in-game .board-grid{flex:1;min-height:0}
+body.in-game .board-col{display:flex;flex-direction:column;overflow:hidden}
+body.in-game .board-cat-hdr{flex-shrink:0}
+body.in-game .board-pts-col{flex:1;min-height:0;height:auto !important;display:grid;grid-template-rows:1fr 1fr 1fr}
+body.in-game .board-cell{height:auto !important;min-height:44px}
+body.in-game #q-area{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.in-game #board-ad{flex-shrink:0}
 
 /* ── PHONE (< 600px or .dev-phone) ── */
 @media(max-width:599px){
@@ -302,9 +311,8 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 @media(max-width:599px) and (orientation:portrait){
   body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.3rem !important}
   body.in-game .board-col{min-width:0}
-  body.in-game .board-cat-hdr{height:44px;font-size:.58rem;padding:.2rem .15rem;line-height:1.3;word-break:break-word;hyphens:auto}
-  body.in-game .board-pts-col{height:100px}
-  body.in-game .board-cell{font-size:.9rem}
+  body.in-game .board-cat-hdr{height:40px;font-size:.55rem;padding:.15rem .1rem;line-height:1.3;word-break:break-word;hyphens:auto}
+  body.in-game .board-cell{font-size:.9rem;min-height:52px}
   body.in-game .board-title{font-size:.8rem;margin-bottom:.2rem}
   #s-game .game-header{margin-bottom:.2rem}
   #s-game .scores-wrap{gap:.25rem;margin-bottom:.25rem}
@@ -334,49 +342,53 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
   body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
   #s-game.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 
-  /* ── TOP BAR: logo + scores + turn all in ONE slim row ── */
+  /* ── TOP BAR: one slim row — logo + scores + turn ── */
   .game-top{
     display:flex;flex-direction:row;align-items:center;
-    padding:.18rem .5rem;gap:.4rem;flex-shrink:0;
+    padding:.15rem .4rem;gap:.3rem;flex-shrink:0;
     border-bottom:1px solid #e5e7eb;background:#f8f7f4;
   }
-  #s-game .game-header{margin-bottom:0;flex-shrink:0}
-  .game-logo{font-size:.8rem;letter-spacing:.5px;white-space:nowrap}
+  #s-game .game-header{margin-bottom:0;flex-shrink:0;gap:.25rem}
+  .game-logo{font-size:.72rem;letter-spacing:.5px;white-space:nowrap}
+  /* Hide room badge in landscape — code visible on host's screen before game starts */
+  #room-badge{display:none !important}
+  .mirror-btn{font-size:.65rem !important;padding:.2rem .45rem !important}
+  .end-btn-small{font-size:.65rem !important;padding:.2rem .45rem !important}
   #s-game .scores-wrap{
-    flex:1;display:flex;flex-direction:row;gap:.25rem;
+    flex:1;display:flex;flex-direction:row;gap:.2rem;
     margin-bottom:0;align-items:center;min-width:0;
   }
   #s-game .s-card{
-    flex:1;min-width:0;padding:.12rem .4rem;
+    flex:1;min-width:0;padding:.1rem .35rem;
     border-radius:6px;display:flex;
-    justify-content:space-between;align-items:center;
+    justify-content:space-between;align-items:center;gap:.2rem;
   }
-  #s-game .s-pts{font-size:.95rem;line-height:1}
-  #s-game .s-name{font-size:.62rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #s-game .s-pts{font-size:.88rem;line-height:1}
+  #s-game .s-name{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px}
   #s-game .s-player{display:none}
   #s-game .turn-bar,#s-game .steal-bar{
-    flex-shrink:0;margin-bottom:0;padding:.12rem .5rem;
-    font-size:.62rem;border-radius:5px;white-space:nowrap;
-    max-width:38%;overflow:hidden;text-overflow:ellipsis;
+    flex-shrink:0;margin-bottom:0;padding:.1rem .45rem;
+    font-size:.6rem;border-radius:5px;
+    max-width:35%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
 
-  /* ── GAME BODY: fill remaining height, no scroll ── */
+  /* ── GAME BODY ── */
   .game-body{
-    flex:1;overflow:hidden;padding:.3rem .4rem;
+    flex:1;min-height:0;overflow:hidden;padding:.25rem .35rem;
     display:flex;flex-direction:column;
   }
 
-  /* ── BOARD VIEW: fill height, cells scale to fit ── */
-  .board-section{flex:1;overflow:hidden;display:flex;flex-direction:column}
-  #s-game .board-title{font-size:.7rem;margin-bottom:.2rem;flex-shrink:0}
-  .board-grid{flex:1;display:grid !important;gap:.25rem}
+  /* ── BOARD: fill height, all 3 rows always visible ── */
+  .board-section{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
+  .board-title{display:none}
+  .board-grid{flex:1;min-height:0;display:grid !important;gap:.2rem}
   .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0}
   .board-cat-hdr{
-    flex-shrink:0;height:28px !important;font-size:.52rem !important;
-    padding:.1rem .1rem !important;line-height:1.2;
+    flex-shrink:0;height:24px !important;font-size:.48rem !important;
+    padding:.05rem !important;line-height:1.2;
   }
-  .board-pts-col{flex:1 !important;height:auto !important}
-  .board-cell{flex:1 !important;font-size:.85rem !important;height:auto !important;min-height:0}
+  .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
+  .board-cell{min-height:0 !important;height:auto !important;font-size:.78rem !important}
   #board-ad{display:none !important}
 
   /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
@@ -420,9 +432,8 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
   .ad-banner{display:block}
   .game-content{max-width:720px}
   body.in-game .board-grid{gap:.4rem}
-  body.in-game .board-cat-hdr{height:56px;font-size:.76rem}
-  body.in-game .board-pts-col{height:130px}
-  body.in-game .board-cell{font-size:1.3rem}
+  body.in-game .board-cat-hdr{height:52px;font-size:.76rem}
+  body.in-game .board-cell{font-size:1.25rem;min-height:48px}
   #s-game .game-header{margin-bottom:.3rem}
   #s-game .scores-wrap{gap:.3rem;margin-bottom:.3rem}
   #s-game .s-card{padding:.3rem .7rem;border-radius:10px}
@@ -444,23 +455,26 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
 /* Tablet portrait board wrap */
 @media(min-width:600px) and (max-width:767px) and (orientation:portrait){
   body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.35rem !important}
-  body.in-game .board-cat-hdr{height:50px;font-size:.7rem}
-  body.in-game .board-pts-col{height:110px}
+  body.in-game .board-cat-hdr{height:46px;font-size:.7rem}
+  body.in-game .board-cell{min-height:56px}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
 @media(min-width:1024px) and (max-width:1399px){
   .game-content{max-width:900px}
   body.in-game .game-content{max-width:100% !important}
-  body.in-game .board-cat-hdr{height:64px;font-size:.82rem}
-  body.in-game .board-pts-col{height:160px}
-  body.in-game .board-cell{font-size:1.6rem}
+  /* Board: cat header fixed height, cells fill remaining via flex */
+  body.in-game .board-cat-hdr{height:58px;font-size:.82rem}
+  body.in-game .board-cell{font-size:1.55rem;min-height:52px}
+  body.in-game .board-title{font-size:.9rem;margin-bottom:.3rem}
+  /* Scores & header */
   #s-game .s-pts{font-size:1.6rem}
   #s-game .s-name{font-size:.88rem}
   #s-game .s-player{font-size:.72rem}
   #s-game .turn-bar,#s-game .steal-bar{font-size:.95rem;padding:.45rem .9rem}
-  .q-img{height:340px}
-  #s-game .q-img{height:340px}
+  /* Question view */
+  .q-img{height:300px}
+  #s-game .q-img{height:300px}
   #s-game .q-txt{font-size:1.1rem !important;line-height:1.65 !important}
   #s-game .opt-btn{font-size:.98rem !important;padding:.82rem 1rem !important}
   #s-game .tf-btn{font-size:1.6rem !important;padding:1.05rem !important}
@@ -477,15 +491,18 @@ body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direc
   .ad-banner{display:none !important}
   .game-content{max-width:980px}
   body.in-game .game-content{max-width:100% !important}
-  body.in-game .board-cat-hdr{height:72px;font-size:.92rem}
-  body.in-game .board-pts-col{height:180px}
-  body.in-game .board-cell{font-size:2rem}
+  /* Board: cat header fixed height, cells fill remaining */
+  body.in-game .board-cat-hdr{height:68px;font-size:.92rem}
+  body.in-game .board-cell{font-size:2rem;min-height:64px}
+  body.in-game .board-title{font-size:1.1rem;margin-bottom:.4rem}
+  /* Scores & header */
   #s-game .s-pts{font-size:2rem}
   #s-game .s-name{font-size:1rem}
   #s-game .s-player{font-size:.78rem}
   #s-game .turn-bar,#s-game .steal-bar{font-size:1.05rem;padding:.55rem 1rem}
-  .q-img{height:420px}
-  #s-game .q-img{height:420px}
+  /* Question view */
+  .q-img{height:380px}
+  #s-game .q-img{height:380px}
   #s-game .q-txt{font-size:1.25rem !important;line-height:1.7 !important}
   #s-game .opt-btn{font-size:1.1rem !important;padding:1rem 1.2rem !important}
   #s-game .tf-btn{font-size:1.85rem !important;padding:1.2rem !important}
