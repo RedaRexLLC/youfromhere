@@ -17,20 +17,35 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 
 /* ── LAYOUT ── */
 .page-wrap{display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
-.ad-left,.ad-right{display:none;position:sticky;top:1rem;width:170px;flex-shrink:0;padding-top:1rem}
+.ad-left,.ad-right{display:none;position:sticky;top:1rem;width:180px;flex-shrink:0;padding-top:1rem}
 .ad-sidebar-block{background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.6rem;text-align:center;color:#9ca3af;font-size:.7rem;margin-bottom:.75rem;overflow:hidden}
-.ad-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#d1d5db;margin-bottom:.3rem}
+.ad-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.08em;color:#b0b8c4;margin-bottom:.3rem;display:block}
 .ad-banner{display:none;background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.3rem;text-align:center;overflow:hidden}
-.ad-inline{background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.4rem;text-align:center;margin:.75rem 0;display:none;overflow:hidden}
+.ad-inline{background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.5rem;text-align:center;margin:.75rem 0;overflow:hidden;display:none}
 .ad-inline.show{display:block;animation:fadeIn .4s ease}
+.ad-board{background:#fff;border:1.5px dashed #e5e7eb;border-radius:10px;padding:.5rem;text-align:center;margin-top:.75rem;display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 /* Placeholder shown before AdSense fills the slot */
 .adsbygoogle:not([data-adsbygoogle-status]){min-height:50px;background:#f8f7f4;border-radius:6px;display:flex !important;align-items:center;justify-content:center}
 .adsbygoogle:not([data-adsbygoogle-status])::before{content:'📢  Ad Space';color:#9ca3af;font-size:.7rem;font-family:"DM Sans",sans-serif}
-.game-content{flex:1;max-width:760px;width:100%;padding:0 1rem}
-@media(min-width:1100px){.ad-left,.ad-right{display:block}.ad-left{margin-right:1.25rem}.ad-right{margin-left:1.25rem}.ad-banner{display:none !important}}
-@media(min-width:600px) and (max-width:1099px){.ad-banner{display:block}}
+.game-content{flex:1;max-width:860px;width:100%;padding:0 1rem}
+/* Desktop: wider content, sidebars visible */
+@media(min-width:1200px){.ad-left,.ad-right{display:block}.ad-left{margin-right:1.5rem}.ad-right{margin-left:1.5rem}.ad-banner{display:none !important}.game-content{max-width:920px}}
+/* Tablet: banner ads, no sidebars */
+@media(min-width:600px) and (max-width:1199px){.ad-banner{display:block}.game-content{max-width:860px}}
 @media(max-width:599px){.ad-banner.bottom{display:block}.game-content{padding:0 .5rem}}
+/* Desktop image & board scaling */
+@media(min-width:768px){
+  .q-img{height:380px}
+  #s-game .q-img{height:380px}
+  .board-cell{height:72px;font-size:1.8rem}
+  .board-cat-hdr{height:72px;font-size:.88rem}
+  .q-txt{font-size:1.15rem !important;line-height:1.6 !important}
+  .opt-btn{font-size:1rem !important;padding:.85rem 1rem !important}
+  .tf-btn{font-size:1.6rem !important;padding:1.1rem !important}
+  .fb{font-size:.95rem !important}
+  .nxt-btn{padding:.85rem !important;font-size:1rem !important}
+}
 
 /* ── SCREENS ── */
 .screen{display:none;padding:1.5rem 0}.screen.active{display:block}
@@ -643,9 +658,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       </div>
       <div class="game-body">
         <div class="board-section" id="board-section"></div>
+        <!-- Ad shown on board while players pick a question -->
+        <div class="ad-board" id="board-ad">
+          <span class="ad-label">Advertisement</span>
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000008" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+        </div>
         <div id="q-area"></div>
+        <!-- Ad shown after answering in the feedback area -->
         <div class="ad-inline" id="post-ans-ad">
-          <div class="ad-label">Advertisement</div>
+          <span class="ad-label">Advertisement</span>
           <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000005" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
           <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
         </div>
@@ -1278,6 +1300,8 @@ function renderBoard(){
   document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
   document.getElementById('q-area').innerHTML='';
   document.getElementById('post-ans-ad').classList.remove('show');
+  // Show board ad while players pick
+  const ba=document.getElementById('board-ad');if(ba)ba.style.display='block';
 }
 
 function pickCell(catId,pts){
@@ -1299,8 +1323,9 @@ function renderQuestion(q,pts){
   const pbClass=pts===200?'pb-200':pts===400?'pb-400':'pb-600';
   const isMod=G.style==='mod';
 
-  // Hide board while question is showing
+  // Hide board and board ad while question is showing
   document.getElementById('board-section').style.display='none';
+  const ba=document.getElementById('board-ad');if(ba)ba.style.display='none';
 
   const isPhoto=q.type==='photo';
   const isMap=q.type==='mapview';
