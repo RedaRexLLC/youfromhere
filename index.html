@@ -729,11 +729,15 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .mp-join-btn.joined{background:#22c55e;color:#fff}
 .mp-add-team-btn{width:100%;padding:.45rem;border:2px dashed #e5e7eb;border-radius:10px;background:#fafaf9;color:#6b7280;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s}
 .mp-add-team-btn:hover{border-color:#22c55e;color:#166534}
-.mp-cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin:.4rem 0}
-.mp-cat-btn{padding:.45rem .2rem;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-size:.68rem;font-weight:600;line-height:1.3}
-.mp-cat-btn .mc-icon{font-size:1rem;display:block;margin-bottom:.1rem}
-.mp-cat-btn.picked{border-color:#22c55e;background:#f0fdf4;color:#166534}
-.mp-cat-btn:disabled{opacity:.45;cursor:not-allowed}
+.mp-cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;margin:.4rem 0}
+.mp-cat-btn{display:flex;align-items:center;gap:.6rem;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;font-size:.85rem;font-weight:600;color:#374151;text-align:left;transition:all .15s;width:100%;box-sizing:border-box;line-height:1.3}
+.mp-cat-btn .mc-icon{font-size:1.15rem;flex-shrink:0;display:inline;margin:0}
+.mp-cat-btn:hover{border-color:#d1d5db;background:#f9fafb}
+.mp-cat-btn.picked{border-color:#e8b84b;background:#fffbeb;color:#1a1a2e}
+.mp-cat-btn:disabled{opacity:.4;cursor:not-allowed}
+.cat-section-lbl{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#e8b84b;margin:.75rem 0 .35rem;display:flex;align-items:center;gap:.4rem;grid-column:1/-1}
+.cat-section-lbl::after{content:'';flex:1;height:1px;background:#e5e7eb}
+@media(max-width:599px){.mp-cat-grid{grid-template-columns:1fr}}
 .mp-vote-count{font-size:.78rem;color:#6b7280;margin:.2rem 0;text-align:center;font-weight:600}
 .mp-vote-count.done{color:#22c55e}
 .player-chip{display:flex;align-items:center;gap:.45rem;padding:.3rem .6rem;background:#f8f7f4;border-radius:9px;margin-bottom:.25rem}
@@ -753,11 +757,9 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 @media(min-width:700px){
   .mp-lobby-grid{grid-template-columns:300px 1fr}
   .mp-lobby-left{position:sticky;top:1rem;align-self:start}
-  .mp-cat-grid{grid-template-columns:repeat(4,1fr) !important}
 }
 @media(min-width:1024px){
   .mp-lobby-grid{grid-template-columns:340px 1fr}
-  .mp-cat-grid{grid-template-columns:repeat(5,1fr) !important}
   .mp-lobby-logo{height:56px}
 }
 .mp-waiting-banner{background:#1a1a2e;color:#e8b84b;border-radius:10px;padding:.55rem .85rem;text-align:center;font-size:.85rem;font-weight:700;margin-bottom:.5rem}
@@ -2524,7 +2526,7 @@ function mpBuildCatGrid(st){
   if(mode==='national') cats=[...NCATS];
   else if(mode==='world') cats=[...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
   else cats=[...NCATS,...LCATS];
-  const mkBtn=c=>`<button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')"><span class="mc-icon">${c.icon}</span>${c.label}</button>`;
+  const mkBtn=c=>`<button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')"><span class="mc-icon">${c.icon}</span><span>${c.label}</span></button>`;
   if(mode==='local'){
     const loc=cats.filter(c=>LCATS.find(n=>n.id===c.id));
     const nat=cats.filter(c=>NCATS.find(n=>n.id===c.id));
