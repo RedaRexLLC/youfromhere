@@ -2060,8 +2060,12 @@ function doStealTimer(){
 function doTimeout(){
   if(G.answered)return;G.answered=true;sOut();
   const q=G.curQ;
-  document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer||b.textContent.toLowerCase()===q.answer.toLowerCase()||b.dataset.opt===q.answer)b.classList.add('ok');});
   revealQImg();
+  if(G.style==='mod'){
+    // Moderator mode: just auto-reveal the answer panel
+    revealModAnswer();
+    return;
+  }
   showResultPhase(false,0,q.explanation||('Time\'s up! The answer was: '+q.answer),false);
 }
 
@@ -2720,18 +2724,13 @@ function mpMirrorState(st){
     G.answered=true;stopTmr();
     const la=st.last_answer;
     const q=st.current_question||G.curQ;
-    document.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q?.answer)b.classList.add('ok');});
-    document.querySelectorAll('.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.toLowerCase()===q?.answer?.toLowerCase())b.classList.add('ok');});
     // Remove waiting banner
     document.querySelector('.mp-waiting-banner')?.remove();
     const sb=document.getElementById('steal-bar');if(sb)sb.style.display='none';
-    const fb=document.getElementById('fb');
-    if(fb){
-      const teamName=la.player_name||la.team_name||'Player';
-      fb.className='fb show '+(la.ok?'ok':'no');
-      fb.textContent=(la.ok?'✓ '+teamName+' got it! +'+la.pts+' pts. ':'✗ '+teamName+' missed it. ')+la.exp;
-    }
-    const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
+    // Show Phase 2 result for all room players
+    const teamName=la.player_name||la.team_name||'Player';
+    const resultExp=(la.ok?teamName+' got it! ':''+teamName+' missed it. ')+(la.exp||'');
+    showResultPhase(la.ok,la.pts||0,resultExp,false);
     return;
   }
 
