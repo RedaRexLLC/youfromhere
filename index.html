@@ -446,22 +446,29 @@ body.in-game #q-area:not(:empty){flex:1}
   .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
   .board-cell{min-height:0 !important;height:auto !important;font-size:.88rem !important}
 
-  /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
-  #q-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
-  .q-img-wrap{
-    /* In landscape: image becomes LEFT column */
-    position:absolute;left:.4rem;top:0;bottom:0;
-    width:42%;border-radius:8px;margin-bottom:0;
+  /* ── QUESTION VIEW: full-height scrollable column ── */
+  body.in-game #q-area{
+    flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+    display:flex;flex-direction:column;position:relative;
+    -webkit-overflow-scrolling:touch;
   }
-  .q-img{height:100% !important;object-fit:cover}
-  /* Question card shifts RIGHT when image present */
-  body.in-game.has-img .q-card{margin-left:44%;padding:.45rem .5rem}
+  /* Image: left column absolutely positioned within q-area */
+  body.in-game.has-img .q-img-wrap{
+    position:absolute;left:.4rem;top:.3rem;bottom:.3rem;
+    width:40%;border-radius:8px;margin-bottom:0;
+  }
+  body.in-game.has-img .q-img{height:100% !important;object-fit:cover}
+  /* Card: full-height right column when image present */
+  body.in-game.has-img .q-card{
+    margin-left:43% !important;
+    padding:.4rem .5rem;margin-bottom:.25rem;
+    overflow:visible;flex-shrink:0;
+  }
+  /* Card: full width when no image */
   body.in-game .q-card{
     padding:.4rem .55rem;margin-bottom:.25rem;
-    overflow:hidden;flex-shrink:0;
+    overflow:visible;flex-shrink:0;
   }
-  /* q-area relative for absolute image positioning */
-  body.in-game #q-area{position:relative}
 
   #s-game .pts-badge{font-size:.78rem;margin-bottom:.15rem}
   #s-game .q-cat-lbl{font-size:.58rem;margin-bottom:.15rem}
