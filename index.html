@@ -138,6 +138,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
 .game-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#1a1a2e}
 .game-logo span{color:#e8b84b}
+.game-logo-img{height:34px;width:auto;display:block}
 .scores-wrap{display:grid;gap:.4rem;margin-bottom:.5rem}
 .s-card{border-radius:12px;padding:.5rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;transition:all .3s}
 .s-card.cur{border-color:#22c55e !important;background:#f0fdf4 !important;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
@@ -338,16 +339,19 @@ body.in-game #q-area:not(:empty){flex:1}
 }
 /* Portrait phone: 3-column board, compact header, fits without scrolling */
 @media(max-width:599px) and (orientation:portrait){
-  /* Board: 3 cols × 2 rows */
-  body.in-game .board-grid{grid-template-columns:repeat(3,1fr) !important;gap:.2rem !important}
-  body.in-game .board-col{min-width:0}
+  /* Board: allow natural scroll — board-section must be visible (not clipped by flex chain) */
+  body.in-game .game-body{overflow-y:auto !important;overflow-x:hidden !important}
+  body.in-game .board-section{flex:none !important;overflow:visible !important;min-height:200px}
+  body.in-game .board-grid{display:grid !important;flex:none !important;grid-template-columns:repeat(3,1fr) !important;gap:.2rem !important}
+  body.in-game .board-pts-col{height:auto !important;min-height:96px !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
+  body.in-game .board-col{min-width:0;overflow:visible}
   body.in-game .board-cat-hdr{height:32px !important;font-size:.48rem;padding:.1rem .05rem;line-height:1.2;word-break:break-word;hyphens:auto}
   body.in-game .board-cell{font-size:.8rem;min-height:32px}
   body.in-game .board-title{font-size:.72rem;margin-bottom:.1rem}
   /* Tight header */
   .game-top{padding:.25rem .55rem .2rem}
   #s-game .game-header{margin-bottom:.2rem}
-  #s-game .game-logo{font-size:1rem}
+  #s-game .game-logo-img{height:26px !important}
   #s-game .scores-wrap{gap:.2rem;margin-bottom:.25rem}
   #s-game .s-card{padding:.2rem .5rem;border-radius:8px}
   #s-game .s-pts{font-size:1.1rem}
@@ -402,7 +406,7 @@ body.in-game #q-area:not(:empty){flex:1}
   /* info-bar and steal-bar each take their own full-width row */
   .game-top > #game-info-bar{flex:0 0 100%;padding:.06rem .4rem;margin:0;border-radius:4px;font-size:.6rem}
   .game-top > #steal-bar{flex:0 0 100%;margin:0}
-  .game-logo{font-size:.72rem;letter-spacing:.5px;white-space:nowrap}
+  .game-logo-img{height:22px !important}
   /* Hide room badge in landscape */
   #room-badge{display:none !important}
   .end-btn-small{font-size:.58rem !important;padding:.1rem .3rem !important}
@@ -961,7 +965,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <div id="s-game" class="screen">
       <div class="game-top">
         <div class="game-header">
-          <div class="game-logo">You From <span>Here?</span></div>
+          <img src="/logo.png" alt="You From Here?" class="game-logo-img"/>
           <div style="display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;justify-content:flex-end">
             <span id="room-badge"><span class="rb-dot"></span> <span id="room-badge-code"></span></span>
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
