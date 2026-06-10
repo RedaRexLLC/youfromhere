@@ -2057,26 +2057,27 @@ function reportQ(){
 
 function nextTurn(){
   stopTmr();
-  if(G.style!=='mod'){
+  if(G.style!=='mod'&&!MP.active){
     G.mi[G.ct]=(G.mi[G.ct]||0)+1; // rotate to next player on team that just answered
     G.ct=(G.ct+1)%G.teams.length;
   }
   G.stealing=false;
   document.getElementById('board-section').style.display='block';
-  renderBoard();
   if(MP.active){
     const st=MP.lastState||{};
     const newTurnIndex=((typeof st.turn_index==='number'?st.turn_index:0)+1)%(st.turn_order?.length||1);
-    // Find new current team
+    // Find new current team based on room turn order
     const nextPlayerId=st.turn_order?.[newTurnIndex%(st.turn_order?.length||1)];
     const nextPlayerTeamId=(st.players||[]).find(p=>p.id===nextPlayerId)?.team_id;
     const newCt=(G.teams||[]).findIndex(t=>t.id===nextPlayerTeamId);
     if(newCt>=0)G.ct=newCt;
+    else G.ct=(G.ct+1)%G.teams.length; // fallback for individual mode
     MP.lastPhase='board';MP.lastCellKey=null;
     mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,
       turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
       current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
   }
+  renderBoard();
 }
 
 function confirmEndGame(){if(confirm('End the game now?')){stopTmr();showResults();}}
