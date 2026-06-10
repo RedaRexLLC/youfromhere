@@ -381,25 +381,31 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
   #s-game.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 
-  /* ── TOP BAR: compact column ── */
+  /* ── TOP BAR: single compact row ── */
   .game-top{
-    display:flex;flex-direction:column;
-    padding:.15rem .4rem .1rem;flex-shrink:0;
-    border-bottom:1px solid #e5e7eb;background:#f8f7f4;gap:.1rem;
+    display:flex;flex-direction:row;align-items:center;
+    padding:.1rem .4rem;flex-shrink:0;
+    border-bottom:1px solid #e5e7eb;background:#f8f7f4;gap:.25rem;
   }
-  .game-top > .game-header{display:flex;flex-direction:row;align-items:center;margin-bottom:0;gap:.25rem}
-  .game-top > .scores-wrap{flex-direction:row !important;display:flex !important;gap:.2rem;margin-bottom:0;align-items:stretch}
-  .game-logo{font-size:.72rem;letter-spacing:.5px;white-space:nowrap}
+  /* Flatten game-header so logo + end-btn become siblings of scores-wrap in flex row */
+  .game-top > .game-header{display:contents}
+  .game-logo{flex-shrink:0;font-size:.72rem;letter-spacing:.5px;white-space:nowrap;order:1}
+  .game-top > .scores-wrap{
+    flex:1;min-width:0;order:2;
+    flex-direction:row !important;display:flex !important;
+    gap:.15rem;margin-bottom:0;align-items:stretch;flex-wrap:nowrap;
+  }
+  .game-top .end-btn-small{order:3;flex-shrink:0}
   /* Hide room badge in landscape — code visible on host's screen before game starts */
   #room-badge{display:none !important}
   .end-btn-small{font-size:.62rem !important;padding:.15rem .4rem !important}
   #s-game .s-card{
-    flex:1;min-width:0;padding:.1rem .35rem;
+    flex:1;min-width:0;padding:.1rem .3rem;
     border-radius:6px;display:flex;
     justify-content:space-between;align-items:center;gap:.2rem;
   }
   #s-game .s-pts{font-size:.88rem;line-height:1}
-  #s-game .s-name{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60px}
+  #s-game .s-name{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70px}
   #s-game .s-player{display:none}
   #s-game .steal-bar{flex-shrink:0;margin-bottom:0;padding:.1rem .45rem;font-size:.6rem;border-radius:5px}
   /* Info bar: ultra-compact strip in landscape */
@@ -423,11 +429,12 @@ body.in-game #q-area:not(:empty){flex:1}
   .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr !important;gap:.2rem}
   .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
   .board-cat-hdr{
-    flex-shrink:0;height:22px !important;font-size:.46rem !important;
-    padding:.04rem !important;line-height:1.2;
+    flex-shrink:0;height:38px !important;font-size:.62rem !important;
+    padding:.15rem .06rem !important;line-height:1.2;
+    word-break:break-word;hyphens:auto;overflow:hidden;
   }
   .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
-  .board-cell{min-height:0 !important;height:auto !important;font-size:.75rem !important}
+  .board-cell{min-height:0 !important;height:auto !important;font-size:.88rem !important}
 
   /* ── QUESTION VIEW: side-by-side (image | question+answers) ── */
   #q-area{flex:1;overflow:hidden;display:flex;flex-direction:column}
