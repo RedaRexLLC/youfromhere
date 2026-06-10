@@ -343,16 +343,18 @@ body.in-game #q-area:not(:empty){flex:1}
   .style-grid{grid-template-columns:1fr}
   .game-content{padding:0 .5rem}
 }
-/* Portrait phone: 3-column board, compact header, fits without scrolling */
+/* Portrait phone: 3-column board, compact header, fixed-height cells */
 @media(max-width:599px) and (orientation:portrait){
-  /* Board: allow natural scroll — board-section must be visible (not clipped by flex chain) */
+  /* game-body scrolls so the full board is always reachable */
   body.in-game .game-body{overflow-y:auto !important;overflow-x:hidden !important}
-  body.in-game .board-section{flex:none !important;overflow:visible !important;min-height:200px}
-  body.in-game .board-grid{display:grid !important;flex:none !important;grid-template-columns:repeat(3,1fr) !important;gap:.2rem !important}
-  body.in-game .board-pts-col{height:auto !important;min-height:96px !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
-  body.in-game .board-col{min-width:0;overflow:visible}
-  body.in-game .board-cat-hdr{height:32px !important;font-size:.48rem;padding:.1rem .05rem;line-height:1.2;word-break:break-word;hyphens:auto}
-  body.in-game .board-cell{font-size:.8rem !important;min-height:32px}
+  body.in-game .board-section{flex:none !important;overflow:visible !important}
+  /* 3-col grid, row heights come from cell content — no 1fr (needs definite height) */
+  body.in-game .board-grid{display:grid !important;flex:none !important;grid-template-columns:repeat(3,1fr) !important;grid-auto-rows:auto !important;gap:.25rem !important}
+  body.in-game .board-col{min-width:0;overflow:hidden;display:flex;flex-direction:column}
+  body.in-game .board-cat-hdr{height:34px !important;font-size:.5rem !important;padding:.1rem .1rem;line-height:1.2;word-break:break-word;hyphens:auto;flex-shrink:0}
+  /* pts-col: flex column so cells stack with fixed heights */
+  body.in-game .board-pts-col{display:flex !important;flex-direction:column !important;height:auto !important;gap:2px !important}
+  body.in-game .board-cell{height:36px !important;min-height:36px !important;font-size:.85rem !important;overflow:hidden !important;flex-shrink:0 !important}
   body.in-game .board-title{font-size:.72rem;margin-bottom:.1rem}
   /* Tight header */
   .game-top{padding:.25rem .55rem .2rem}
@@ -606,6 +608,34 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game.has-img #s-game .q-card > *{grid-column:2}
   body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:280px}
   body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:280px;object-fit:cover}
+}
+
+/* ══════════════════════════════════════════════
+   LANDSCAPE PHONE — board fix (must come AFTER all width-based
+   breakpoints so this wins the cascade on iPhones in landscape,
+   which overlap the 600-767px tablet-portrait range)
+   ══════════════════════════════════════════════ */
+@media(max-height:520px) and (orientation:landscape){
+  /* All categories in one row, equal-width columns */
+  body.in-game .board-grid{
+    grid-template-columns:repeat(auto-fit,minmax(44px,1fr)) !important;
+    grid-auto-rows:1fr !important;
+    gap:.18rem !important;
+  }
+  /* Pts-col fills remaining col height via flex:1 (set in base landscape block) */
+  body.in-game .board-pts-col{
+    display:grid !important;
+    flex-direction:unset !important;
+    grid-template-rows:1fr 1fr 1fr !important;
+    height:unset !important;
+    gap:2px !important;
+  }
+  body.in-game .board-cell{
+    height:auto !important;
+    min-height:0 !important;
+    font-size:.82rem !important;
+    overflow:hidden !important;
+  }
 }
 
 /* ── PHOTO QUESTIONS ── */
