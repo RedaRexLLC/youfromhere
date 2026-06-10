@@ -2176,7 +2176,7 @@ function showResultPhase(ok,pts,exp,surp){
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
     +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>';
   card.innerHTML=inner;
-  if(surp&&ok)showShare(exp);
+  if(ok&&exp)showShare(exp);
 }
 
 function updScores(){
