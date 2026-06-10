@@ -381,37 +381,43 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
   #s-game.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 
-  /* ── TOP BAR: single compact row ── */
+  /* ── TOP BAR: CSS grid — header+scores on one row, info-bar + steal below ── */
   .game-top{
-    display:flex;flex-direction:row;align-items:center;
-    padding:.1rem .4rem;flex-shrink:0;
-    border-bottom:1px solid #e5e7eb;background:#f8f7f4;gap:.25rem;
+    display:grid !important;
+    grid-template-columns:auto 1fr;
+    grid-auto-rows:auto;
+    padding:.05rem .4rem .06rem;flex-shrink:0;
+    border-bottom:1px solid #e5e7eb;background:#f8f7f4;
+    gap:.05rem .2rem;
   }
-  /* Flatten game-header so logo + end-btn become siblings of scores-wrap in flex row */
-  .game-top > .game-header{display:contents}
-  .game-logo{flex-shrink:0;font-size:.72rem;letter-spacing:.5px;white-space:nowrap;order:1}
+  .game-top > .game-header{
+    grid-column:1;grid-row:1;
+    display:flex !important;align-items:center;gap:.25rem;margin-bottom:0;
+  }
   .game-top > .scores-wrap{
-    flex:1;min-width:0;order:2;
+    grid-column:2;grid-row:1;
     flex-direction:row !important;display:flex !important;
-    gap:.15rem;margin-bottom:0;align-items:stretch;flex-wrap:nowrap;
+    gap:.1rem;margin-bottom:0;align-items:stretch;flex-wrap:nowrap;min-width:0;
   }
-  .game-top .end-btn-small{order:3;flex-shrink:0}
+  .game-top > #game-info-bar{grid-column:1 / -1;grid-row:2;margin-bottom:0}
+  .game-top > #steal-bar{grid-column:1 / -1;grid-row:3;margin-bottom:0}
+  .game-logo{font-size:.72rem;letter-spacing:.5px;white-space:nowrap}
   /* Hide room badge in landscape — code visible on host's screen before game starts */
   #room-badge{display:none !important}
-  .end-btn-small{font-size:.62rem !important;padding:.15rem .4rem !important}
+  .end-btn-small{font-size:.58rem !important;padding:.1rem .3rem !important}
   #s-game .s-card{
-    flex:1;min-width:0;padding:.1rem .3rem;
-    border-radius:6px;display:flex;
-    justify-content:space-between;align-items:center;gap:.2rem;
+    flex:1;min-width:0;padding:.07rem .2rem;
+    border-radius:5px;display:flex;border-width:1px;
+    justify-content:space-between;align-items:center;gap:.15rem;
   }
-  #s-game .s-pts{font-size:.88rem;line-height:1}
-  #s-game .s-name{font-size:.58rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70px}
+  #s-game .s-pts{font-size:.85rem;line-height:1}
+  #s-game .s-name{font-size:.54rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75px}
   #s-game .s-player{display:none}
-  #s-game .steal-bar{flex-shrink:0;margin-bottom:0;padding:.1rem .45rem;font-size:.6rem;border-radius:5px}
+  #s-game .steal-bar{margin-bottom:0;padding:.07rem .4rem;font-size:.58rem;border-radius:4px}
   /* Info bar: ultra-compact strip in landscape */
-  #game-info-bar{padding:.1rem .4rem;margin-bottom:.1rem;border-radius:5px;font-size:.62rem}
+  #game-info-bar{padding:.07rem .4rem;border-radius:4px;font-size:.6rem}
   #gib-timer{font-size:.82rem !important}
-  #gib-cat{max-width:120px}
+  #gib-cat{max-width:130px}
   #gib-tbar-wrap{display:none !important}
 
   /* Hide all ads in landscape — no room for them */
@@ -426,7 +432,8 @@ body.in-game #q-area:not(:empty){flex:1}
   /* ── BOARD: fill height, all 3 rows always visible ── */
   .board-section{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column}
   .board-title{display:none !important}
-  .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr !important;gap:.2rem}
+  /* Override tablet rule that forces repeat(3,1fr) — let JS inline style control columns */
+  .board-grid{flex:1;min-height:0;display:grid !important;grid-template-columns:repeat(auto-fit,minmax(48px,1fr)) !important;grid-auto-rows:1fr !important;gap:.2rem}
   .board-col{display:flex;flex-direction:column;overflow:hidden;min-width:0;min-height:0}
   .board-cat-hdr{
     flex-shrink:0;height:38px !important;font-size:.62rem !important;
