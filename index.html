@@ -1103,12 +1103,13 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <div id="s-mp-wait" class="screen">
       <div class="page-wrap">
         <div class="content">
-          <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.75rem">
+          <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.35rem">
             <div style="display:flex;align-items:center;gap:8px">
               <img src="/logo.png" alt="You From Here?" style="height:56px;width:auto"/>
             </div>
             <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
           </div>
+          <div id="mp-mode-lbl" style="text-align:center;font-size:.78rem;font-weight:700;color:#e8b84b;letter-spacing:.04em;margin-bottom:.6rem"></div>
 
           <div class="card" style="text-align:center;margin-bottom:.5rem;padding:.85rem">
             <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Room Code — Share with players</div>
@@ -2404,6 +2405,14 @@ function mpShowLobby(code,state){
   }
   const hostBadge=document.getElementById('mp-lobby-host-badge');
   if(hostBadge)hostBadge.style.display=MP.isHost?'':'none';
+  // Game mode label
+  const modeLbl=document.getElementById('mp-mode-lbl');
+  if(modeLbl){
+    const m=state.game_mode||'local';
+    const city=state.city||'';const country=state.country||'';
+    let txt=m==='national'?'🇺🇸 National Mode':m==='world'?('🌍 World · '+(city?city+', ':'')+country):'📍 Local · '+city;
+    modeLbl.textContent=txt;
+  }
   mpBuildCatGrid(state);
   mpRenderLobby(state);
   mpStartCountdown(state.lobby_started_at);
@@ -2484,11 +2493,20 @@ function mpRenderLobby(st){
 // ── CATEGORY VOTING ──
 function mpBuildCatGrid(st){
   const grid=document.getElementById('mp-cat-grid');if(!grid)return;
-  const cats=getCats();
-  grid.innerHTML=cats.map(c=>`
-    <button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')">
-      <span class="mc-icon">${c.icon}</span>${c.label}
-    </button>`).join('');
+  const mode=(st&&st.game_mode)||G.gameMode||'local';
+  let cats;
+  if(mode==='national') cats=[...NCATS];
+  else if(mode==='world') cats=[...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
+  else cats=[...NCATS,...LCATS];
+  const mkBtn=c=>`<button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')"><span class="mc-icon">${c.icon}</span>${c.label}</button>`;
+  if(mode==='local'){
+    const loc=cats.filter(c=>LCATS.find(n=>n.id===c.id));
+    const nat=cats.filter(c=>NCATS.find(n=>n.id===c.id));
+    grid.innerHTML=(loc.length?'<div class="cat-section-lbl">Local</div>'+loc.map(mkBtn).join(''):'')
+      +(nat.length?'<div class="cat-section-lbl">National</div>'+nat.map(mkBtn).join(''):'');
+  } else {
+    grid.innerHTML=cats.map(mkBtn).join('');
+  }
   mpUpdateVoteCount();
 }
 
