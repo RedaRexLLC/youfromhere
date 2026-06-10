@@ -146,6 +146,8 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .s-left{display:flex;flex-direction:column;gap:.1rem}
 .s-name{font-weight:700;font-size:.95rem}
 .s-player{font-size:.72rem;color:#6b7280}
+.s-pts-wrap{display:flex;flex-direction:column;align-items:flex-end}
+.s-pts-lbl{font-size:.52rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;line-height:1;margin-bottom:.05rem}
 .s-pts{font-family:'Bebas Neue',sans-serif;font-size:1.7rem;line-height:1}
 .sc0{color:#e8b84b}.sc1{color:#4ecdc4}.sc2{color:#a78bfa}.sc3{color:#fb923c}
 .steal-bar{background:#fffbf0;border:2px solid #e8b84b;border-radius:12px;padding:.65rem 1rem;margin-bottom:.75rem;font-weight:700;font-size:.95rem;text-align:center;color:#1a1a2e}
@@ -1830,7 +1832,7 @@ function renderBoard(){
   // Scores
   const sw=document.getElementById('scores-wrap');
   sw.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
-  sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(i===t&&G.style!=='mod'?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div>').join('');
+  sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(i===t&&G.style!=='mod'?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts-wrap"><div class="s-pts-lbl">total pts</div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div></div>').join('');
 
   // Combined info bar — board phase
   const gib=document.getElementById('game-info-bar');
