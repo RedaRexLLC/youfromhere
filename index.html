@@ -750,6 +750,11 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 #room-code-banner .rcb-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem}
 #room-code-banner .rcb-code{font-size:2.8rem;font-weight:900;letter-spacing:.25em;line-height:1}
 #room-code-banner .rcb-hint{font-size:.72rem;margin-top:.3rem;opacity:.8}
+/* QR code cards */
+.qr-card{background:#fff;border-radius:16px;padding:.9rem 1rem;margin-top:1rem;text-align:center}
+.qr-card-title{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6b7280;margin-bottom:.5rem}
+.qr-card-sub{font-size:.7rem;color:#9ca3af;margin-top:.45rem;line-height:1.4}
+.qr-box{display:inline-block;padding:6px;background:#fff;border-radius:8px;border:1px solid #e5e7eb}
 /* Room indicator in game header */
 #room-badge{display:none;background:#1a3a1a;color:#22c55e;border-radius:8px;padding:.2rem .55rem;font-size:.7rem;font-weight:700;letter-spacing:.05em;align-items:center;gap:.3rem}
 #room-badge.show{display:inline-flex}
@@ -1017,10 +1022,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <button onclick="rcbCopy()">📋 Copy</button>
         </div>
       </div>
-      <div class="ad-inline show" style="margin-top:1rem">
-        <div class="ad-label">Advertisement</div>
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000004" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+      <div class="qr-card" id="share-qr-card">
+        <div class="qr-card-title">Share the game with friends</div>
+        <div class="qr-box" id="share-qr-box"></div>
+        <div class="qr-card-sub">Scan to play · youfromhere.vercel.app</div>
       </div>
     </div>
 
@@ -1105,6 +1110,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
               <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:120px"/>
               <button onclick="mpCopyCode()">📋 Copy</button>
             </div>
+          </div>
+
+          <div class="qr-card" id="join-qr-card" style="margin-bottom:.5rem">
+            <div class="qr-card-title">Scan to join this room</div>
+            <div class="qr-box" id="join-qr-box"></div>
+            <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
           </div>
 
           <div class="card" style="margin-bottom:.5rem">
@@ -1280,6 +1291,24 @@ function detectDevice(){
 }
 detectDevice();
 window.addEventListener('resize',detectDevice);
+
+// Generate share QR on loading screen (static — always points to the game URL)
+window.addEventListener('load',function(){
+  makeQR('share-qr-box','https://youfromhere.vercel.app');
+  // Handle ?join=CODE URL parameter — auto-open join modal with code pre-filled
+  const params=new URLSearchParams(window.location.search);
+  const joinCode=params.get('join');
+  if(joinCode){
+    const code=joinCode.trim().toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);
+    if(code){
+      openJoinModal();
+      setTimeout(function(){
+        const inp=document.getElementById('jm-code');
+        if(inp){inp.value=code;inp.dispatchEvent(new Event('input'));}
+      },200);
+    }
+  }
+});
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');if(id!=='s-game')document.body.classList.remove('in-question');}
 function showErr(msg){const e=document.getElementById('err-box');e.textContent='⚠ '+msg;e.className='err-box show';setTimeout(()=>e.className='err-box',6000);}
@@ -2321,10 +2350,19 @@ async function mpCreateRoom(playType,hostName){
 }
 
 // ── LOBBY DISPLAY ──
+function makeQR(elId,url){
+  const el=document.getElementById(elId);
+  if(!el||typeof QRCode==='undefined')return;
+  el.innerHTML='';
+  try{new QRCode(el,{text:url,width:160,height:160,colorDark:'#1a1a2e',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});}
+  catch(e){console.warn('QR failed',e);}
+}
+
 function mpShowLobby(code,state){
   document.getElementById('mp-wait-code').textContent=code;
   const si=document.getElementById('mp-share-input');if(si)si.value=code;
   show('s-mp-wait');
+  makeQR('join-qr-box','https://youfromhere.vercel.app?join='+code);
   mpBuildCatGrid(state);
   mpRenderLobby(state);
   mpStartCountdown(state.lobby_started_at);
