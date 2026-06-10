@@ -381,41 +381,40 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
   #s-game.active{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
 
-  /* ── TOP BAR: CSS grid — header+scores on one row, info-bar + steal below ── */
+  /* ── TOP BAR: flex-wrap row — header+scores share row 1, info-bar below ── */
   .game-top{
-    display:grid !important;
-    grid-template-columns:auto 1fr;
-    grid-auto-rows:auto;
-    padding:.05rem .4rem .06rem;flex-shrink:0;
+    display:flex !important;
+    flex-direction:row;flex-wrap:wrap;align-items:center;align-content:flex-start;
+    padding:.05rem .4rem;flex-shrink:0;
     border-bottom:1px solid #e5e7eb;background:#f8f7f4;
-    gap:.05rem .2rem;
+    gap:.06rem .2rem;
   }
   .game-top > .game-header{
-    grid-column:1;grid-row:1;
-    display:flex !important;align-items:center;gap:.25rem;margin-bottom:0;
+    flex:0 0 auto;
+    display:flex !important;align-items:center;
+    justify-content:flex-start;gap:.3rem;margin:0;
   }
   .game-top > .scores-wrap{
-    grid-column:2;grid-row:1;
+    flex:1;min-width:0;
     flex-direction:row !important;display:flex !important;
-    gap:.1rem;margin-bottom:0;align-items:stretch;flex-wrap:nowrap;min-width:0;
+    gap:.1rem;margin:0;align-items:stretch;flex-wrap:nowrap;
   }
-  .game-top > #game-info-bar{grid-column:1 / -1;grid-row:2;margin-bottom:0}
-  .game-top > #steal-bar{grid-column:1 / -1;grid-row:3;margin-bottom:0}
+  /* info-bar and steal-bar each take their own full-width row */
+  .game-top > #game-info-bar{flex:0 0 100%;padding:.06rem .4rem;margin:0;border-radius:4px;font-size:.6rem}
+  .game-top > #steal-bar{flex:0 0 100%;margin:0}
   .game-logo{font-size:.72rem;letter-spacing:.5px;white-space:nowrap}
-  /* Hide room badge in landscape — code visible on host's screen before game starts */
+  /* Hide room badge in landscape */
   #room-badge{display:none !important}
   .end-btn-small{font-size:.58rem !important;padding:.1rem .3rem !important}
   #s-game .s-card{
-    flex:1;min-width:0;padding:.07rem .2rem;
+    flex:1;min-width:0;padding:.06rem .2rem;
     border-radius:5px;display:flex;border-width:1px;
     justify-content:space-between;align-items:center;gap:.15rem;
   }
   #s-game .s-pts{font-size:.85rem;line-height:1}
   #s-game .s-name{font-size:.54rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75px}
   #s-game .s-player{display:none}
-  #s-game .steal-bar{margin-bottom:0;padding:.07rem .4rem;font-size:.58rem;border-radius:4px}
-  /* Info bar: ultra-compact strip in landscape */
-  #game-info-bar{padding:.07rem .4rem;border-radius:4px;font-size:.6rem}
+  #s-game .steal-bar{margin:0;padding:.06rem .4rem;font-size:.58rem;border-radius:4px}
   #gib-timer{font-size:.82rem !important}
   #gib-cat{max-width:130px}
   #gib-tbar-wrap{display:none !important}
@@ -588,10 +587,7 @@ body.in-game #q-area:not(:empty){flex:1}
 
 /* ── PHOTO QUESTIONS ── */
 .q-img-wrap{border-radius:12px;overflow:hidden;margin-bottom:.85rem;position:relative;background:#1a1a2e;line-height:0}
-.q-img{width:100%;height:260px;object-fit:cover;display:block;transition:opacity .3s,filter .4s;filter:blur(14px);transform:scale(1.04)}
-.q-img-wrap.revealed .q-img{filter:none;transform:scale(1)}
-.q-blur-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.55);color:#fff;font-size:.78rem;font-weight:700;padding:.35rem .75rem;border-radius:8px;letter-spacing:.04em;backdrop-filter:blur(4px);pointer-events:none;white-space:nowrap;z-index:2}
-.q-img-wrap.revealed .q-blur-hint{display:none}
+.q-img{width:100%;height:260px;object-fit:cover;display:block;transition:opacity .3s}
 .q-img-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.75));pointer-events:none}
 .q-img-overlay-top{position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(rgba(0,0,0,.85),transparent);pointer-events:none}
 .q-img-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.55);color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;letter-spacing:.05em;backdrop-filter:blur(4px)}
@@ -1894,8 +1890,7 @@ function renderQuestion(q,pts){
         wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-overlay-top"></div>'
-          +'<div class="q-img-badge">📸 Where is this?</div>'
-          +'<div class="q-blur-hint">🔒 Answer to reveal</div>';
+          +'<div class="q-img-badge">📸 Where is this?</div>';
       }else{
         wrap.className='q-img-wrap';
         wrap.innerHTML='<div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px">'
@@ -1917,8 +1912,7 @@ function renderQuestion(q,pts){
         +'<div class="q-img-overlay"></div>'
         +'<div class="q-map-badge">🛰 Aerial View'+(q.mapviewHint?' · Look at the '+q.mapviewHint:'')+'</div>'
         +'<div class="q-north-arrow" title="North">⬆ N</div>'
-        +'<div class="q-map-credit">© Google Maps</div>'
-        +'<div class="q-blur-hint">🔒 Answer to reveal</div>';
+        +'<div class="q-map-credit">© Google Maps</div>';
     }
   }
   if(!isMod) startTmr();
