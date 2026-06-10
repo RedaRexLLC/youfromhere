@@ -401,10 +401,13 @@ body.in-game #q-area:not(:empty){flex:1}
   #gib-cat{max-width:120px}
   #gib-tbar-wrap{display:none !important}
 
+  /* Hide all ads in landscape — no room for them */
+  #game-bottom-ad,.ad-banner,.ad-left,.ad-right{display:none!important}
+
   /* ── GAME BODY ── */
   .game-body{
-    flex:1;min-height:0;overflow:hidden;padding:.25rem .35rem;
-    display:flex;flex-direction:column;
+    flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:.25rem .35rem;
+    display:flex;flex-direction:column;-webkit-overflow-scrolling:touch;
   }
 
   /* ── BOARD: fill height, all 3 rows always visible ── */
