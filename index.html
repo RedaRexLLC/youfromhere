@@ -229,6 +229,14 @@ body.in-question #game-info-bar{display:none!important}
 .nxt-btn{width:100%;margin-top:.7rem;background:#1a1a2e;color:#fff;padding:.85rem;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;border:none;display:none;align-items:center;justify-content:center;gap:.4rem;outline:none;transition:background .15s}
 .nxt-btn:hover{background:#2d3748}
 
+/* ── RESULT PHASE (phase 2 after answering) ── */
+.result-q-ref{font-size:.78rem;color:#6b7280;line-height:1.4;margin-bottom:.45rem;font-style:italic}
+.result-status{border-radius:10px;padding:.55rem .85rem;font-weight:700;font-size:1rem;margin-bottom:.45rem;line-height:1.4}
+.result-status.ok{background:#f0fdf4;color:#166534;border:1.5px solid #bbf7d0}
+.result-status.no{background:#fef2f2;color:#991b1b;border:1.5px solid #fecaca}
+.result-exp{font-size:.82rem;color:#374151;line-height:1.5;padding:.5rem .7rem;background:#f8f7f4;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:.4rem}
+.result-share{margin-bottom:.35rem}
+
 /* ── MODERATOR MODE ── */
 .mod-reveal-btn{width:100%;padding:1rem;border-radius:12px;background:#e8b84b;color:#1a1a2e;border:none;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;margin-top:.75rem;transition:background .15s}
 .mod-reveal-btn:hover{background:#d4a43a}
@@ -2053,10 +2061,8 @@ function doTimeout(){
   if(G.answered)return;G.answered=true;sOut();
   const q=G.curQ;
   document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q.answer||b.textContent.toLowerCase()===q.answer.toLowerCase()||b.dataset.opt===q.answer)b.classList.add('ok');});
-  const fb=document.getElementById('fb');
   revealQImg();
-  if(fb){fb.className='fb show tout';fb.textContent='⏱ Time\'s up! Answer: '+q.answer+'. '+q.explanation;}
-  const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
+  showResultPhase(false,0,q.explanation||('Time\'s up! The answer was: '+q.answer),false);
 }
 
 // ── ANSWERS ──
@@ -2110,11 +2116,29 @@ function resolve(ok,pts,exp,surp){
     }
   }
 
-  const fb=document.getElementById('fb');
-  if(fb){fb.className='fb show '+(ok?'ok':'no');fb.textContent=(ok?'✓ Correct! +'+pts+' pts. ':'✗ Not quite. ')+exp;}
-  if(surp&&ok)showShare(exp);
-  const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
+  showResultPhase(ok,pts,exp,surp);
   G.stealing=false;updScores();
+}
+
+function showResultPhase(ok,pts,exp,surp){
+  const q=G.curQ;
+  const card=document.querySelector('#q-area .q-card');
+  if(!card)return;
+  // Preserve loaded image if present
+  const imgWrap=card.querySelector('.q-img-wrap');
+  const imgHtml=imgWrap?imgWrap.outerHTML:'';
+  const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
+  const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
+  let inner=imgHtml
+    +catLbl
+    +'<div class="result-q-ref">'+q.question+'</div>'
+    +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
+    +(exp?'<div class="result-exp">'+exp+'</div>':'')
+    +'<div class="result-share"><div class="share-box" id="sbox"></div></div>'
+    +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
+    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>';
+  card.innerHTML=inner;
+  if(surp&&ok)showShare(exp);
 }
 
 function updScores(){
