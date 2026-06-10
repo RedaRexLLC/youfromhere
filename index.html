@@ -743,6 +743,23 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .pc-host{background:#e8b84b;color:#1a1a2e}
 .pc-voted{background:#22c55e;color:#fff}
 .mp-lobby-status{font-size:.8rem;color:#9ca3af;text-align:center;margin:.4rem 0;min-height:1.1em}
+/* Lobby full-screen responsive layout */
+.mp-lobby-wrap{width:100%;max-width:1200px;margin:0 auto;padding:1rem 1.25rem;box-sizing:border-box}
+.mp-lobby-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+.mp-lobby-logo{height:48px;width:auto}
+.mp-mode-lbl{font-size:.82rem;font-weight:700;color:#e8b84b;letter-spacing:.04em;text-align:center;flex:1}
+.mp-lobby-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.mp-lobby-left,.mp-lobby-right{min-width:0}
+@media(min-width:700px){
+  .mp-lobby-grid{grid-template-columns:300px 1fr}
+  .mp-lobby-left{position:sticky;top:1rem;align-self:start}
+  .mp-cat-grid{grid-template-columns:repeat(4,1fr) !important}
+}
+@media(min-width:1024px){
+  .mp-lobby-grid{grid-template-columns:340px 1fr}
+  .mp-cat-grid{grid-template-columns:repeat(5,1fr) !important}
+  .mp-lobby-logo{height:56px}
+}
 .mp-waiting-banner{background:#1a1a2e;color:#e8b84b;border-radius:10px;padding:.55rem .85rem;text-align:center;font-size:.85rem;font-weight:700;margin-bottom:.5rem}
 /* Join Room modal */
 .join-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
@@ -1100,78 +1117,87 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     </div>
 
     <!-- ══ MULTIPLAYER ROOM: WAITING SCREEN ══ -->
-    <div id="s-mp-wait" class="screen">
-      <div class="page-wrap">
-        <div class="content">
-          <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.35rem">
-            <div style="display:flex;align-items:center;gap:8px">
-              <img src="/logo.png" alt="You From Here?" style="height:56px;width:auto"/>
-            </div>
-            <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
-          </div>
-          <div id="mp-mode-lbl" style="text-align:center;font-size:.78rem;font-weight:700;color:#e8b84b;letter-spacing:.04em;margin-bottom:.6rem"></div>
+    <div id="s-mp-wait" class="screen" style="padding:0">
+      <div class="mp-lobby-wrap">
 
-          <div class="card" style="text-align:center;margin-bottom:.5rem;padding:.85rem">
-            <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Room Code — Share with players</div>
-            <div id="mp-wait-code" style="font-size:3rem;font-weight:900;color:#e8b84b;letter-spacing:.28em;line-height:1">----</div>
-            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem">youfromhere.vercel.app → Join a room</div>
-            <div class="mp-share-row" style="justify-content:center;margin-top:.5rem">
-              <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:120px"/>
-              <button onclick="mpCopyCode()">📋 Copy</button>
-            </div>
-          </div>
-
-          <div class="qr-card" id="join-qr-card" style="margin-bottom:.5rem">
-            <div class="qr-card-title">Scan to join this room</div>
-            <div class="qr-box" id="join-qr-box"></div>
-            <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
-          </div>
-
-          <div class="card" style="margin-bottom:.5rem;display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem" id="mp-name-card">
-            <div style="flex:1">
-              <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Your Name</div>
-              <input id="mp-lobby-name" type="text" maxlength="24" placeholder="Enter your name"
-                style="width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#1a1a2e;background:transparent;padding:0"
-                onchange="mpUpdateMyName(this.value)" onblur="mpUpdateMyName(this.value)"/>
-            </div>
-            <span id="mp-lobby-host-badge" style="display:none;font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.15rem .45rem;font-weight:700;flex-shrink:0">Host</span>
-          </div>
-
-          <div class="card" style="margin-bottom:.5rem">
-            <div class="mp-countdown-wrap">
-              <div class="mp-countdown-lbl">Game starts in</div>
-              <span class="mp-countdown-val" id="mp-countdown-val">3:00</span>
-              <div class="mp-cbar-wrap"><div class="mp-cbar" id="mp-cbar" style="width:100%"></div></div>
-            </div>
-            <div class="mp-lobby-status" id="mp-lobby-status">Waiting for players to join...</div>
-          </div>
-
-          <div id="mp-teams-section" style="display:none">
-            <div class="card" style="margin-bottom:.5rem">
-              <div class="lbl">Teams <span style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0">(join or create a team)</span></div>
-              <div id="mp-team-list" class="mp-team-list"></div>
-              <button class="mp-add-team-btn" id="mp-add-team-btn" onclick="mpLobbyCreateTeam()">+ Create New Team</button>
-            </div>
-          </div>
-
-          <div id="mp-players-section" style="display:none">
-            <div class="card" style="margin-bottom:.5rem">
-              <div class="lbl">Players <span id="mp-player-count" style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0"></span></div>
-              <div id="mp-player-list"></div>
-            </div>
-          </div>
-
-          <div class="card" id="mp-voting-card">
-            <div class="lbl">Vote for Categories <span style="font-weight:400;color:#9ca3af;font-size:.75rem;text-transform:none;letter-spacing:0">(pick 6 — top voted become the board)</span></div>
-            <div id="mp-cat-grid" class="mp-cat-grid"></div>
-            <div class="mp-vote-count" id="mp-vote-count">0 / 6 selected</div>
-            <button class="mp-start-btn" id="mp-vote-btn" onclick="mpSubmitVotes()" style="display:none;margin-top:.4rem">✓ Lock In My Votes</button>
-            <div id="mp-voted-confirm" style="display:none;text-align:center;padding:.35rem;color:#166534;font-weight:700;font-size:.83rem;background:#f0fdf4;border-radius:8px;margin-top:.4rem">✓ Your votes are locked in!</div>
-          </div>
-
-          <button class="mp-secondary-btn" onclick="mpLeave()" style="margin-top:.65rem">Leave Room</button>
+        <!-- Header bar -->
+        <div class="mp-lobby-header">
+          <img src="/logo.png" alt="You From Here?" class="mp-lobby-logo"/>
+          <div id="mp-mode-lbl" class="mp-mode-lbl"></div>
+          <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
         </div>
-      </div>
+
+        <!-- Two-column grid -->
+        <div class="mp-lobby-grid">
+
+          <!-- LEFT: room code + QR + name -->
+          <div class="mp-lobby-left">
+            <div class="card" style="text-align:center;margin-bottom:.5rem;padding:.85rem">
+              <div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Room Code — Share with players</div>
+              <div id="mp-wait-code" style="font-size:2.8rem;font-weight:900;color:#e8b84b;letter-spacing:.28em;line-height:1">----</div>
+              <div style="font-size:.68rem;color:#9ca3af;margin-top:.2rem">youfromhere.vercel.app → Join a room</div>
+              <div class="mp-share-row" style="justify-content:center;margin-top:.5rem">
+                <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:120px"/>
+                <button onclick="mpCopyCode()">📋 Copy</button>
+              </div>
+            </div>
+
+            <div class="qr-card" id="join-qr-card" style="margin-bottom:.5rem">
+              <div class="qr-card-title">Scan to join this room</div>
+              <div class="qr-box" id="join-qr-box"></div>
+              <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
+            </div>
+
+            <div class="card" style="margin-bottom:.5rem;display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem" id="mp-name-card">
+              <div style="flex:1">
+                <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Your Name</div>
+                <input id="mp-lobby-name" type="text" maxlength="24" placeholder="Enter your name"
+                  style="width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#1a1a2e;background:transparent;padding:0"
+                  onchange="mpUpdateMyName(this.value)" onblur="mpUpdateMyName(this.value)"/>
+              </div>
+              <span id="mp-lobby-host-badge" style="display:none;font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.15rem .45rem;font-weight:700;flex-shrink:0">Host</span>
+            </div>
+          </div>
+
+          <!-- RIGHT: countdown + teams/players + voting -->
+          <div class="mp-lobby-right">
+            <div class="card" style="margin-bottom:.5rem">
+              <div class="mp-countdown-wrap">
+                <div class="mp-countdown-lbl">Game starts in</div>
+                <span class="mp-countdown-val" id="mp-countdown-val">3:00</span>
+                <div class="mp-cbar-wrap"><div class="mp-cbar" id="mp-cbar" style="width:100%"></div></div>
+              </div>
+              <div class="mp-lobby-status" id="mp-lobby-status">Waiting for players to join...</div>
+            </div>
+
+            <div id="mp-teams-section" style="display:none">
+              <div class="card" style="margin-bottom:.5rem">
+                <div class="lbl">Teams <span style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0">(join or create a team)</span></div>
+                <div id="mp-team-list" class="mp-team-list"></div>
+                <button class="mp-add-team-btn" id="mp-add-team-btn" onclick="mpLobbyCreateTeam()">+ Create New Team</button>
+              </div>
+            </div>
+
+            <div id="mp-players-section" style="display:none">
+              <div class="card" style="margin-bottom:.5rem">
+                <div class="lbl">Players <span id="mp-player-count" style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0"></span></div>
+                <div id="mp-player-list"></div>
+              </div>
+            </div>
+
+            <div class="card" id="mp-voting-card">
+              <div class="lbl">Vote for Categories <span style="font-weight:400;color:#9ca3af;font-size:.75rem;text-transform:none;letter-spacing:0">(pick 6 — top voted become the board)</span></div>
+              <div id="mp-cat-grid" class="mp-cat-grid"></div>
+              <div class="mp-vote-count" id="mp-vote-count">0 / 6 selected</div>
+              <button class="mp-start-btn" id="mp-vote-btn" onclick="mpSubmitVotes()" style="display:none;margin-top:.4rem">✓ Lock In My Votes</button>
+              <div id="mp-voted-confirm" style="display:none;text-align:center;padding:.35rem;color:#166534;font-weight:700;font-size:.83rem;background:#f0fdf4;border-radius:8px;margin-top:.4rem">✓ Your votes are locked in!</div>
+            </div>
+
+            <button class="mp-secondary-btn" onclick="mpLeave()" style="margin-top:.65rem">Leave Room</button>
+          </div>
+
+        </div><!-- /mp-lobby-grid -->
+      </div><!-- /mp-lobby-wrap -->
     </div>
 
     <!-- ══ JOIN ROOM MODAL ══ -->
