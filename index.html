@@ -618,6 +618,44 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .mp-share-row{display:flex;gap:.5rem;margin-top:.75rem}
 .mp-share-row input{flex:1;background:#12122a;border:1px solid #2e2e4e;border-radius:8px;padding:.6rem .75rem;color:#e8b84b;font-size:1.4rem;font-family:'DM Sans',sans-serif;font-weight:900;letter-spacing:.18em;text-align:center}
 .mp-share-row button{padding:.6rem 1rem;background:#2e2e4e;color:#e8b84b;border:none;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:700}
+/* ── MULTIPLAYER LOBBY (new) ── */
+.mp-play-type{display:grid;grid-template-columns:1fr 1fr;gap:.65rem;margin:.5rem 0 .75rem}
+.mp-type-card{border:2px solid #e5e7eb;border-radius:14px;padding:.85rem .75rem;text-align:center;cursor:pointer;transition:all .2s;background:#fff}
+.mp-type-card.on{border-color:#22c55e;background:#f0fdf4;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.mp-type-card .mt-icon{font-size:1.5rem;display:block;margin-bottom:.3rem}
+.mp-type-card .mt-name{font-weight:700;font-size:.92rem;display:block}
+.mp-type-card .mt-desc{font-size:.7rem;color:#6b7280;margin-top:.15rem;line-height:1.3;display:block}
+.mp-host-name{width:100%;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;margin-top:.5rem}
+.mp-countdown-wrap{text-align:center;padding:.4rem 0 .5rem}
+.mp-countdown-lbl{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af}
+.mp-countdown-val{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:#e8b84b;letter-spacing:3px;line-height:1;display:block}
+.mp-cbar-wrap{height:5px;background:#e5e7eb;border-radius:3px;overflow:hidden;margin-top:.3rem}
+.mp-cbar{height:100%;background:#22c55e;border-radius:3px;transition:width 1s linear,background .5s}
+.mp-team-list{display:flex;flex-direction:column;gap:.45rem;margin:.4rem 0}
+.mp-team-card{border:2px solid #e5e7eb;border-radius:12px;padding:.55rem .85rem;display:flex;align-items:center;justify-content:space-between;transition:all .2s;gap:.5rem}
+.mp-team-card.mine{border-color:#22c55e;background:#f0fdf4}
+.mp-team-left{flex:1;min-width:0}
+.mp-team-name-input{font-weight:700;font-size:.92rem;border:none;background:transparent;outline:none;font-family:'DM Sans',sans-serif;width:100%;padding:0;cursor:text}
+.mp-team-members-txt{font-size:.72rem;color:#6b7280;margin-top:.05rem}
+.mp-join-btn{padding:.28rem .7rem;border-radius:8px;border:1.5px solid #22c55e;background:#fff;color:#166534;font-weight:700;font-size:.75rem;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.mp-join-btn.joined{background:#22c55e;color:#fff}
+.mp-add-team-btn{width:100%;padding:.45rem;border:2px dashed #e5e7eb;border-radius:10px;background:#fafaf9;color:#6b7280;font-weight:600;font-size:.82rem;cursor:pointer;transition:all .2s}
+.mp-add-team-btn:hover{border-color:#22c55e;color:#166534}
+.mp-cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin:.4rem 0}
+.mp-cat-btn{padding:.45rem .2rem;border:1.5px solid #e5e7eb;border-radius:10px;background:#fff;cursor:pointer;text-align:center;transition:all .15s;font-size:.68rem;font-weight:600;line-height:1.3}
+.mp-cat-btn .mc-icon{font-size:1rem;display:block;margin-bottom:.1rem}
+.mp-cat-btn.picked{border-color:#22c55e;background:#f0fdf4;color:#166534}
+.mp-cat-btn:disabled{opacity:.45;cursor:not-allowed}
+.mp-vote-count{font-size:.78rem;color:#6b7280;margin:.2rem 0;text-align:center;font-weight:600}
+.mp-vote-count.done{color:#22c55e}
+.player-chip{display:flex;align-items:center;gap:.45rem;padding:.3rem .6rem;background:#f8f7f4;border-radius:9px;margin-bottom:.25rem}
+.pc-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
+.pc-name{font-weight:600;font-size:.85rem;flex:1}
+.pc-badge{font-size:.6rem;padding:.1rem .3rem;border-radius:4px;font-weight:700}
+.pc-host{background:#e8b84b;color:#1a1a2e}
+.pc-voted{background:#22c55e;color:#fff}
+.mp-lobby-status{font-size:.8rem;color:#9ca3af;text-align:center;margin:.4rem 0;min-height:1.1em}
+.mp-waiting-banner{background:#1a1a2e;color:#e8b84b;border-radius:10px;padding:.55rem .85rem;text-align:center;font-size:.85rem;font-weight:700;margin-bottom:.5rem}
 /* Join Room modal */
 .join-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem}
 .join-modal .jm-box{background:#1a1a2e;border:2px solid #2e2e4e;border-radius:20px;padding:1.5rem;width:100%;max-width:360px}
@@ -812,7 +850,25 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <span class="style-desc">Practice alone</span>
           </div>
         </div>
-        <!-- Room style: join link shown below style grid -->
+        <!-- Room style: setup panel -->
+        <div id="room-setup-panel" style="display:none">
+          <div class="lbl" style="margin-top:.6rem">Play Type</div>
+          <div class="mp-play-type">
+            <div class="mp-type-card on" id="mpt-team" onclick="mpSetPlayType('team')">
+              <span class="mt-icon">🏆</span>
+              <span class="mt-name">Team Play</span>
+              <span class="mt-desc">Divide into teams, compete together</span>
+            </div>
+            <div class="mp-type-card" id="mpt-individual" onclick="mpSetPlayType('individual')">
+              <span class="mt-icon">🧠</span>
+              <span class="mt-name">Individual</span>
+              <span class="mt-desc">Every person for themselves</span>
+            </div>
+          </div>
+          <div class="lbl">Your Name</div>
+          <input id="mp-host-name" class="mp-host-name" type="text" placeholder="Enter your name" maxlength="24"/>
+          <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team setup &amp; category voting happen in the lobby after you create the room.</div>
+        </div>
         <div id="join-room-hint" style="display:none;text-align:center;margin-top:.6rem;font-size:.82rem;color:#9ca3af">
           Already have a room code? <button onclick="openJoinModal()" style="background:none;border:none;color:#e8b84b;font-weight:700;cursor:pointer;font-size:.82rem;font-family:'DM Sans',sans-serif;padding:0">Join a room →</button>
         </div>
@@ -953,31 +1009,60 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
     <!-- ══ MULTIPLAYER ROOM: WAITING SCREEN ══ -->
     <div id="s-mp-wait" class="screen">
-      <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.75rem">
-        <div style="display:flex;align-items:center;gap:8px">
-          <svg width="28" height="35" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
-          <div class="logo-txt" style="font-size:1.6rem">You From <span>Here?</span></div>
-        </div>
-        <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
-      </div>
+      <div class="page-wrap">
+        <div class="content">
+          <div class="logo-wrap" style="justify-content:space-between;align-items:center;margin-bottom:.75rem">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="24" height="30" viewBox="0 0 32 40" fill="none"><path d="M16 0C7.163 0 0 7.163 0 16C0 24 16 40 16 40C16 40 32 24 32 16C32 7.163 24.837 0 16 0Z" fill="#e8b84b"/><circle cx="16" cy="16" r="6" fill="#1a1a2e"/></svg>
+              <div class="logo-txt" style="font-size:1.5rem">You From <span>Here?</span></div>
+            </div>
+            <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
+          </div>
 
-      <div class="card" style="text-align:center">
-        <div style="font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.3rem">Share this code with your players</div>
-        <div id="mp-wait-code" style="font-size:3.5rem;font-weight:900;color:#e8b84b;letter-spacing:.3em;line-height:1">----</div>
-        <div style="font-size:.75rem;color:#9ca3af;margin-top:.3rem">youfromhere.vercel.app → Join a room</div>
-        <div class="mp-share-row" style="justify-content:center">
-          <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:130px"/>
-          <button onclick="mpCopyCode()">📋 Copy</button>
-        </div>
-      </div>
+          <div class="card" style="text-align:center;margin-bottom:.5rem;padding:.85rem">
+            <div style="font-size:.65rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Room Code — Share with players</div>
+            <div id="mp-wait-code" style="font-size:3rem;font-weight:900;color:#e8b84b;letter-spacing:.28em;line-height:1">----</div>
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.2rem">youfromhere.vercel.app → Join a room</div>
+            <div class="mp-share-row" style="justify-content:center;margin-top:.5rem">
+              <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:120px"/>
+              <button onclick="mpCopyCode()">📋 Copy</button>
+            </div>
+          </div>
 
-      <div class="card">
-        <div class="lbl" style="margin-bottom:.5rem">Who's in the room <span id="mp-player-count" style="font-weight:400;color:#9ca3af;text-transform:none;letter-spacing:0;font-size:.85rem"></span></div>
-        <div id="mp-player-list"></div>
-        <p id="mp-wait-status" style="font-size:.82rem;color:#9ca3af;text-align:center;margin:.4rem 0 0"></p>
-        <button class="mp-start-btn" id="mp-start-game-btn" onclick="mpStartGame()" style="display:none">▶ Begin Game</button>
-        <p id="mp-join-wait" style="display:none;font-size:.85rem;color:#9ca3af;text-align:center;margin:.75rem 0 0">Waiting for the host to begin...</p>
-        <button class="mp-secondary-btn" onclick="mpLeave()">Leave Room</button>
+          <div class="card" style="margin-bottom:.5rem">
+            <div class="mp-countdown-wrap">
+              <div class="mp-countdown-lbl">Game starts in</div>
+              <span class="mp-countdown-val" id="mp-countdown-val">3:00</span>
+              <div class="mp-cbar-wrap"><div class="mp-cbar" id="mp-cbar" style="width:100%"></div></div>
+            </div>
+            <div class="mp-lobby-status" id="mp-lobby-status">Waiting for players to join...</div>
+          </div>
+
+          <div id="mp-teams-section" style="display:none">
+            <div class="card" style="margin-bottom:.5rem">
+              <div class="lbl">Teams <span style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0">(join or create a team)</span></div>
+              <div id="mp-team-list" class="mp-team-list"></div>
+              <button class="mp-add-team-btn" id="mp-add-team-btn" onclick="mpLobbyCreateTeam()">+ Create New Team</button>
+            </div>
+          </div>
+
+          <div id="mp-players-section" style="display:none">
+            <div class="card" style="margin-bottom:.5rem">
+              <div class="lbl">Players <span id="mp-player-count" style="font-weight:400;color:#9ca3af;font-size:.78rem;text-transform:none;letter-spacing:0"></span></div>
+              <div id="mp-player-list"></div>
+            </div>
+          </div>
+
+          <div class="card" id="mp-voting-card">
+            <div class="lbl">Vote for Categories <span style="font-weight:400;color:#9ca3af;font-size:.75rem;text-transform:none;letter-spacing:0">(pick 6 — top voted become the board)</span></div>
+            <div id="mp-cat-grid" class="mp-cat-grid"></div>
+            <div class="mp-vote-count" id="mp-vote-count">0 / 6 selected</div>
+            <button class="mp-start-btn" id="mp-vote-btn" onclick="mpSubmitVotes()" style="display:none;margin-top:.4rem">✓ Lock In My Votes</button>
+            <div id="mp-voted-confirm" style="display:none;text-align:center;padding:.35rem;color:#166534;font-weight:700;font-size:.83rem;background:#f0fdf4;border-radius:8px;margin-top:.4rem">✓ Your votes are locked in!</div>
+          </div>
+
+          <button class="mp-secondary-btn" onclick="mpLeave()" style="margin-top:.65rem">Leave Room</button>
+        </div>
       </div>
     </div>
 
@@ -985,12 +1070,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <div class="join-modal" id="join-modal" style="display:none" onclick="if(event.target===this)closeJoinModal()">
       <div class="jm-box">
         <div class="jm-title">🏠 Join a Room</div>
-        <div class="jm-sub">Enter the 4-letter code from the host's screen</div>
-        <label class="lbl">Room code</label>
-        <div class="input-wrap" style="margin-bottom:.75rem">
+        <div class="jm-sub">Enter the room code and your name</div>
+        <label class="lbl">Room Code</label>
+        <div class="input-wrap" style="margin-bottom:.6rem">
           <input type="text" id="jm-code" placeholder="e.g. MESA" maxlength="4"
             style="text-transform:uppercase;letter-spacing:.2em;font-size:1.5rem;font-weight:900;text-align:center"
             oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
+        </div>
+        <label class="lbl">Your Name</label>
+        <div class="input-wrap" style="margin-bottom:.75rem">
+          <input type="text" id="jm-name" placeholder="Enter your name" maxlength="24" style="font-size:1rem"/>
         </div>
         <div class="err-box" id="jm-err"></div>
         <button class="mp-start-btn" onclick="mpJoinRoom()">🔗 Join Room</button>
@@ -1144,16 +1233,24 @@ function getCats(){
   const base=[...NCATS,...LCATS];if(colOn)base.push(COL_CAT);return base;
 }
 
+let mpPlayType='team';
+function mpSetPlayType(t){
+  mpPlayType=t;
+  ['team','individual'].forEach(x=>{const el=document.getElementById('mpt-'+x);if(el){el.className='mp-type-card'+(t===x?' on':'');}});
+}
 function setStyle(s){
   G.style=s;
   ['multi','room','mod','solo'].forEach(x=>{const el=document.getElementById('style-'+x);if(el){el.className='style-card'+(s===x?' on':'');el.setAttribute('aria-pressed',String(s===x));}});
   const isSolo=s==='solo';
   const isRoom=s==='room';
-  document.getElementById('teams-section').style.display=isSolo?'none':'block';
+  document.getElementById('teams-section').style.display=(isSolo||isRoom)?'none':'block';
   document.getElementById('solo-cats').style.display=isSolo?'block':'none';
-  document.getElementById('teams-cats-note').style.display=isSolo?'none':'block';
+  document.getElementById('teams-cats-note').style.display=(isSolo||isRoom)?'none':'block';
   document.getElementById('cat-hint').textContent=isSolo?'(choose up to 6)':'(each team picks 3)';
-  // Show "Join a room" hint when Room style is selected
+  const roomPanel=document.getElementById('room-setup-panel');
+  if(roomPanel)roomPanel.style.display=isRoom?'block':'none';
+  const startBtn=document.querySelector('.start-btn');
+  if(startBtn)startBtn.textContent=isRoom?'🏠 Create Room':'▶ Start Game';
   const joinHint=document.getElementById('join-room-hint');
   const joinHome=document.getElementById('join-room-home');
   if(joinHint)joinHint.style.display=isRoom?'block':'none';
@@ -1294,19 +1391,9 @@ function startGame(){
   show('s-loading');
 
   if(G.style==='room'){
-    // Create a multiplayer room, show code while loading, then show wait room
-    mpCreateRoom().then(()=>{
-      // Show waiting room for host after creating room (before questions load)
-      const waitState={phase:'lobby',game_mode:G.gameMode,city:G.city,country:G.country,
-        college:G.college,teams:G.teams,board:G.board,scores:G.scores,ct:0,mi:G.mi,players:[{id:MP.playerId,isHost:true,connected:true}]};
-      mpPatch(waitState);
-      // Show wait room screen with code visible; questions load in background
-      document.getElementById('mp-wait-code').textContent=MP.code||'----';
-      const si=document.getElementById('mp-share-input');if(si)si.value=MP.code||'';
-      show('s-mp-wait');
-      mpRenderWaitRoom(waitState);
-    });
-    return; // host will start from "Begin Game" button
+    const hostName=(document.getElementById('mp-host-name')?.value||'').trim()||'Host';
+    mpCreateRoom(mpPlayType,hostName);
+    return;
   }
 
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
@@ -1658,20 +1745,29 @@ function renderBoard(){
 }
 
 function pickCell(catId,pts){
-  // Mark cell as used
+  // In room mode: only the active player can pick a cell
+  if(MP.active&&MP.lastState){
+    const st=MP.lastState;
+    const activeId=st.turn_order?.[st.turn_index%(st.turn_order?.length||1)];
+    if(activeId&&activeId!==MP.playerId)return;
+  }
   const col=G.board.find(c=>c.catId===catId);
   if(!col||col.cells[pts])return;
   col.cells[pts]=true;
   G.curCell={catId,pts};
-  // Get question
   const q=getNextQ(pts,catId);
   if(!q){showErr('No question available for this category!');col.cells[pts]=false;return;}
   G.curQ=q;
-  // In multiplayer, broadcast that this cell was picked + the question
   if(MP.active){
-    mpLastPhase='question';
-    mpLastCellKey=G.board.findIndex(c=>c.catId===catId)+'_'+pts;
-    mpPatch({phase:'question',board:G.board,curCell:G.curCell,curQ:q,ct:G.ct,mi:G.mi,scores:G.scores,answered:false,lastAnswer:null});
+    const st=MP.lastState||{};
+    const newTurnIndex=typeof st.turn_index==='number'?st.turn_index:0;
+    const qStartedAt=new Date().toISOString();
+    mpPatch({phase:'question',board:G.board,current_question:q,current_cell:G.curCell,
+      ct:G.ct,mi:G.mi,scores:G.scores,answered:false,last_answer:null,
+      question_started_at:qStartedAt,steal_active:false,steal_submissions:{},steal_winner:null,
+      turn_index:newTurnIndex,
+      // legacy fields
+      curQ:q,curCell:G.curCell});
   }
   renderQuestion(q,pts);
 }
@@ -1883,17 +1979,56 @@ function ansM(btn,chosen,correct,pts,exp,surp){if(G.answered)return;G.answered=t
 function ansT(btn,chosen,correct,pts,exp,surp){if(G.answered)return;G.answered=true;stopTmr();revealQImg();document.querySelectorAll('.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.toLowerCase()===correct.toLowerCase())b.classList.add('ok');});if(chosen!==correct)btn.classList.add('no');resolve(chosen===correct,pts,exp,surp);}
 
 function resolve(ok,pts,exp,surp){
-  const t=G.ct;if(ok){G.scores[t]+=pts;sOk();}else sNo();
+  const t=G.ct;
+  if(ok){G.scores[t]+=pts;sOk();}else sNo();
+
+  if(MP.active){
+    // In room mode: broadcast result
+    const myPlayer=(MP.lastState?.players||[]).find(p=>p.id===MP.playerId);
+    const playerName=myPlayer?.name||G.teams[t]?.name||'Player';
+    const teamName=G.teams[t]?.name||playerName;
+    const lastAns={ok,pts:ok?pts:0,exp,team_name:teamName,player_name:playerName};
+    // Advance turn index
+    const st=MP.lastState||{};
+    const newTurnIndex=((typeof st.turn_index==='number'?st.turn_index:0)+1)%(st.turn_order?.length||1);
+
+    if(!ok&&G.teams.length>1){
+      // Steal opportunity in room mode
+      const excludedTeamId=MP.playType==='team'?(G.teams[t]?.id||null):null;
+      const excludedPlayerId=MP.playType==='individual'?MP.playerId:null;
+      const stealState={...st,phase:'steal',scores:G.scores,
+        steal_active:true,steal_started_at:new Date().toISOString(),
+        steal_excluded_team_id:excludedTeamId,steal_excluded_player_id:excludedPlayerId,
+        steal_submissions:{},steal_winner:null,last_answer:lastAns,answered:true};
+      mpPatch(stealState);
+      // Show local steal UI
+      const sb=document.getElementById('steal-bar');
+      if(sb){sb.style.display='block';sb.textContent='⏱ Other teams have 10 seconds to steal!';}
+      stopTmr();
+      tLeft=STEAL_TIME;updTmr();
+      stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);if(MP.isHost)mpEvaluateSteal({...stealState,steal_submissions:{}});}},1000);
+      return;
+    }
+
+    // Correct or no steal opportunity: broadcast reveal
+    if(ok){
+      const teamId=G.teams[t]?.id;
+      const newTeamScores={...(st.team_scores||{})};
+      const newPlayerScores={...(st.player_scores||{})};
+      if(MP.playType==='team'&&teamId)newTeamScores[teamId]=(newTeamScores[teamId]||0)+pts;
+      else newPlayerScores[MP.playerId]=(newPlayerScores[MP.playerId]||0)+pts;
+      mpPatch({phase:'reveal',scores:G.scores,team_scores:newTeamScores,player_scores:newPlayerScores,
+        turn_index:newTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
+    } else {
+      mpPatch({phase:'reveal',scores:G.scores,turn_index:newTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
+    }
+  }
+
   const fb=document.getElementById('fb');
   if(fb){fb.className='fb show '+(ok?'ok':'no');fb.textContent=(ok?'✓ Correct! +'+pts+' pts. ':'✗ Not quite. ')+exp;}
   if(surp&&ok)showShare(exp);
   const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
   G.stealing=false;updScores();
-  // Broadcast result to all players
-  if(MP.active){
-    mpLastPhase='reveal';
-    mpPatch({phase:'reveal',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,curCell:G.curCell,curQ:G.curQ,answered:true,lastAnswer:{ok,pts,exp},stealing:false});
-  }
 }
 
 function updScores(){
@@ -1930,8 +2065,17 @@ function nextTurn(){
   document.getElementById('board-section').style.display='block';
   renderBoard();
   if(MP.active){
-    mpLastPhase='board'; mpLastCellKey=null;
-    mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,stealing:false,curCell:null,curQ:null,answered:false,lastAnswer:null});
+    const st=MP.lastState||{};
+    const newTurnIndex=((typeof st.turn_index==='number'?st.turn_index:0)+1)%(st.turn_order?.length||1);
+    // Find new current team
+    const nextPlayerId=st.turn_order?.[newTurnIndex%(st.turn_order?.length||1)];
+    const nextPlayerTeamId=(st.players||[]).find(p=>p.id===nextPlayerId)?.team_id;
+    const newCt=(G.teams||[]).findIndex(t=>t.id===nextPlayerTeamId);
+    if(newCt>=0)G.ct=newCt;
+    MP.lastPhase='board';MP.lastCellKey=null;
+    mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,
+      turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
+      current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
   }
 }
 
@@ -1987,289 +2131,418 @@ async function submitQuestion(){
 }
 
 // ══════════════════════════════════════════════
-//  MULTIPLAYER ROOM
+//  MULTIPLAYER — room-based play
 // ══════════════════════════════════════════════
-
-const MP = {
-  active: false,    // true when in a live room session
-  code: null,       // 4-letter room code
-  playerId: null,   // this device's player UUID
-  isHost: false,    // did this device create the room?
-  pollInterval: null,
-  lastUpdated: null,
-  syncing: false,   // true while applying received state (suppresses re-broadcast)
+const MP={
+  active:false, code:null, playerId:null, playerName:null,
+  isHost:false, playType:'team',
+  pollInterval:null, countdownInterval:null,
+  lastUpdated:null, syncing:false,
+  myVotes:[], votesSubmitted:false,
+  lastTurnIndex:-1, lastPhase:null, lastCellKey:null,
 };
 
-// State fingerprints to detect what changed
-let mpLastPhase = null;
-let mpLastCellKey = null;
-let mpLastCt = -1;
-
 // ── JOIN MODAL ──
-function openJoinModal() {
-  document.getElementById('join-modal').style.display = 'flex';
-  setTimeout(()=>document.getElementById('jm-code')?.focus(), 100);
-}
-function closeJoinModal() {
-  document.getElementById('join-modal').style.display = 'none';
-  const err = document.getElementById('jm-err');
-  if(err) err.className = 'err-box';
-}
+function openJoinModal(){document.getElementById('join-modal').style.display='flex';setTimeout(()=>document.getElementById('jm-code')?.focus(),100);}
+function closeJoinModal(){document.getElementById('join-modal').style.display='none';const e=document.getElementById('jm-err');if(e)e.className='err-box';}
 
-async function mpJoinRoom() {
-  const code = (document.getElementById('jm-code').value||'').trim().toUpperCase();
-  const errEl = document.getElementById('jm-err');
-  if(!code || code.length !== 4) { errEl.textContent='Enter the 4-letter room code'; errEl.className='err-box show'; return; }
-
-  const btn = document.querySelector('#join-modal .mp-start-btn');
-  btn.textContent = 'Joining...'; btn.disabled = true;
-  try {
-    const res = await fetch('/api/room?code='+code);
-    if(!res.ok) { const e=await res.json(); errEl.textContent=e.error||'Room not found!'; errEl.className='err-box show'; return; }
-    const room = await res.json();
-    const st = room.state;
-
-    // Joiners don't need to set anything up — they just mirror the room state
-    const pid = crypto.randomUUID();
-    st.players = (st.players||[]).filter(p=>p.id!==pid);
-    st.players.push({ id:pid, connected:true });
-
-    await fetch('/api/room',{ method:'PATCH', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ code, state:st }) });
-
-    MP.active = true; MP.code = code; MP.playerId = pid; MP.isHost = false;
+async function mpJoinRoom(){
+  const code=(document.getElementById('jm-code')?.value||'').trim().toUpperCase();
+  const name=(document.getElementById('jm-name')?.value||'').trim();
+  const errEl=document.getElementById('jm-err');
+  if(!code||code.length!==4){errEl.textContent='Enter the 4-letter room code';errEl.className='err-box show';return;}
+  if(!name){errEl.textContent='Enter your name';errEl.className='err-box show';return;}
+  const btn=document.querySelector('#join-modal .mp-start-btn');
+  btn.textContent='Joining...';btn.disabled=true;
+  try{
+    const res=await fetch('/api/room?code='+code);
+    if(!res.ok){const e=await res.json();errEl.textContent=e.error||'Room not found!';errEl.className='err-box show';return;}
+    const room=await res.json();const st=room.state;
+    if(st.phase!=='lobby'){errEl.textContent='This game has already started.';errEl.className='err-box show';return;}
+    const pid=crypto.randomUUID();
+    const players=(st.players||[]).filter(p=>p.id!==pid);
+    players.push({id:pid,name,is_host:false,connected:true,team_id:null,votes:[],voted:false,score:0});
+    const newSt={...st,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:newSt})});
+    MP.active=true;MP.code=code;MP.playerId=pid;MP.playerName=name;MP.isHost=false;
+    MP.playType=st.play_type||'team';
     closeJoinModal();
-
-    if(st.phase === 'lobby' || st.phase === 'loading') {
-      // Game not started yet — show waiting room
-      mpShowWaitRoom(room);
-    } else {
-      // Game in progress — jump in
-      mpApplyGameConfig(st, true);
-    }
+    mpShowLobby(code,newSt);
     mpStartPolling();
-  } catch(e) {
-    errEl.textContent = 'Error joining. Try again.'; errEl.className = 'err-box show';
-  } finally {
-    btn.textContent = '🔗 Join Room'; btn.disabled = false;
-  }
+    G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
+  }catch(e){errEl.textContent='Error joining. Try again.';errEl.className='err-box show';}
+  finally{btn.textContent='🔗 Join Room';btn.disabled=false;}
 }
 
-// ── ROOM CREATION: triggered by startGame() when style==='room' ──
-async function mpCreateRoom() {
-  try {
-    const res = await fetch('/api/room', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        host_name: G.teams[0]?.name || 'Host',
-        game_mode: G.gameMode,
-        location: G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city,
-        categories: [...new Set(G.teams.flatMap(t=>t.cats))],
-      })
-    });
-    const room = await res.json();
-    if(room.error) throw new Error(room.error);
-
-    MP.active = true; MP.code = room.code; MP.playerId = room.player_id; MP.isHost = true;
-
-    // Show room code on the loading screen so players can join while questions generate
-    const banner = document.getElementById('room-code-banner');
-    const codeVal = document.getElementById('rcb-code-val');
-    const shareInput = document.getElementById('rcb-share-input');
-    if(banner){ banner.style.display = 'block'; }
-    if(codeVal){ codeVal.textContent = room.code; }
-    if(shareInput){ shareInput.value = room.code; }
-
-    // Also show in game header badge
-    const badge = document.getElementById('room-badge');
-    const badgeCode = document.getElementById('room-badge-code');
-    if(badge){ badge.classList.add('show'); }
-    if(badgeCode){ badgeCode.textContent = 'ROOM '+room.code; }
-
+// ── CREATE ROOM ──
+async function mpCreateRoom(playType,hostName){
+  try{
+    const res=await fetch('/api/room',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({host_name:hostName,game_mode:G.gameMode,location:G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city})});
+    const room=await res.json();
+    if(room.error)throw new Error(room.error);
+    const pid=room.player_id;
+    const initState={
+      phase:'lobby',play_type:playType,game_mode:G.gameMode,
+      city:G.city,country:G.country,college:G.college,
+      teams:[],
+      players:[{id:pid,name:hostName,is_host:true,connected:true,team_id:null,votes:[],voted:false,score:0}],
+      board_categories:[],board:[],
+      turn_order:[],turn_index:0,
+      current_question:null,current_cell:null,
+      question_started_at:null,answered:false,last_answer:null,
+      steal_active:false,steal_started_at:null,steal_excluded_team_id:null,steal_excluded_player_id:null,steal_submissions:{},steal_winner:null,
+      team_scores:{},player_scores:{},
+      lobby_started_at:new Date().toISOString(),
+      scores:[],ct:0,mi:[]
+    };
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:room.code,state:initState})});
+    MP.active=true;MP.code=room.code;MP.playerId=pid;MP.playerName=hostName;MP.isHost=true;MP.playType=playType;
+    const badge=document.getElementById('room-badge');const bc=document.getElementById('room-badge-code');
+    if(badge)badge.classList.add('show');if(bc)bc.textContent='ROOM '+room.code;
     mpStartPolling();
-    return room.code;
-  } catch(e) {
-    console.error('mpCreateRoom failed', e);
-    return null;
-  }
+    mpShowLobby(room.code,initState);
+  }catch(e){console.error(e);showErr('Could not create room. Try again.');}
 }
 
-function rcbCopy() {
-  const code = MP.code||'';
-  navigator.clipboard.writeText(code).then(()=>{
-    const btn = document.querySelector('#room-code-banner .mp-share-row button');
-    if(btn){const old=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=old,2000);}
-  }).catch(()=>alert('Code: '+code));
-}
-
-// ── WAITING ROOM (for joiners before game starts) ──
-function mpShowWaitRoom(room) {
-  const code = room.code || MP.code;
-  document.getElementById('mp-wait-code').textContent = code;
-  const si = document.getElementById('mp-share-input');
-  if(si){ si.value = code; }
+// ── LOBBY DISPLAY ──
+function mpShowLobby(code,state){
+  document.getElementById('mp-wait-code').textContent=code;
+  const si=document.getElementById('mp-share-input');if(si)si.value=code;
   show('s-mp-wait');
-  mpRenderWaitRoom(room.state);
+  mpBuildCatGrid(state);
+  mpRenderLobby(state);
+  mpStartCountdown(state.lobby_started_at);
 }
 
-function mpRenderWaitRoom(state) {
-  const players = state.players || [];
-  const list = document.getElementById('mp-player-list');
-  const count = document.getElementById('mp-player-count');
-  const status = document.getElementById('mp-wait-status');
-  const startBtn = document.getElementById('mp-start-game-btn');
-  const joinWait = document.getElementById('mp-join-wait');
+function mpRenderLobby(st){
+  const isTeam=st.play_type==='team';
+  document.getElementById('mp-teams-section').style.display=isTeam?'block':'none';
+  document.getElementById('mp-players-section').style.display=isTeam?'none':'block';
 
-  if(count) count.textContent = '('+players.length+' connected)';
-  if(list) list.innerHTML = players.map(p =>
-    `<div class="player-chip">
+  // Individual: player list
+  if(!isTeam){
+    const pl=document.getElementById('mp-player-list');
+    const pc=document.getElementById('mp-player-count');
+    const players=st.players||[];
+    if(pc)pc.textContent='('+players.length+')';
+    if(pl)pl.innerHTML=players.map(p=>`<div class="player-chip">
       <div class="pc-dot"></div>
       <div class="pc-name">${p.name||'Player'}${p.id===MP.playerId?' (you)':''}</div>
-      ${p.isHost?'<div class="pc-host">Host</div>':''}
-    </div>`
-  ).join('');
+      ${p.is_host?'<span class="pc-badge pc-host">Host</span>':''}
+      ${p.voted?'<span class="pc-badge pc-voted">Voted</span>':''}
+    </div>`).join('');
+  }
 
-  if(MP.isHost) {
-    if(startBtn) startBtn.style.display = 'block';
-    if(joinWait) joinWait.style.display = 'none';
-    if(status) status.textContent = players.length < 2 ? 'Waiting for others to join...' : 'Ready! Tap Begin Game when everyone\'s in.';
-  } else {
-    if(startBtn) startBtn.style.display = 'none';
-    if(joinWait) joinWait.style.display = 'block';
-    if(status) status.textContent = '';
+  // Team mode: team cards
+  if(isTeam){
+    const tl=document.getElementById('mp-team-list');
+    const teams=st.teams||[];
+    const players=st.players||[];
+    const myTeamId=(players.find(p=>p.id===MP.playerId)||{}).team_id;
+    const canAddTeam=teams.length<4;
+    if(document.getElementById('mp-add-team-btn'))
+      document.getElementById('mp-add-team-btn').style.display=canAddTeam?'':'none';
+
+    if(tl)tl.innerHTML=teams.map(t=>{
+      const members=players.filter(p=>p.team_id===t.id);
+      const isMine=t.id===myTeamId;
+      const allVoted=members.length>0&&members.every(p=>p.voted);
+      return `<div class="mp-team-card${isMine?' mine':''}">
+        <div class="mp-team-left">
+          <div style="font-weight:700;font-size:.92rem;color:${['#e8b84b','#4ecdc4','#a78bfa','#fb923c'][teams.indexOf(t)%4]}">${t.name||'Team'}</div>
+          <div class="mp-team-members-txt">${members.length?members.map(p=>p.name+(p.voted?' ✓':'')).join(', '):'No members yet'}</div>
+        </div>
+        ${isMine
+          ?'<button class="mp-join-btn joined" disabled>Joined ✓</button>'
+          :`<button class="mp-join-btn" onclick="mpLobbyJoinTeam('${t.id}')">Join</button>`}
+      </div>`;
+    }).join('');
+  }
+
+  // Voting card: show/hide vote button based on whether voted
+  const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
+  const votedAlready=myPlayer?.voted||MP.votesSubmitted;
+  const voteBtn=document.getElementById('mp-vote-btn');
+  const votedConfirm=document.getElementById('mp-voted-confirm');
+  if(voteBtn)voteBtn.style.display=(!votedAlready&&MP.myVotes.length===6)?'block':'none';
+  if(votedConfirm)votedConfirm.style.display=votedAlready?'block':'none';
+  const votingCard=document.getElementById('mp-voting-card');
+  if(votingCard)votingCard.style.opacity=votedAlready?'.6':'1';
+
+  // Status
+  const players=st.players||[];
+  const votedCount=players.filter(p=>p.voted).length;
+  const totalCount=players.length;
+  const status=document.getElementById('mp-lobby-status');
+  if(status){
+    if(votedCount===totalCount&&totalCount>1)status.textContent='Everyone has voted! Starting soon...';
+    else if(votedCount>0)status.textContent=`${votedCount} of ${totalCount} players have voted`;
+    else status.textContent=totalCount<2?'Waiting for players to join...':'Waiting for everyone to vote...';
   }
 }
 
-function mpCopyCode() {
-  const code = MP.code||'';
-  navigator.clipboard.writeText(code).then(()=>{
-    const btn = document.querySelector('#s-mp-wait .mp-share-row button');
-    if(btn){const old=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=old,2000);}
-  }).catch(()=>alert('Code: '+code));
+// ── CATEGORY VOTING ──
+function mpBuildCatGrid(st){
+  const grid=document.getElementById('mp-cat-grid');if(!grid)return;
+  const cats=getCats();
+  grid.innerHTML=cats.map(c=>`
+    <button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')">
+      <span class="mc-icon">${c.icon}</span>${c.label}
+    </button>`).join('');
+  mpUpdateVoteCount();
 }
 
-// ── HOST: begin game from waiting room ──
-async function mpStartGame() {
-  const btn = document.getElementById('mp-start-game-btn');
-  btn.textContent = 'Starting...'; btn.disabled = true;
-
-  const loc = G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
-  document.getElementById('load-txt').textContent = 'Loading '+loc+'...';
-  document.getElementById('load-prog').style.width = '0%';
-
-  // Show room code banner on loading screen
-  const banner = document.getElementById('room-code-banner');
-  const codeVal = document.getElementById('rcb-code-val');
-  const shareInput = document.getElementById('rcb-share-input');
-  if(banner) banner.style.display = 'block';
-  if(codeVal) codeVal.textContent = MP.code;
-  if(shareInput) shareInput.value = MP.code;
-
-  // Broadcast loading state
-  await mpPatch({ phase:'loading', game_mode:G.gameMode, city:G.city, country:G.country,
-    college:G.college, teams:G.teams, board:G.board, scores:G.scores, ct:0, mi:G.mi });
-
-  show('s-loading');
-  preGenAll().then(()=>{
-    mpLastPhase='board'; mpLastCellKey=null; mpLastCt=0;
-    // Broadcast game started → board
-    mpPatch({ phase:'board', board:G.board, scores:G.scores, ct:0, mi:G.mi, curCell:null, curQ:null, answered:false, lastAnswer:null });
-    show('s-game');
-    renderBoard();
-    mpShowRoomBadge();
-  }).catch(e=>{console.error(e);mpLeave();});
-}
-
-// ── POLLING ──
-function mpStartPolling() {
-  if(MP.pollInterval) clearInterval(MP.pollInterval);
-  MP.pollInterval = setInterval(mpPoll, 1500);
-}
-function mpStopPolling() {
-  if(MP.pollInterval) clearInterval(MP.pollInterval);
-  MP.pollInterval = null;
-}
-
-async function mpPoll() {
-  if(!MP.code) return;
-  try {
-    const res = await fetch('/api/room?code='+MP.code);
-    if(!res.ok) return;
-    const room = await res.json();
-    if(room.updated_at === MP.lastUpdated) return;
-    MP.lastUpdated = room.updated_at;
-    const st = room.state;
-
-    // Waiting room — update player list
-    if(document.getElementById('s-mp-wait')?.classList.contains('active')) {
-      mpRenderWaitRoom(st);
-      // If host started → begin for joiner
-      if((st.phase==='loading'||st.phase==='board') && !MP.isHost) {
-        mpApplyGameConfig(st, false);
-      }
-      return;
-    }
-
-    // In-game — mirror all state changes
-    if(document.getElementById('s-game')?.classList.contains('active')) {
-      MP.syncing = true;
-      mpMirrorState(st);
-      MP.syncing = false;
-      return;
-    }
-
-    // Results
-    if(st.phase==='results' && !document.getElementById('s-results')?.classList.contains('active')) {
-      if(st.scores) G.scores=[...st.scores];
-      showResults();
-    }
-  } catch(e) { /* silent */ }
-}
-
-// ── APPLY GAME CONFIG ON JOINER DEVICE ──
-function mpApplyGameConfig(st, alreadyInLobby) {
-  G.gameMode = st.game_mode||'local';
-  G.city = st.city||''; G.country = st.country||''; G.college = st.college||'';
-  G.style = 'room';
-  G.teams = st.teams||[];
-  G.scores = G.teams.map(()=>0);
-  G.mi = G.teams.map(()=>0);
-  G.bank={}; G.usedQs={}; G.usedImgs={}; G.ct=0; G.answered=false; G.stealing=false; G.curCell=null; G.curQ=null;
-  const allCats=[...new Set(G.teams.flatMap(t=>t.cats))];
-  G.board=allCats.map(catId=>{
-    const cat=ALL.find(c=>c.id===catId);
-    return {catId,label:cat?.label||catId,icon:cat?.icon||'❓',cells:{200:false,400:false,600:false}};
+function mpToggleCat(catId){
+  const myPlayer=(MP.lastState?.players||[]).find(p=>p.id===MP.playerId);
+  if(myPlayer?.voted||MP.votesSubmitted)return;
+  const idx=MP.myVotes.indexOf(catId);
+  if(idx>=0){MP.myVotes.splice(idx,1);}
+  else if(MP.myVotes.length<6){MP.myVotes.push(catId);}
+  document.querySelectorAll('.mp-cat-btn').forEach(b=>{
+    const cid=b.id.replace('mpcb-','');
+    b.className='mp-cat-btn'+(MP.myVotes.includes(cid)?' picked':'');
+    if(!MP.myVotes.includes(cid)&&MP.myVotes.length>=6)b.disabled=true;
+    else b.disabled=false;
   });
+  mpUpdateVoteCount();
+  const voteBtn=document.getElementById('mp-vote-btn');
+  if(voteBtn)voteBtn.style.display=MP.myVotes.length===6?'block':'none';
+}
 
+function mpUpdateVoteCount(){
+  const vc=document.getElementById('mp-vote-count');
+  if(vc){vc.textContent=MP.myVotes.length+' / 6 selected';vc.className='mp-vote-count'+(MP.myVotes.length===6?' done':'');}
+}
+
+async function mpSubmitVotes(){
+  if(MP.myVotes.length!==6){alert('Pick exactly 6 categories first.');return;}
+  if(!MP.active||!MP.code)return;
+  const btn=document.getElementById('mp-vote-btn');if(btn){btn.textContent='Submitting...';btn.disabled=true;}
+  try{
+    const res=await fetch('/api/room?code='+MP.code);
+    if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    const players=(st.players||[]).map(p=>p.id===MP.playerId?{...p,votes:[...MP.myVotes],voted:true}:p);
+    const newSt={...st,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    MP.votesSubmitted=true;MP.lastState=newSt;
+    const voteBtn=document.getElementById('mp-vote-btn');const vc=document.getElementById('mp-voted-confirm');
+    if(voteBtn)voteBtn.style.display='none';if(vc)vc.style.display='block';
+    const votingCard=document.getElementById('mp-voting-card');if(votingCard)votingCard.style.opacity='.6';
+    if(MP.isHost)mpCheckAutoStart(newSt);
+  }catch(e){if(btn){btn.textContent='✓ Lock In My Votes';btn.disabled=false;}}
+}
+
+// ── TEAM MANAGEMENT IN LOBBY ──
+async function mpLobbyJoinTeam(teamId){
+  if(!MP.active||!MP.code)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    const players=(st.players||[]).map(p=>p.id===MP.playerId?{...p,team_id:teamId}:p);
+    const newSt={...st,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    MP.lastState=newSt;mpRenderLobby(newSt);
+  }catch(e){}
+}
+
+async function mpLobbyCreateTeam(){
+  if(!MP.active||!MP.code)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    const teams=st.teams||[];
+    if(teams.length>=4){alert('Maximum 4 teams.');return;}
+    const colors=['Gold','Teal','Purple','Orange'];
+    const newTeam={id:crypto.randomUUID(),name:colors[teams.length]||'Team '+(teams.length+1),color_idx:teams.length};
+    const newTeams=[...teams,newTeam];
+    const players=(st.players||[]).map(p=>p.id===MP.playerId?{...p,team_id:newTeam.id}:p);
+    const newSt={...st,teams:newTeams,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    MP.lastState=newSt;mpRenderLobby(newSt);
+  }catch(e){}
+}
+
+// ── COUNTDOWN ──
+let mpCountdownInterval=null;
+function mpStartCountdown(lobbyStartedAt){
+  clearInterval(mpCountdownInterval);
+  const LOBBY_SECS=180;
+  function tick(){
+    const elapsed=Math.floor((Date.now()-new Date(lobbyStartedAt).getTime())/1000);
+    const rem=Math.max(0,LOBBY_SECS-elapsed);
+    const m=Math.floor(rem/60),s=rem%60;
+    const val=document.getElementById('mp-countdown-val');
+    const bar=document.getElementById('mp-cbar');
+    if(val)val.textContent=m+':'+(s<10?'0':'')+s;
+    if(bar)bar.style.width=((rem/LOBBY_SECS)*100)+'%';
+    if(bar)bar.style.background=rem>60?'#22c55e':rem>30?'#f59e0b':'#ef4444';
+    if(rem<=0){clearInterval(mpCountdownInterval);if(MP.isHost&&MP.lastState)mpLaunchGame(MP.lastState);}
+  }
+  tick();mpCountdownInterval=setInterval(tick,1000);
+}
+
+// ── AUTO-START CHECK (host only) ──
+function mpCheckAutoStart(st){
+  if(!MP.isHost)return;
+  const players=st.players||[];
+  if(players.length<2)return;
+  const allVoted=players.every(p=>p.voted);
+  if(allVoted)mpLaunchGame(st);
+}
+
+// ── LAUNCH GAME (host only) ──
+async function mpLaunchGame(st){
+  if(!MP.isHost||!MP.active)return;
+  clearInterval(mpCountdownInterval);
+  // Tally votes
+  const catVotes={};
+  (st.players||[]).forEach(p=>{(p.votes||[]).forEach(cid=>{catVotes[cid]=(catVotes[cid]||0)+1;});});
+  // Sort by votes, break ties randomly
+  let sorted=Object.entries(catVotes).sort((a,b)=>b[1]-a[1]||Math.random()-.5);
+  const boardCatIds=sorted.slice(0,6).map(x=>x[0]);
+  const board=boardCatIds.map(catId=>{const cat=ALL.find(c=>c.id===catId);return{catId,label:cat?.label||catId,icon:cat?.icon||'❓',cells:{200:false,400:false,600:false}};});
+
+  // Compute turn order
+  const players=st.players||[];
+  let turnOrder=[];
+  if(st.play_type==='team'){
+    const teams=st.teams||[];
+    const teamPlayers=teams.map(t=>players.filter(p=>p.team_id===t.id).map(p=>p.id));
+    const maxLen=Math.max(1,...teamPlayers.map(tp=>tp.length));
+    for(let i=0;i<maxLen;i++)for(const tp of teamPlayers){if(tp[i])turnOrder.push(tp[i]);}
+    // If someone has no team, add them at end
+    const unassigned=players.filter(p=>!p.team_id).map(p=>p.id);
+    turnOrder=[...turnOrder,...unassigned];
+  } else {
+    turnOrder=players.map(p=>p.id);
+  }
+
+  // Build teams array for G compat
+  let gTeams=[];
+  const teamScores={};const playerScores={};
+  if(st.play_type==='team'){
+    gTeams=(st.teams||[]).map(t=>({id:t.id,name:t.name,players:players.filter(p=>p.team_id===t.id).map(p=>p.name),cats:[]}));
+    gTeams.forEach(t=>{teamScores[t.id]=0;});
+  } else {
+    gTeams=players.map(p=>({id:p.id,name:p.name,players:[p.name],cats:[]}));
+    players.forEach(p=>{playerScores[p.id]=0;});
+  }
+  const scores=gTeams.map(()=>0);
+  const mi=gTeams.map(()=>0);
+
+  const launchState={...st,phase:'loading',board_categories:boardCatIds,board,turn_order:turnOrder,turn_index:0,
+    teams:gTeams,scores,mi,ct:0,team_scores:teamScores,player_scores:playerScores,
+    current_question:null,current_cell:null,question_started_at:null,answered:false};
+  await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
+
+  // Host generates questions then starts
+  G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
+  G.teams=gTeams;G.scores=[...scores];G.mi=[...mi];G.board=[...board];G.ct=0;
+  G.bank={};G.usedQs={};G.usedImgs={};G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
   const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
   preGenAll().then(()=>{
-    mpLastPhase='board'; mpLastCellKey=null; mpLastCt=-1;
-    show('s-game'); renderBoard(); mpShowRoomBadge();
-    // Apply any in-progress state
-    MP.syncing=true; mpMirrorState(st); MP.syncing=false;
+    MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=0;
+    const boardState={...launchState,phase:'board'};
+    mpPatch(boardState);
+    show('s-game');renderBoard();mpShowRoomBadge();
+  }).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
+}
+
+// ── POLLING ──
+function mpStartPolling(){
+  if(MP.pollInterval)clearInterval(MP.pollInterval);
+  MP.pollInterval=setInterval(mpPoll,1800);
+}
+function mpStopPolling(){
+  if(MP.pollInterval)clearInterval(MP.pollInterval);
+  MP.pollInterval=null;
+}
+
+async function mpPoll(){
+  if(!MP.code)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);
+    if(!res.ok)return;
+    const room=await res.json();
+    if(room.updated_at===MP.lastUpdated)return;
+    MP.lastUpdated=room.updated_at;
+    const st=room.state;
+    MP.lastState=st;
+
+    // In lobby
+    if(document.getElementById('s-mp-wait')?.classList.contains('active')){
+      mpRenderLobby(st);
+      if(!MP.isHost&&(st.phase==='loading'||st.phase==='board')){
+        mpApplyGameConfig(st);
+      }
+      return;
+    }
+
+    // In game
+    if(document.getElementById('s-game')?.classList.contains('active')){
+      MP.syncing=true;
+      mpMirrorState(st);
+      MP.syncing=false;
+      // Host evaluates steal
+      if(MP.isHost&&st.steal_active&&!st.steal_winner)mpEvaluateSteal(st);
+      return;
+    }
+
+    // Results
+    if(st.phase==='results'&&!document.getElementById('s-results')?.classList.contains('active')){
+      mpBuildGFromState(st);showResults();
+    }
+  }catch(e){}
+}
+
+// ── APPLY CONFIG FOR NON-HOST JOINER ──
+function mpApplyGameConfig(st){
+  G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
+  G.style='room';
+  mpBuildGFromState(st);
+  const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
+  document.getElementById('load-txt').textContent='Loading '+loc+'...';
+  document.getElementById('load-prog').style.width='0%';
+  show('s-loading');
+  preGenAll().then(()=>{
+    MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=-1;
+    show('s-game');renderBoard();mpShowRoomBadge();
+    MP.syncing=true;mpMirrorState(st);MP.syncing=false;
   }).catch(e=>{console.error(e);mpLeave();});
 }
 
-// ── MIRROR STATE: apply room state to this device ──
-function mpMirrorState(st) {
-  if(!st) return;
-  const phase = st.phase;
+function mpBuildGFromState(st){
+  const players=st.players||[];
+  G.teams=st.teams||[];
+  if(!G.teams.length&&players.length){G.teams=players.map(p=>({id:p.id,name:p.name,players:[p.name],cats:[]}));}
+  G.scores=G.teams.map(t=>st.team_scores?.[t.id]??st.player_scores?.[t.id]??0);
+  G.mi=G.teams.map(()=>0);
+  G.board=(st.board||[]).map(col=>({...col,cells:{...col.cells}}));
+  if(typeof st.ct==='number')G.ct=st.ct;
+  if(st.mi)G.mi=[...st.mi];
+  if(st.scores)G.scores=[...st.scores];
+}
 
-  // Always sync scores + board cells
-  if(st.scores) G.scores = [...st.scores];
-  if(st.board) st.board.forEach((col,ci)=>{ if(G.board[ci]) G.board[ci].cells={...col.cells}; });
-  if(typeof st.ct==='number') G.ct = st.ct;
-  if(st.mi) G.mi = [...st.mi];
-  if(typeof st.stealing==='boolean') G.stealing = st.stealing;
+// ── MIRROR STATE (non-host, in-game) ──
+function mpMirrorState(st){
+  if(!st)return;
+  // Sync scores + board
+  mpBuildGFromState(st);
   updScores();
 
-  if(phase==='board') {
-    const ctChanged = st.ct !== mpLastCt;
-    if(mpLastPhase!=='board' || ctChanged) {
-      mpLastPhase='board'; mpLastCt=st.ct;
+  const phase=st.phase;
+  const activeId=st.turn_order?.[st.turn_index%(st.turn_order?.length||1)];
+  const isMyTurn=!activeId||activeId===MP.playerId;
+
+  if(phase==='board'){
+    const ctChanged=st.ct!==MP.lastCt;
+    if(MP.lastPhase!=='board'||ctChanged){
+      MP.lastPhase='board';MP.lastCt=st.ct;
       document.getElementById('board-section').style.display='block';
       document.getElementById('q-area').innerHTML='';
       document.body.classList.remove('has-img');
@@ -2278,69 +2551,176 @@ function mpMirrorState(st) {
     return;
   }
 
-  const cellKey = st.curCell ? (G.board.findIndex(c=>c.catId===st.curCell.catId))+'_'+st.curCell.pts : null;
+  const cellKey=st.current_cell?(G.board.findIndex(c=>c.catId===st.current_cell.catId)+'_'+st.current_cell.pts):null;
 
-  if(phase==='question' && st.curQ && cellKey!==mpLastCellKey) {
-    mpLastPhase='question'; mpLastCellKey=cellKey;
-    G.curCell=st.curCell; G.curQ=st.curQ; G.answered=false;
+  if(phase==='question'&&st.current_question&&cellKey!==MP.lastCellKey){
+    MP.lastPhase='question';MP.lastCellKey=cellKey;
+    G.curCell=st.current_cell;G.curQ=st.current_question;G.answered=false;
     document.getElementById('board-section').style.display='none';
-    renderQuestion(st.curQ, st.curCell.pts);
+    // Sync timer start
+    renderQuestion(st.current_question,st.current_cell.pts);
+    if(st.question_started_at){
+      const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
+      tLeft=Math.max(0,TMAX-elapsed);
+    }
+    // Non-active player: disable buttons + show waiting banner
+    if(!isMyTurn){
+      setTimeout(()=>{
+        document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=true);
+        const acts=document.querySelector('.acts');
+        if(acts){
+          const ap=st.players?.find(p=>p.id===activeId);
+          const wb=document.createElement('div');wb.className='mp-waiting-banner';
+          wb.textContent='⏳ Waiting for '+( ap?.name||'player')+' to answer...';
+          acts.before(wb);
+        }
+      },50);
+    }
     return;
   }
 
-  if(phase==='reveal' && st.lastAnswer && mpLastPhase!=='reveal') {
-    mpLastPhase='reveal';
-    G.answered=true;
-    const la=st.lastAnswer;
-    // Highlight correct answer + show feedback
-    document.querySelectorAll('.opt-btn').forEach(b=>{
-      b.disabled=true;
-      if(b.textContent.trim()===st.curQ?.answer) b.classList.add('ok');
-    });
-    document.querySelectorAll('.tf-btn').forEach(b=>{
-      b.disabled=true;
-      if(b.textContent.toLowerCase()===st.curQ?.answer?.toLowerCase()) b.classList.add('ok');
-    });
+  if(phase==='steal'&&MP.lastPhase!=='steal'){
+    MP.lastPhase='steal';
+    // Show steal banner, hide answer if I'm eligible
+    const excludedTeamId=st.steal_excluded_team_id;
+    const excludedPlayerId=st.steal_excluded_player_id;
+    const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
+    const myTeamId=myPlayer?.team_id;
+    const isExcluded=(excludedTeamId&&myTeamId===excludedTeamId)||(excludedPlayerId&&MP.playerId===excludedPlayerId);
+    const sb=document.getElementById('steal-bar');
+    if(sb){
+      sb.style.display='block';
+      sb.innerHTML=isExcluded
+        ?'⏱ Other teams have 10 seconds to steal!'
+        :'⚡ 10 seconds to steal — answer now, don\'t say it aloud!';
+    }
+    // Enable buttons only for eligible
+    document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=isExcluded);
+    // Remove waiting banner if present
+    document.querySelector('.mp-waiting-banner')?.remove();
+    // Start steal countdown
+    tLeft=STEAL_TIME;
+    stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);}},1000);
+    return;
+  }
+
+  if(phase==='reveal'&&st.last_answer&&MP.lastPhase!=='reveal'){
+    MP.lastPhase='reveal';
+    G.answered=true;stopTmr();
+    const la=st.last_answer;
+    const q=st.current_question||G.curQ;
+    document.querySelectorAll('.opt-btn').forEach(b=>{b.disabled=true;if(b.textContent.trim()===q?.answer)b.classList.add('ok');});
+    document.querySelectorAll('.tf-btn').forEach(b=>{b.disabled=true;if(b.textContent.toLowerCase()===q?.answer?.toLowerCase())b.classList.add('ok');});
+    // Remove waiting banner
+    document.querySelector('.mp-waiting-banner')?.remove();
+    const sb=document.getElementById('steal-bar');if(sb)sb.style.display='none';
     const fb=document.getElementById('fb');
     if(fb){
-      const teamName=G.teams[st.ct]?.name||'Player';
+      const teamName=la.player_name||la.team_name||'Player';
       fb.className='fb show '+(la.ok?'ok':'no');
       fb.textContent=(la.ok?'✓ '+teamName+' got it! +'+la.pts+' pts. ':'✗ '+teamName+' missed it. ')+la.exp;
     }
-    const nb=document.getElementById('nb'); if(nb)nb.style.display='flex';
+    const nb=document.getElementById('nb');if(nb)nb.style.display='flex';
     return;
   }
+
+  if(phase==='results'){mpBuildGFromState(st);showResults();}
 }
 
-// ── BROADCAST STATE UPDATE ──
-async function mpPatch(stateUpdate) {
-  if(!MP.active||!MP.code||MP.syncing) return;
-  try {
-    // Merge with current room state to avoid overwriting other fields
-    const res=await fetch('/api/room?code='+MP.code);
-    if(!res.ok) return;
+// ── BROADCAST ──
+async function mpPatch(stateUpdate){
+  if(!MP.active||!MP.code||MP.syncing)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
     const room=await res.json();
     const newState=Object.assign({},room.state,stateUpdate);
     MP.lastUpdated=null;
     await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({code:MP.code,state:newState,player_id:MP.playerId})});
-  } catch(e){/*silent*/}
+  }catch(e){}
 }
 
-function mpShowRoomBadge() {
-  const badge=document.getElementById('room-badge');
-  const code=document.getElementById('room-badge-code');
-  if(badge) badge.classList.add('show');
-  if(code) code.textContent='ROOM '+MP.code;
+// ── STEAL (room mode) ──
+async function mpSubmitStealAnswer(answer){
+  // Used by eligible players during steal phase
+  if(!MP.active||!MP.code)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    if(st.phase!=='steal')return;
+    const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
+    const submissionKey=st.play_type==='team'?(myPlayer?.team_id||MP.playerId):MP.playerId;
+    const newSubs={...st.steal_submissions,[submissionKey]:answer};
+    const newSt={...st,steal_submissions:newSubs};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    // Disable own buttons after submitting
+    document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=true);
+    const sb=document.getElementById('steal-bar');
+    if(sb)sb.textContent='⏳ Answer submitted! Waiting for steal window to close...';
+  }catch(e){}
 }
 
-function mpLeave() {
-  mpStopPolling();
-  MP.active=false; MP.code=null; MP.playerId=null; MP.isHost=false;
-  const banner=document.getElementById('room-code-banner');
-  if(banner) banner.style.display='none';
-  const badge=document.getElementById('room-badge');
-  if(badge) badge.classList.remove('show');
+async function mpEvaluateSteal(st){
+  // Host only: check if any submission is correct
+  if(!MP.isHost)return;
+  const q=st.current_question;if(!q)return;
+  const subs=st.steal_submissions||{};
+  const correctKey=Object.keys(subs).find(k=>subs[k]?.toLowerCase()===q.answer?.toLowerCase());
+  const elapsed=st.steal_started_at?Math.floor((Date.now()-new Date(st.steal_started_at).getTime())/1000):0;
+  const timeUp=elapsed>=STEAL_TIME;
+  if(!correctKey&&!timeUp)return;
+
+  // Award steal or move on
+  const newScores=[...G.scores];
+  const newTeamScores={...st.team_scores};const newPlayerScores={...st.player_scores};
+  let playerName='';let teamName='';
+  if(correctKey){
+    if(st.play_type==='team'){
+      const teamIdx=(st.teams||[]).findIndex(t=>t.id===correctKey);
+      if(teamIdx>=0){newScores[teamIdx]=(newScores[teamIdx]||0)+st.current_cell.pts;newTeamScores[correctKey]=(newTeamScores[correctKey]||0)+st.current_cell.pts;teamName=(st.teams[teamIdx]?.name||'Team');}
+    } else {
+      const pidx=(st.players||[]).findIndex(p=>p.id===correctKey);
+      if(pidx>=0){newScores[pidx]=(newScores[pidx]||0)+st.current_cell.pts;newPlayerScores[correctKey]=(newPlayerScores[correctKey]||0)+st.current_cell.pts;const pw=(st.players||[])[pidx];playerName=pw?.name||'Player';}
+    }
+  }
+  G.scores=newScores;
+  const feedbackName=correctKey?(teamName||playerName):'';
+  const lastAns={
+    ok:!!correctKey,pts:st.current_cell?.pts||0,exp:q.explanation||'',
+    team_name:feedbackName,player_name:feedbackName,
+    steal:true,stolen_by:correctKey||null
+  };
+  const revealState={...st,phase:'reveal',scores:newScores,team_scores:newTeamScores,player_scores:newPlayerScores,
+    steal_active:false,steal_winner:correctKey||null,last_answer:lastAns,answered:true};
+  G.scores=newScores;sOk();
+  await mpPatch(revealState);
+}
+
+// ── ROOM BADGE & UTILITIES ──
+function mpShowRoomBadge(){
+  const badge=document.getElementById('room-badge');const code=document.getElementById('room-badge-code');
+  if(badge)badge.classList.add('show');if(code)code.textContent='ROOM '+MP.code;
+}
+function mpCopyCode(){
+  const code=MP.code||'';
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn=document.querySelector('#s-mp-wait .mp-share-row button');
+    if(btn){const o=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=o,2000);}
+  }).catch(()=>alert('Code: '+code));
+}
+function rcbCopy(){
+  const code=MP.code||'';
+  navigator.clipboard.writeText(code).then(()=>{
+    const btn=document.querySelector('#room-code-banner .mp-share-row button');
+    if(btn){const o=btn.textContent;btn.textContent='✓ Copied!';setTimeout(()=>btn.textContent=o,2000);}
+  }).catch(()=>alert('Code: '+code));
+}
+function mpLeave(){
+  mpStopPolling();clearInterval(mpCountdownInterval);
+  MP.active=false;MP.code=null;MP.playerId=null;MP.playerName=null;MP.isHost=false;
+  MP.myVotes=[];MP.votesSubmitted=false;MP.lastPhase=null;MP.lastCellKey=null;MP.lastTurnIndex=-1;MP.lastState=null;
+  const banner=document.getElementById('room-code-banner');if(banner)banner.style.display='none';
+  const badge=document.getElementById('room-badge');if(badge)badge.classList.remove('show');
   show('s-home');
 }
 
