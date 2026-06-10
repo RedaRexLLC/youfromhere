@@ -52,9 +52,14 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 
 /* ── COMMON ── */
 .logo-wrap{display:flex;align-items:center;gap:8px;margin-bottom:.2rem}
+.logo-wrap.hero{flex-direction:column;align-items:center;text-align:center;margin-bottom:.5rem;position:relative}
+.logo-wrap.hero img{height:110px;width:auto;max-width:90%}
 .logo-txt{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:3px;color:#1a1a2e;line-height:1}
 .logo-txt span{color:#e8b84b}
 .tagline{font-size:.88rem;color:#6b7280;margin-top:.2rem;margin-bottom:1.25rem}
+.tagline.hero{font-size:1rem;text-align:center;margin-bottom:1.5rem}
+.a11y-toggle{position:absolute;top:0;right:0;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.3rem .5rem;cursor:pointer;font-size:1.1rem;color:#9ca3af;line-height:1}
+.a11y-toggle:hover{background:#f9fafb;color:#6b7280}
 .card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:1.25rem;margin-bottom:1rem}
 .lbl{display:block;font-size:.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.45rem}
 .input-wrap{position:relative;margin-bottom:.5rem}
@@ -788,11 +793,11 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000003" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
         <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
       </div>
-      <div class="logo-wrap" style="justify-content:space-between;align-items:center">
-        <img src="/logo.png" alt="You From Here?" style="height:80px;width:auto"/>
+      <div class="logo-wrap hero">
+        <img src="/logo.png" alt="You From Here?"/>
         <button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
       </div>
-      <p class="tagline" id="home-tagline">Think you know your city? Prove it.</p>
+      <p class="tagline hero" id="home-tagline">Think you know your city? Prove it.</p>
 
       <div class="card">
         <div class="lbl">Game Mode</div>
@@ -916,8 +921,8 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
     <!-- ══ LOADING ══ -->
     <div id="s-loading" class="screen">
-      <div class="logo-wrap" style="margin-bottom:1.5rem">
-        <img src="/logo.png" alt="You From Here?" style="height:80px;width:auto"/>
+      <div class="logo-wrap hero" style="margin-bottom:1.5rem">
+        <img src="/logo.png" alt="You From Here?"/>
       </div>
       <div class="load-box">
         <div class="spin"></div>
@@ -979,10 +984,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
     <!-- ══ RESULTS ══ -->
     <div id="s-results" class="screen">
-      <div class="logo-wrap" style="margin-bottom:.25rem">
-        <img src="/logo.png" alt="You From Here?" style="height:72px;width:auto"/>
+      <div class="logo-wrap hero" style="margin-bottom:.25rem">
+        <img src="/logo.png" alt="You From Here?"/>
       </div>
-      <p class="tagline" id="res-loc"></p>
+      <p class="tagline hero" id="res-loc"></p>
       <div class="ad-inline show">
         <div class="ad-label">Advertisement</div>
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000006" data-ad-format="rectangle" data-full-width-responsive="true"></ins>
