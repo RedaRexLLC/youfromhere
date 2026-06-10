@@ -446,29 +446,35 @@ body.in-game #q-area:not(:empty){flex:1}
   .board-pts-col{flex:1 !important;min-height:0 !important;height:auto !important;display:grid !important;grid-template-rows:1fr 1fr 1fr !important}
   .board-cell{min-height:0 !important;height:auto !important;font-size:.88rem !important}
 
-  /* ── QUESTION VIEW: full-height scrollable column ── */
+  /* ── QUESTION VIEW: image LEFT, content RIGHT for all game modes ── */
   body.in-game #q-area{
     flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
-    display:flex;flex-direction:column;position:relative;
+    display:flex;flex-direction:column;
     -webkit-overflow-scrolling:touch;
   }
-  /* Image: left column absolutely positioned within q-area */
-  body.in-game.has-img .q-img-wrap{
-    position:absolute;left:.4rem;top:.3rem;bottom:.3rem;
-    width:40%;border-radius:8px;margin-bottom:0;
-  }
-  body.in-game.has-img .q-img{height:100% !important;object-fit:cover}
-  /* Card: full-height right column when image present */
-  body.in-game.has-img .q-card{
-    margin-left:43% !important;
-    padding:.4rem .5rem;margin-bottom:.25rem;
-    overflow:visible;flex-shrink:0;
-  }
-  /* Card: full width when no image */
+  /* Non-image questions: full-width card */
   body.in-game .q-card{
     padding:.4rem .55rem;margin-bottom:.25rem;
     overflow:visible;flex-shrink:0;
   }
+  /* Image questions: CSS grid — image left (40%), question+answers right (60%) */
+  body.in-game.has-img .q-card{
+    display:grid !important;
+    grid-template-columns:40% 1fr;
+    column-gap:.4rem;
+    padding:.3rem .4rem;margin-bottom:.25rem;
+    overflow:visible;flex-shrink:0;
+    align-items:start;
+  }
+  /* All card children default to right column */
+  body.in-game.has-img .q-card > *{grid-column:2}
+  /* Image wrap occupies left column, spans all rows */
+  body.in-game.has-img .q-img-wrap{
+    grid-column:1;grid-row:1/-1;
+    margin-bottom:0;border-radius:8px;overflow:hidden;
+    min-height:130px;align-self:stretch;
+  }
+  body.in-game.has-img .q-img{height:100% !important;width:100%;object-fit:cover;min-height:130px}
 
   #s-game .pts-badge{font-size:.78rem;margin-bottom:.15rem}
   #s-game .q-cat-lbl{font-size:.58rem;margin-bottom:.15rem}
