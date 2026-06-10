@@ -1126,6 +1126,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
           </div>
 
+          <div class="card" style="margin-bottom:.5rem;display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem" id="mp-name-card">
+            <div style="flex:1">
+              <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Your Name</div>
+              <input id="mp-lobby-name" type="text" maxlength="24" placeholder="Enter your name"
+                style="width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#1a1a2e;background:transparent;padding:0"
+                onchange="mpUpdateMyName(this.value)" onblur="mpUpdateMyName(this.value)"/>
+            </div>
+            <span id="mp-lobby-host-badge" style="display:none;font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.15rem .45rem;font-weight:700;flex-shrink:0">Host</span>
+          </div>
+
           <div class="card" style="margin-bottom:.5rem">
             <div class="mp-countdown-wrap">
               <div class="mp-countdown-lbl">Game starts in</div>
@@ -2386,6 +2396,14 @@ function mpShowLobby(code,state){
   const si=document.getElementById('mp-share-input');if(si)si.value=code;
   show('s-mp-wait');
   makeQR('join-qr-box','https://youfromhere.vercel.app?join='+code);
+  // Populate name card (only on first show — don't overwrite if user is typing)
+  const nameInp=document.getElementById('mp-lobby-name');
+  if(nameInp&&!nameInp.value){
+    const me=(state.players||[]).find(p=>p.id===MP.playerId);
+    if(me)nameInp.value=me.name||'';
+  }
+  const hostBadge=document.getElementById('mp-lobby-host-badge');
+  if(hostBadge)hostBadge.style.display=MP.isHost?'':'none';
   mpBuildCatGrid(state);
   mpRenderLobby(state);
   mpStartCountdown(state.lobby_started_at);
@@ -2404,7 +2422,7 @@ function mpRenderLobby(st){
     if(pc)pc.textContent='('+players.length+')';
     if(pl)pl.innerHTML=players.map(p=>`<div class="player-chip">
       <div class="pc-dot"></div>
-      <div class="pc-name">${p.name||'Player'}${p.id===MP.playerId?' (you)':''}</div>
+      <div class="pc-name">${p.name||'Player'}</div>
       ${p.is_host?'<span class="pc-badge pc-host">Host</span>':''}
       ${p.voted?'<span class="pc-badge pc-voted">Voted</span>':''}
     </div>`).join('');
@@ -2420,14 +2438,19 @@ function mpRenderLobby(st){
     if(document.getElementById('mp-add-team-btn'))
       document.getElementById('mp-add-team-btn').style.display=canAddTeam?'':'none';
 
+    const editingTeam=document.activeElement?.dataset?.teamId;
     if(tl)tl.innerHTML=teams.map(t=>{
       const members=players.filter(p=>p.team_id===t.id);
       const isMine=t.id===myTeamId;
-      const allVoted=members.length>0&&members.every(p=>p.voted);
+      const col=['#e8b84b','#4ecdc4','#a78bfa','#fb923c'][teams.indexOf(t)%4];
+      const membersTxt=members.length?members.map(p=>p.name+(p.is_host?' 👑':'')+(p.voted?' ✓':'')).join(', '):'No members yet';
+      const nameField=editingTeam===t.id
+        ?`<input class="mp-team-name-input" data-team-id="${t.id}" value="${(t.name||'Team').replace(/"/g,'&quot;')}" style="color:${col}" onblur="mpChangeTeamName('${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>`
+        :`<input class="mp-team-name-input" data-team-id="${t.id}" value="${(t.name||'Team').replace(/"/g,'&quot;')}" style="color:${col}" onblur="mpChangeTeamName('${t.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>`;
       return `<div class="mp-team-card${isMine?' mine':''}">
-        <div class="mp-team-left">
-          <div style="font-weight:700;font-size:.92rem;color:${['#e8b84b','#4ecdc4','#a78bfa','#fb923c'][teams.indexOf(t)%4]}">${t.name||'Team'}</div>
-          <div class="mp-team-members-txt">${members.length?members.map(p=>p.name+(p.voted?' ✓':'')).join(', '):'No members yet'}</div>
+        <div class="mp-team-left" style="flex:1;min-width:0">
+          ${nameField}
+          <div class="mp-team-members-txt">${membersTxt}</div>
         </div>
         ${isMine
           ?'<button class="mp-join-btn joined" disabled>Joined ✓</button>'
@@ -2535,6 +2558,32 @@ async function mpLobbyCreateTeam(){
     const newTeams=[...teams,newTeam];
     const players=(st.players||[]).map(p=>p.id===MP.playerId?{...p,team_id:newTeam.id}:p);
     const newSt={...st,teams:newTeams,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    MP.lastState=newSt;mpRenderLobby(newSt);
+  }catch(e){}
+}
+
+async function mpUpdateMyName(newName){
+  newName=newName.trim();
+  if(!MP.active||!MP.code||!newName)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    const players=(st.players||[]).map(p=>p.id===MP.playerId?{...p,name:newName}:p);
+    const newSt={...st,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
+    MP.lastState=newSt;
+  }catch(e){}
+}
+
+async function mpChangeTeamName(teamId,newName){
+  newName=newName.trim();
+  if(!MP.active||!MP.code||!newName)return;
+  try{
+    const res=await fetch('/api/room?code='+MP.code);if(!res.ok)return;
+    const room=await res.json();const st=room.state;
+    const teams=(st.teams||[]).map(t=>t.id===teamId?{...t,name:newName}:t);
+    const newSt={...st,teams};
     await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:newSt})});
     MP.lastState=newSt;mpRenderLobby(newSt);
   }catch(e){}
