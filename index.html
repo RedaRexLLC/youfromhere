@@ -2406,11 +2406,13 @@ function pickCell(catId,cellKey){
     const st=MP.lastState||{};
     const newTurnIndex=typeof st.turn_index==='number'?st.turn_index:0;
     const qStartedAt=new Date().toISOString();
+    // Mark cellKey so mpMirrorState doesn't re-render over our local render
+    MP.lastCellKey=cellKey;
+    MP.lastPhase='question';
     mpPatch({phase:'question',board:G.board,current_question:q,current_cell:G.curCell,
       ct:G.ct,mi:G.mi,scores:G.scores,answered:false,last_answer:null,
       question_started_at:qStartedAt,steal_active:false,steal_submissions:{},steal_winner:null,
       turn_index:newTurnIndex,
-      // legacy fields
       curQ:q,curCell:G.curCell});
   }
   renderQuestion(q,pts);
@@ -3450,7 +3452,7 @@ function mpMirrorState(st){
     MP.lastPhase='question';MP.lastCellKey=cellKey;
     G.curCell=st.current_cell;G.curQ=st.current_question;G.answered=false;
     document.getElementById('board-section').style.display='none';
-    // Sync timer start
+    // Always render from server state so all devices show the same question
     renderQuestion(st.current_question,st.current_cell.pts);
     if(st.question_started_at){
       const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
