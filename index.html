@@ -1888,10 +1888,25 @@ function buildTeamCats(section,idx){
 function startSpeech(id){
   if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){alert('Voice input not supported. Try Chrome!');return;}
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const r=new SR();r.lang='en-US';r.interimResults=false;
+  const r=new SR();r.lang='en-US';r.interimResults=false;r.continuous=false;
   const btn=document.querySelector('[onclick="startSpeech(\''+id+'\')"]');
   if(btn)btn.classList.add('listening');
-  r.onresult=e=>{document.getElementById(id).value=e.results[0][0].transcript;if(id==='college-input')onCollege();if(btn)btn.classList.remove('listening');};
+  r.onresult=e=>{
+    let val=e.results[0][0].transcript.trim();
+    if(id==='city-input'||id==='world-city'){
+      // Insert comma before state if missing: "Austin Texas" → "Austin, TX"
+      const states={'alabama':'AL','alaska':'AK','arizona':'AZ','arkansas':'AR','california':'CA','colorado':'CO','connecticut':'CT','delaware':'DE','florida':'FL','georgia':'GA','hawaii':'HI','idaho':'ID','illinois':'IL','indiana':'IN','iowa':'IA','kansas':'KS','kentucky':'KY','louisiana':'LA','maine':'ME','maryland':'MD','massachusetts':'MA','michigan':'MI','minnesota':'MN','mississippi':'MS','missouri':'MO','montana':'MT','nebraska':'NE','nevada':'NV','new hampshire':'NH','new jersey':'NJ','new mexico':'NM','new york':'NY','north carolina':'NC','north dakota':'ND','ohio':'OH','oklahoma':'OK','oregon':'OR','pennsylvania':'PA','rhode island':'RI','south carolina':'SC','south dakota':'SD','tennessee':'TN','texas':'TX','utah':'UT','vermont':'VT','virginia':'VA','washington':'WA','west virginia':'WV','wisconsin':'WI','wyoming':'WY'};
+      const lower=val.toLowerCase();
+      for(const [name,abbr] of Object.entries(states)){
+        if(lower.endsWith(' '+name)){val=val.slice(0,val.length-name.length-1).trim()+', '+abbr;break;}
+        if(lower.endsWith(' '+abbr.toLowerCase())){val=val.slice(0,val.length-2).trim()+', '+abbr;break;}
+      }
+    }
+    document.getElementById(id).value=val;
+    if(id==='college-input')onCollege();
+    r.stop();
+    if(btn)btn.classList.remove('listening');
+  };
   r.onerror=r.onend=()=>{if(btn)btn.classList.remove('listening');};
   r.start();
 }
