@@ -3420,6 +3420,7 @@ function mpMirrorState(st){
   const isMyTurn=!activeId||activeId===MP.playerId;
 
   if(phase==='board'){
+    stopTmr(); // always kill any lingering question/steal timer when returning to board
     const ctChanged=st.ct!==MP.lastCt;
     if(MP.lastPhase!=='board'||ctChanged){
       MP.lastPhase='board';MP.lastCt=st.ct;
