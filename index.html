@@ -1099,6 +1099,15 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           </div>
           <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team names &amp; categories are set in the lobby.</div>
           <button class="nxt-btn" style="display:flex;margin-top:.75rem" onclick="startGame()">Open Room →</button>
+
+          <div style="display:flex;align-items:center;gap:.6rem;margin:.9rem 0 .5rem"><div style="flex:1;height:1px;background:#e5e7eb"></div><span style="font-size:.72rem;color:#9ca3af;font-weight:600;letter-spacing:.06em;white-space:nowrap">OR JOIN A ROOM</span><div style="flex:1;height:1px;background:#e5e7eb"></div></div>
+          <div style="font-size:.7rem;color:#9ca3af;margin-bottom:.35rem">Have a room code? Enter it below to join.</div>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <div class="input-wrap" style="flex:1;margin:0">
+              <input type="text" id="quick-join-code" maxlength="4" placeholder="Room code" style="font-size:1.1rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;text-align:center" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
+            </div>
+            <button class="nxt-btn" style="display:flex;width:auto;padding:.75rem 1.1rem;margin:0;flex-shrink:0" onclick="quickJoinRoom()">Join →</button>
+          </div>
         </div>
       </div>
 
@@ -2741,6 +2750,15 @@ const MP={
 
 // ── JOIN MODAL ──
 function openJoinModal(){document.getElementById('join-modal').style.display='flex';setTimeout(()=>document.getElementById('jm-code')?.focus(),100);}
+function quickJoinRoom(){
+  const code=(document.getElementById('quick-join-code')?.value||'').trim().toUpperCase();
+  openJoinModal();
+  setTimeout(()=>{
+    const inp=document.getElementById('jm-code');
+    if(inp){inp.value=code;inp.readOnly=!!code;inp.style.opacity=code?'.6':'';inp.dispatchEvent(new Event('input'));}
+    document.getElementById('jm-name')?.focus();
+  },200);
+}
 function closeJoinModal(){document.getElementById('join-modal').style.display='none';const e=document.getElementById('jm-err');if(e)e.className='err-box';const c=document.getElementById('jm-code');if(c){c.readOnly=false;c.style.opacity='';c.value='';}const n=document.getElementById('jm-name');if(n)n.value='';}
 
 async function inlineJoinRoom(){
