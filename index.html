@@ -1549,79 +1549,97 @@ function wizSoloStart(){
   startGame();
 }
 
-// Team wizard
+// Team wizard — two sub-steps per team: 'info' then 'cats'
 let wizCurrentTeamIdx=0;
+let wizTeamSubStep='info'; // 'info' | 'cats'
 
 function wizRenderTeams(){
-  if(wizTeams.length===0){wizTeams=[{name:'Team A',players:['',''],cats:[]}];wizCurrentTeamIdx=0;}
+  if(wizTeams.length===0){wizTeams=[{name:'Team A',players:['',''],cats:[]}];wizCurrentTeamIdx=0;wizTeamSubStep='info';}
   const i=wizCurrentTeamIdx;
   const team=wizTeams[i];
   const ltr=String.fromCharCode(65+i);
   const card=document.getElementById('wiz-teams-card');
-  // Progress dots
   const dots=wizTeams.map((_,di)=>`<span style="width:8px;height:8px;border-radius:50%;display:inline-block;background:${di===i?TEAM_COLS[di%4]:'#d1d5db'};margin:0 3px"></span>`).join('');
-  card.innerHTML=`
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem">
-      <div class="wiz-section-lbl" style="margin:0">Team ${ltr}</div>
-      <div>${dots}</div>
-    </div>
-    <div class="wiz-team-block">
+  const subLbl=wizTeamSubStep==='info'?'Team Name & Players':'Pick 3 Categories';
+
+  if(wizTeamSubStep==='info'){
+    card.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <div class="wiz-section-lbl" style="margin:0;color:${TEAM_COLS[i%4]}">Team ${ltr}</div>
+        <div>${dots}</div>
+      </div>
+      <div style="font-size:.7rem;color:#9ca3af;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.07em">${subLbl}</div>
       <div class="wiz-lbl">Team name</div>
       <input type="text" id="wiz-tname" placeholder="Team ${ltr}" value="${team.name==='Team '+ltr?'':team.name}"
-        style="width:100%;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;margin-bottom:.75rem;box-sizing:border-box"
+        style="width:100%;padding:.65rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;margin-bottom:.85rem;box-sizing:border-box"
         oninput="wizTeams[${i}].name=this.value.trim()||'Team ${ltr}'"
         onfocus="this.style.borderColor='#e8b84b'" onblur="this.style.borderColor='#e5e7eb'"/>
       <div class="wiz-lbl">Players</div>
-      <div id="wiz-plist-${i}">${team.players.map((p,pi)=>`<div style="display:flex;gap:.4rem;margin-bottom:.35rem"><input type="text" value="${p}" placeholder="Player ${pi+1}" style="flex:1;padding:.55rem .75rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none" oninput="wizTeams[${i}].players[${pi}]=this.value" onfocus="this.style.borderColor='#e8b84b'" onblur="this.style.borderColor='#e5e7eb'"/><button onclick="wizRemovePlayer(${i},${pi})" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:.9rem">✕</button></div>`).join('')}</div>
-      <button onclick="wizAddPlayer(${i})" style="background:none;border:1.5px dashed #d1d5db;border-radius:8px;padding:.45rem .75rem;font-family:'DM Sans',sans-serif;font-size:.82rem;color:#6b7280;cursor:pointer;margin-bottom:.75rem">+ Add player</button>
-      <div class="wiz-lbl">Pick 3 categories</div>
+      <div id="wiz-plist-${i}">${team.players.map((p,pi)=>`<div style="display:flex;gap:.4rem;margin-bottom:.4rem"><input type="text" value="${p}" placeholder="Player ${pi+1}" style="flex:1;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;box-sizing:border-box" oninput="wizTeams[${i}].players[${pi}]=this.value" onfocus="this.style.borderColor='#e8b84b'" onblur="this.style.borderColor='#e5e7eb'"/><button onclick="wizRemovePlayer(${i},${pi})" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:.9rem;padding:.4rem">✕</button></div>`).join('')}</div>
+      <button onclick="wizAddPlayer(${i})" style="background:none;border:1.5px dashed #d1d5db;border-radius:8px;padding:.5rem .85rem;font-family:'DM Sans',sans-serif;font-size:.82rem;color:#6b7280;cursor:pointer;margin-top:.1rem">+ Add player</button>
+    `;
+  } else {
+    card.innerHTML=`
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem">
+        <div class="wiz-section-lbl" style="margin:0;color:${TEAM_COLS[i%4]}">Team ${ltr} — ${team.name!=='Team '+ltr&&team.name?team.name:'Team '+ltr}</div>
+        <div>${dots}</div>
+      </div>
+      <div style="font-size:.7rem;color:#9ca3af;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.07em">${subLbl}</div>
       <div id="wiz-tcats-${i}"></div>
-      <div id="wiz-cc-${i}" style="font-size:.72rem;color:#9ca3af;margin-top:.25rem">${team.cats.length} / 3 selected</div>
-    </div>
-  `;
-  wizBuildTeamCats(i);
-  // Back button label
-  const backBtn=document.getElementById('wiz-teams-back');
-  if(backBtn)backBtn.textContent=i===0?'← Back':'← Back';
-  // Primary button
-  const primaryBtn=document.getElementById('wiz-teams-primary-btn');
-  if(primaryBtn){
-    const canStart=wizTeams.length>=2&&i===wizTeams.length-1;
-    if(canStart){primaryBtn.textContent='▶ Start Game';primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';}
-    else{primaryBtn.textContent='+ Add Next Team';primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';}
+      <div id="wiz-cc-${i}" style="font-size:.78rem;font-weight:600;color:#6b7280;margin-top:.5rem">${team.cats.length} / 3 selected</div>
+    `;
+    wizBuildTeamCats(i);
   }
-  const addAnotherBtn=document.getElementById('wiz-add-another-btn');
-  if(addAnotherBtn){
-    const showAdd=wizTeams.length>=2&&i===wizTeams.length-1&&wizTeams.length<4;
-    addAnotherBtn.style.display=showAdd?'block':'none';
-  }
-}
 
-function wizAddAnotherTeam(){
-  const i=wizCurrentTeamIdx;
-  if(wizTeams[i].cats.length<3){showErr('Team '+String.fromCharCode(65+i)+' needs 3 categories!');return;}
-  const next=wizTeams.length;
-  if(next>=4)return;
-  const ltr=String.fromCharCode(65+next);
-  wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
-  wizCurrentTeamIdx=next;
-  wizRenderTeams();
+  const backBtn=document.getElementById('wiz-teams-back');
+  if(backBtn)backBtn.textContent='← Back';
+
+  const primaryBtn=document.getElementById('wiz-teams-primary-btn');
+  const addAnotherBtn=document.getElementById('wiz-add-another-btn');
+  if(primaryBtn){
+    if(wizTeamSubStep==='info'){
+      primaryBtn.textContent='Next — Pick Categories →';
+      primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';
+      if(addAnotherBtn)addAnotherBtn.style.display='none';
+    } else {
+      const isLast=i===wizTeams.length-1;
+      const canStart=wizTeams.length>=2&&isLast;
+      primaryBtn.textContent=canStart?'▶ Start Game':'+ Add Next Team';
+      primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';
+      if(addAnotherBtn)addAnotherBtn.style.display=(canStart&&wizTeams.length<4)?'block':'none';
+    }
+  }
   document.getElementById('wiz-teams-card').scrollTop=0;
 }
 
 function wizTeamsPrimary(){
   const i=wizCurrentTeamIdx;
-  const canStart=wizTeams.length>=2&&i===wizTeams.length-1;
-  if(canStart){
-    wizTeamsStart();
-  } else if(wizTeams.length<4){
-    const next=wizTeams.length;
-    const ltr=String.fromCharCode(65+next);
-    wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
-    wizCurrentTeamIdx=next;
+  if(wizTeamSubStep==='info'){
+    wizTeamSubStep='cats';
     wizRenderTeams();
-    document.getElementById('wiz-teams-card').scrollTop=0;
+  } else {
+    const canStart=wizTeams.length>=2&&i===wizTeams.length-1;
+    if(canStart){wizTeamsStart();}
+    else{
+      const next=wizTeams.length;
+      if(next>=4)return;
+      const ltr=String.fromCharCode(65+next);
+      wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
+      wizCurrentTeamIdx=next;
+      wizTeamSubStep='info';
+      wizRenderTeams();
+    }
   }
+}
+
+function wizAddAnotherTeam(){
+  const next=wizTeams.length;
+  if(next>=4)return;
+  const ltr=String.fromCharCode(65+next);
+  wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
+  wizCurrentTeamIdx=next;
+  wizTeamSubStep='info';
+  wizRenderTeams();
 }
 
 function wizAddTeam(){
@@ -1630,12 +1648,14 @@ function wizAddTeam(){
   const ltr=String.fromCharCode(65+i);
   wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
   wizCurrentTeamIdx=i;
+  wizTeamSubStep='info';
   wizRenderTeams();
 }
 
 function wizRemoveTeam(i){
   wizTeams.splice(i,1);
   wizCurrentTeamIdx=Math.min(wizCurrentTeamIdx,wizTeams.length-1);
+  wizTeamSubStep='info';
   wizRenderTeams();
 }
 
@@ -1681,8 +1701,12 @@ function wizBuildTeamCats(idx){
 }
 
 function wizTeamsBack(){
-  if(wizCurrentTeamIdx>0){
+  if(wizTeamSubStep==='cats'){
+    wizTeamSubStep='info';
+    wizRenderTeams();
+  } else if(wizCurrentTeamIdx>0){
     wizCurrentTeamIdx--;
+    wizTeamSubStep='cats';
     wizRenderTeams();
   } else {
     wizGoTo(2);
