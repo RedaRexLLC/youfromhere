@@ -981,10 +981,9 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team names &amp; category voting happen in the lobby.</div>
         </div>
         <div id="join-room-hint" style="display:none;margin-top:.75rem">
-          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;margin-bottom:.3rem">Already have a room code?</div>
           <div style="display:flex;gap:.5rem">
-            <input id="inline-join-code" type="text" maxlength="4" placeholder="Enter code" autocomplete="off"
-              style="flex:1;padding:.7rem 1rem;border:2px solid #e8b84b;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;text-align:center;outline:none;color:#1a1a2e"
+            <input id="inline-join-code" type="text" maxlength="4" placeholder="Already have a room code? Enter Code Here!" autocomplete="off"
+              style="flex:1;padding:.7rem 1rem;border:2px solid #e8b84b;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-align:center;outline:none;color:#1a1a2e"
               oninput="this.value=this.value.toUpperCase()"
               onkeydown="if(event.key==='Enter')inlineJoinRoom()"/>
             <button onclick="inlineJoinRoom()" style="padding:.7rem 1.1rem;background:#e8b84b;color:#1a1a2e;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap">Join →</button>
