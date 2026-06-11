@@ -3466,6 +3466,13 @@ if(new URLSearchParams(location.search).has('dev')){
   window.DEV_MOCK_Q_MC=DEV_MOCK_Q_MC;window.DEV_MOCK_Q_TF=DEV_MOCK_Q_TF;window.DEV_MOCK_Q_PHOTO=DEV_MOCK_Q_PHOTO;
   window.devSetup=devSetup;window.devQuestion=devQuestion;
 
+  // Auto-jump to board immediately on page load
+  setTimeout(()=>{
+    devSetup(DEV_TEAMS_2,[0,0],'multi');
+    renderBoard();
+    panel.classList.add('open');
+  },100);
+
   console.log('%c🛠 Dev mode active — youfromhere.vercel.app?dev=1','color:#e8b84b;background:#1a1a2e;padding:4px 8px;border-radius:4px;font-weight:bold');
 }
 </script>
