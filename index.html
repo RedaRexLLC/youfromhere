@@ -659,8 +659,9 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .nxt-btn{padding:.75rem}
   /* Side-by-side image layout */
   body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1rem;align-items:flex-start}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 42%;max-height:380px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
-  body.in-game.has-img #s-game .q-card .q-img{height:380px !important;max-height:380px;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-img-wrap,
+  body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 42%;flex-shrink:0;height:320px;overflow:hidden;border-radius:12px;margin-bottom:0}
+  body.in-game.has-img #s-game .q-card .q-img{height:320px !important;width:100%;object-fit:cover}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
@@ -684,9 +685,9 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .ad-banner{display:none !important}
   /* Side-by-side image layout */
   body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1.25rem;align-items:flex-start}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 44%;max-height:420px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
-  body.in-game.has-img #s-game .q-card .q-img{height:420px !important;max-height:420px;object-fit:cover}
-  body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 44%;height:420px}
+  body.in-game.has-img #s-game .q-card .q-img-wrap,
+  body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 44%;flex-shrink:0;height:340px;overflow:hidden;border-radius:12px;margin-bottom:0}
+  body.in-game.has-img #s-game .q-card .q-img{height:340px !important;width:100%;object-fit:cover}
 }
 
 /* ── LARGE DESKTOP / TV (1400px+) ── */
@@ -719,8 +720,9 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .ad-banner{display:none !important}
   /* Side-by-side image layout for TV */
   body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1.5rem;align-items:flex-start}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 46%;max-height:480px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
-  body.in-game.has-img #s-game .q-card .q-img{height:480px !important;max-height:480px;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-img-wrap,
+  body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 46%;flex-shrink:0;height:380px;overflow:hidden;border-radius:12px;margin-bottom:0}
+  body.in-game.has-img #s-game .q-card .q-img{height:380px !important;width:100%;object-fit:cover}
 }
 
 /* ══════════════════════════════════════════════
@@ -2358,6 +2360,7 @@ function renderQuestion(q,pts){
   const isPhoto=q.type==='photo';
   const isMap=q.type==='mapview';
   const hasImg=isPhoto||isMap;
+  if(hasImg)document.body.classList.add('has-img');
   let html='<div class="q-card">'
     +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div>':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
