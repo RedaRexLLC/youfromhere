@@ -960,7 +960,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <p class="wiz-tagline" id="home-tagline">Think you know your city? Prove it.</p>
         <div class="wiz-card">
           <div class="wiz-section-lbl">Select Game Mode</div>
-          <div class="wiz-mode-grid" style="grid-template-columns:1fr 1fr">
+          <div class="wiz-mode-grid" style="grid-template-columns:repeat(3,1fr)">
             <button class="wiz-mode-btn on" id="btn-local" onclick="wizSetMode('local')">
               <span class="wmb-icon">📍</span>
               <span class="wmb-name">Local</span>
@@ -976,11 +976,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
               <span class="wmb-name">World</span>
               <span class="wmb-desc">Pick a country</span>
             </button>
-            <button class="wiz-mode-btn" id="btn-global" onclick="wizSetMode('global')">
-              <span class="wmb-icon">🌐</span>
-              <span class="wmb-name">The Whole World</span>
-              <span class="wmb-desc">Universal topics, no borders</span>
-            </button>
           </div>
           <div id="local-inputs" style="margin-top:.75rem">
             <label class="wiz-lbl" for="city-input">Your city &amp; state</label>
@@ -992,13 +987,23 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:.85rem;font-size:.88rem;color:#0369a1">🇺🇸 Questions about American culture, history, food, music, and landmarks!</div>
           </div>
           <div id="world-inputs" style="display:none;margin-top:.75rem">
-            <label class="wiz-lbl">Select a country</label>
-            <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
-            <label class="wiz-lbl" for="world-city" style="margin-top:.5rem">City (optional)</label>
-            <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
-          </div>
-          <div id="global-inputs" style="display:none;margin-top:.75rem">
-            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.85rem;font-size:.88rem;color:#166534">🌐 Questions spanning the entire planet — geography, history, culture, food, sports, world leaders, languages, flags, landmarks, and more. No passport required!</div>
+            <!-- The Whole World toggle -->
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.75rem .9rem;margin-bottom:.75rem">
+              <div>
+                <div style="font-weight:700;font-size:.9rem;color:#166534">🌐 The Whole World</div>
+                <div style="font-size:.75rem;color:#4b7c5a;margin-top:.1rem">Skip country — questions span the whole planet</div>
+              </div>
+              <label class="tog-sw" aria-label="The Whole World toggle">
+                <input type="checkbox" id="whole-world-tog" onchange="wizToggleWholeWorld(this.checked)" role="switch" aria-checked="false"/>
+                <div class="tog-track"></div><div class="tog-thumb"></div>
+              </label>
+            </div>
+            <div id="country-city-inputs">
+              <label class="wiz-lbl">Select a country</label>
+              <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
+              <label class="wiz-lbl" for="world-city" style="margin-top:.5rem">City (optional)</label>
+              <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
+            </div>
           </div>
         </div>
         <div class="wiz-err" id="err-box" role="alert" aria-live="assertive"></div>
@@ -1526,15 +1531,25 @@ function wizGoTo(step){
   ['wiz-top-mode-lbl','wiz-top-mode-lbl-3r','wiz-top-mode-lbl-3s','wiz-top-mode-lbl-3t'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=modeLabel;});
 }
 
+function wizToggleWholeWorld(on){
+  G.gameMode=on?'global':'world';
+  document.getElementById('country-city-inputs').style.display=on?'none':'block';
+  document.getElementById('home-tagline').textContent=TAGLINES[G.gameMode];
+}
+
 function wizSetMode(m){
+  // Reset whole-world toggle when switching away from world
+  const tog=document.getElementById('whole-world-tog');
+  if(tog&&m!=='world'&&m!=='global'){tog.checked=false;}
+  // Treat 'global' as sub-mode of 'world' button
+  const btnId=m==='global'?'world':m;
   G.gameMode=m;
   document.querySelectorAll('.wiz-mode-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('btn-'+m).classList.add('on');
+  document.getElementById('btn-'+btnId).classList.add('on');
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
-  document.getElementById('world-inputs').style.display=m==='world'?'block':'none';
-  document.getElementById('global-inputs').style.display=m==='global'?'block':'none';
-  document.getElementById('home-tagline').textContent=TAGLINES[m];
+  document.getElementById('world-inputs').style.display=(m==='world'||m==='global')?'block':'none';
+  document.getElementById('home-tagline').textContent=TAGLINES[m]||TAGLINES['world'];
   refreshCats();
 }
 
