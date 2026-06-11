@@ -1092,8 +1092,15 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
               <span class="mt-cta">Open Room →</span>
             </div>
           </div>
-          <div style="text-align:center;margin-top:.75rem;font-size:.78rem;color:#9ca3af">Team names &amp; categories are set in the lobby.</div>
-          <button class="nxt-btn" style="display:flex;margin-top:.85rem" onclick="startGame()">Open Room →</button>
+          <div style="margin-top:.85rem">
+            <label class="lbl" style="margin-bottom:.25rem">Your name <span style="font-weight:400;color:#9ca3af;font-size:.75rem;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <div class="input-wrap">
+              <input type="text" id="host-name-input" maxlength="24" placeholder="Host" style="font-size:1rem"/>
+            </div>
+            <div style="font-size:.7rem;color:#9ca3af;margin-top:.3rem">If left blank, you'll appear as <strong>Host</strong>. Players who join without a name will be assigned Player 1, 2, 3… in order.</div>
+          </div>
+          <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team names &amp; categories are set in the lobby.</div>
+          <button class="nxt-btn" style="display:flex;margin-top:.75rem" onclick="startGame()">Open Room →</button>
         </div>
       </div>
 
@@ -1938,7 +1945,7 @@ function startGame(){
   show('s-loading');
 
   if(G.style==='room'){
-    const hostName='Host';
+    const hostName=(document.getElementById('host-name-input')?.value||'').trim()||'Host';
     mpCreateRoom(mpPlayType,hostName);
     return;
   }
@@ -2749,7 +2756,9 @@ async function inlineJoinRoom(){
     players.push({id:pid,name:'Player',is_host:false,connected:true,team_id:null,votes:[],voted:false,score:0});
     const newSt={...st,players};
     await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:newSt})});
-    MP.active=true;MP.code=code;MP.playerId=pid;MP.playerName='Player';MP.isHost=false;
+    const joinOrder=(room.state?.players||[]).filter(p=>!p.is_host).length+1;
+    const autoName='Player '+joinOrder;
+    MP.active=true;MP.code=code;MP.playerId=pid;MP.playerName=autoName;MP.isHost=false;
     MP.playType=st.play_type||'team';
     mpShowLobby(code,newSt);
     mpStartPolling();
@@ -2859,7 +2868,7 @@ function mpRenderLobby(st){
     if(pl)pl.innerHTML=players.map(p=>`<div class="player-chip">
       <div class="pc-dot"></div>
       ${p.id===MP.playerId
-        ?`<input class="pc-name-edit" value="${(p.name||'').replace(/"/g,'&quot;')}" maxlength="24" placeholder="Your name" onblur="mpUpdateMyName(this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>`
+        ?`<div style="flex:1;min-width:0"><input class="pc-name-edit" value="${(p.name||'').replace(/"/g,'&quot;')}" maxlength="24" placeholder="Your name" onblur="mpUpdateMyName(this.value)" onkeydown="if(event.key==='Enter')this.blur()" title="Tap to edit your name"/><div style="font-size:.6rem;color:#9ca3af;margin-top:.1rem">✏️ Tap to customize your name (optional)</div></div>`
         :`<div class="pc-name">${p.name||'Player'}</div>`}
       ${p.is_host?'<span class="pc-badge pc-host">Host</span>':''}
       ${p.voted?'<span class="pc-badge pc-voted">Voted</span>':''}
