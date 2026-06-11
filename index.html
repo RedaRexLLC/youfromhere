@@ -189,6 +189,7 @@ body.in-question #game-info-bar{display:none!important}
 .board-cell.pts-600{background:#e5e7eb;color:#e8b84b}
 .board-cell:hover:not(.used){background:#e8b84b !important;color:#1a1a2e !important;transform:scale(.97)}
 .board-cell.used{background:#ddd !important;color:#aaa !important;cursor:not-allowed;opacity:1}
+.board-cell.blocked{cursor:not-allowed !important;opacity:.45;pointer-events:none}
 .board-cell.used::after{content:'';display:none}
 .end-game-bar{display:flex;justify-content:flex-end;margin-bottom:.5rem}
 .end-btn-small{background:none;border:1.5px solid #fecaca;color:#991b1b;border-radius:8px;padding:.4rem .85rem;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
@@ -2382,13 +2383,21 @@ function renderBoard(){
   const allUsed=G.board.every(col=>Object.values(col.cells).every(v=>v));
   if(allUsed){showResults();return;}
 
+  // Determine if this device's player can pick (MP: only active player)
+  let myTurnOnBoard=true;
+  if(MP.active&&MP.lastState){
+    const activeId=MP.lastState.turn_order?.[MP.lastState.turn_index%(MP.lastState.turn_order?.length||1)];
+    if(activeId)myTurnOnBoard=(activeId===MP.playerId);
+  }
+
   // Build board grid
   const cols=G.board.length;
   const boardHtml='<div class="board-grid" style="grid-template-columns:repeat('+cols+',1fr)">'+
     G.board.map(col=>'<div class="board-col"><div class="board-cat-hdr">'+col.icon+' '+col.label+'</div><div class="board-pts-col">'+
       [['200-0',200],['200-1',200],['400-0',400],['400-1',400],['600-0',600],['600-1',600]].map(([key,pts])=>{
         const used=col.cells[key];
-        return '<button class="board-cell pts-'+pts+(used?' used':'')+'" '+(used?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\',\''+key+'\')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+( used?pts:pts)+'</button>';
+        const blocked=!myTurnOnBoard||used;
+        return '<button class="board-cell pts-'+pts+(used?' used':blocked?' blocked':'')+'" '+(blocked?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\',\''+key+'\')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+pts+'</button>';
       }).join('')+'</div></div>'
     ).join('')+'</div>';
   document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
