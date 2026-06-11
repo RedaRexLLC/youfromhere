@@ -146,6 +146,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .s-left{display:flex;flex-direction:column;gap:.05rem;min-width:0}
 .s-name{font-weight:700;font-size:1rem;color:#1a1a2e;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s-player{font-size:.65rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-turn-pill{font-size:.5rem;font-weight:800;letter-spacing:.08em;color:#22c55e;text-transform:uppercase;line-height:1;margin-top:.1rem}
 .s-pts-wrap{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
 .s-pts-lbl{font-size:.48rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;line-height:1;margin-bottom:.05rem}
 .s-pts{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1}
@@ -480,10 +481,12 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .game-header{margin-bottom:.2rem;gap:.3rem}
   #s-game .game-logo-img{height:22px !important}
   #s-game .scores-wrap{gap:.2rem}
-  #s-game .s-card{padding:.15rem .4rem;border-radius:12px}
-  #s-game .s-pts{font-size:1rem}
-  #s-game .s-name{font-size:.72rem}
+  #s-game .s-card{padding:.2rem .5rem;border-radius:12px}
+  #s-game .s-pts{font-size:1.1rem}
+  #s-game .s-pts-lbl{display:none}
+  #s-game .s-name{font-size:.8rem}
   #s-game .s-player{font-size:.55rem}
+  #turn-banner{font-size:.75rem;padding:.2rem .6rem}
   #game-info-bar{padding:.2rem 1.5rem;margin:.15rem .5rem;font-size:.72rem}
   #s-game .steal-bar{padding:.2rem 1.5rem;font-size:.65rem;margin:.15rem .5rem}
   /* Question */
@@ -1202,6 +1205,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
           </div>
         </div>
+        <div id="turn-banner" style="display:none;padding:.25rem .75rem;text-align:center;font-size:.78rem;font-weight:700;letter-spacing:.03em;color:#fff;background:#1a1a2e;border-radius:8px;margin:.2rem .4rem .1rem"></div>
         <div id="q-info-strip"><div id="q-info-strip-row"><span id="qis-pts" class="card-qpts"></span><span id="qis-cat" class="card-qcat"></span><span class="card-qtimer" id="card-qtimer" style="margin-left:auto">1:00</span></div><div class="card-qtbar-wrap"><div id="card-qtbar" class="card-qtbar"></div></div></div>
         <div id="game-info-bar" style="display:none" aria-live="polite" aria-atomic="true">
           <div class="gib-row">
@@ -2338,7 +2342,9 @@ function renderBoard(){
   // Scores
   const sw=document.getElementById('scores-wrap');
   sw.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
-  sw.innerHTML=G.teams.map((team,i)=>'<div class="s-card '+(i===t&&G.style!=='mod'?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(i===t&&G.style!=='mod'?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div><div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div></div><div class="s-pts-wrap"><div class="s-pts-lbl">total pts</div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div></div>').join('');
+  sw.innerHTML=G.teams.map((team,i)=>{const isCur=i===t&&G.style!=='mod';return'<div class="s-card '+(isCur?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(isCur?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div>'+(isCur?'<div class="s-turn-pill">YOUR TURN</div>':'<div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div>')+'</div><div class="s-pts-wrap"><div class="s-pts-lbl">total pts</div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div></div>';}).join('');
+  // Update turn banner
+  const tb=document.getElementById('turn-banner');if(tb){tb.style.display='none';}
 
   // Combined info bar — board phase
   const gib=document.getElementById('game-info-bar');
@@ -2436,6 +2442,15 @@ function renderQuestion(q,pts){
     if(qisTimer){qisTimer.textContent='1:00';qisTimer.className='card-qtimer';}
     if(qisBar){qisBar.style.width='100%';qisBar.style.background='#22c55e';}
     strip.classList.add('show');
+  }
+
+  // Show turn banner
+  const tb=document.getElementById('turn-banner');
+  if(tb&&G.style!=='mod'){
+    const curTeam=G.teams[G.ct];
+    const curName=curTeam?curTeam.name:'';
+    tb.textContent=`🎯 ${curName}’s turn`;
+    tb.style.display='block';
   }
 
   const isPhoto=q.type==='photo';
