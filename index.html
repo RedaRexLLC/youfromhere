@@ -2681,26 +2681,36 @@ function resolve(ok,pts,exp,surp){
   G.stealing=false;updScores();
 }
 
+let _autoNextTimer=null;
 function showResultPhase(ok,pts,exp,surp){
   const q=G.curQ;
   const card=document.querySelector('#q-area .q-card');
   if(!card)return;
-  // Preserve loaded image if present
   const imgWrap=card.querySelector('.q-img-wrap');
   const imgHtml=imgWrap?imgWrap.outerHTML:'';
   const hasImg=!!imgHtml;
   const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
   const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
+  const AUTO_SECS=MP.active?5:4; // slightly longer in multiplayer so everyone can read
   const body=(hasImg?'<div class="q-body">':'')
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
     +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
-    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>'
+    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
   if(exp)showShare(exp);
+  // Auto-advance countdown
+  clearTimeout(_autoNextTimer);
+  let rem=AUTO_SECS;
+  _autoNextTimer=setInterval(()=>{
+    rem--;
+    const el=document.getElementById('auto-next-count');
+    if(el)el.textContent='('+rem+')';
+    if(rem<=0){clearInterval(_autoNextTimer);_autoNextTimer=null;nextTurn();}
+  },1000);
 }
 
 function updScores(){
@@ -2728,6 +2738,7 @@ function reportQ(){
 }
 
 function nextTurn(){
+  clearInterval(_autoNextTimer);_autoNextTimer=null;
   stopTmr();
   if(G.style!=='mod'&&!MP.active){
     G.mi[G.ct]=(G.mi[G.ct]||0)+1; // rotate to next player on team that just answered
