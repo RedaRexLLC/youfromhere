@@ -1656,12 +1656,10 @@ function wizAddAnotherTeam(){
 
 function wizTeamsPrimary(){
   const i=wizCurrentTeamIdx;
-  // Validate current team has 3 cats
-  if(wizTeams[i].cats.length<3){showErr('Team '+String.fromCharCode(65+i)+' needs 3 categories!');return;}
   const canStart=wizTeams.length>=2&&i===wizTeams.length-1;
-  if(canStart){wizTeamsStart();}
-  else if(wizTeams.length<4){
-    // Add a new team and navigate to it
+  if(canStart){
+    wizTeamsStart();
+  } else if(wizTeams.length<4){
     const next=wizTeams.length;
     const ltr=String.fromCharCode(65+next);
     wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
