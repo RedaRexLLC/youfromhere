@@ -662,6 +662,7 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game.has-img #s-game .q-card .q-img-wrap,
   body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 42%;flex-shrink:0;height:320px;overflow:hidden;border-radius:12px;margin-bottom:0}
   body.in-game.has-img #s-game .q-card .q-img{height:320px !important;width:100%;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.4rem}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
@@ -688,6 +689,7 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game.has-img #s-game .q-card .q-img-wrap,
   body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 44%;flex-shrink:0;height:340px;overflow:hidden;border-radius:12px;margin-bottom:0}
   body.in-game.has-img #s-game .q-card .q-img{height:340px !important;width:100%;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.4rem}
 }
 
 /* ── LARGE DESKTOP / TV (1400px+) ── */
@@ -723,6 +725,7 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game.has-img #s-game .q-card .q-img-wrap,
   body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 46%;flex-shrink:0;height:380px;overflow:hidden;border-radius:12px;margin-bottom:0}
   body.in-game.has-img #s-game .q-card .q-img{height:380px !important;width:100%;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.4rem}
 }
 
 /* ══════════════════════════════════════════════
@@ -2362,7 +2365,7 @@ function renderQuestion(q,pts){
   const hasImg=isPhoto||isMap;
   if(hasImg)document.body.classList.add('has-img');
   let html='<div class="q-card">'
-    +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div>':'')
+    +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div><div class="q-body">':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
     +'<div class="q-txt">'+q.question+'</div>';
 
@@ -2414,7 +2417,7 @@ function renderQuestion(q,pts){
     html+='<div class="share-box" id="sbox"></div>';
     html+='<button class="nxt-btn" id="nb" onclick="nextTurn()">Next →</button>';
   }
-  html+='</div>';
+  html+=(hasImg?'</div>':'')+'</div>';
   document.getElementById('q-area').innerHTML=html;
   // Async load image/map for visual question types
   if(isPhoto){
