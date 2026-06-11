@@ -1996,9 +1996,6 @@ function startGame(){
   });
 
   const loc=G.gameMode==='national'?'the United States':G.gameMode==='global'?'the whole world':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
-  document.getElementById('load-txt').textContent='Loading '+loc+'...';
-  document.getElementById('load-prog').style.width='0%';
-  show('s-loading');
 
   if(G.style==='room'){
     const hostName=(document.getElementById('host-name-input')?.value||'').trim()||'Host';
@@ -2006,6 +2003,9 @@ function startGame(){
     return;
   }
 
+  document.getElementById('load-txt').textContent='Loading '+loc+'...';
+  document.getElementById('load-prog').style.width='0%';
+  show('s-loading');
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');wizGoTo(1);showErr('Error: '+e.message);});
 }
 
@@ -2938,6 +2938,7 @@ function mpShowLobby(code,state){
 
 function mpForceStart(){
   if(!MP.isHost||!MP.lastState)return;
+  MP.launching=false; // reset in case a previous attempt got stuck
   mpLaunchGame(MP.lastState);
 }
 
@@ -3147,7 +3148,22 @@ function mpStartCountdown(lobbyStartedAt){
     if(val)val.textContent=m+':'+(s<10?'0':'')+s;
     if(bar)bar.style.width=((rem/LOBBY_SECS)*100)+'%';
     if(bar)bar.style.background=rem>60?'#22c55e':rem>30?'#f59e0b':'#ef4444';
-    if(rem<=0){clearInterval(mpCountdownInterval);if(MP.isHost&&MP.lastState)mpLaunchGame(MP.lastState);}
+    if(rem<=0){
+      clearInterval(mpCountdownInterval);
+      if(MP.isHost&&MP.lastState){
+        mpLaunchGame(MP.lastState);
+        // If still on lobby after 3s, show a visible retry nudge
+        setTimeout(()=>{
+          if(document.getElementById('s-mp-wait')?.classList.contains('active')){
+            MP.launching=false;
+            const hsw=document.getElementById('mp-host-start-wrap');
+            if(hsw){hsw.style.display='block';hsw.style.border='2px solid #ef4444';hsw.style.borderRadius='12px';hsw.style.padding='.5rem';}
+            const lbl=document.getElementById('mp-host-start-wrap')?.querySelector('div');
+            if(lbl)lbl.textContent='Game didn\'t start — tap to try again';
+          }
+        },3000);
+      }
+    }
   }
   tick();mpCountdownInterval=setInterval(tick,1000);
 }
@@ -3254,7 +3270,8 @@ async function mpLaunchGame(st){
   };
 
   try{
-    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
+    const patchRes=await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
+    if(!patchRes.ok)throw new Error('PATCH '+patchRes.status);
   }catch(e){console.error('PATCH failed',e);showRetry();return;}
 
   preGenAll().then(()=>{
