@@ -1115,8 +1115,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
         <div class="wiz-card" style="flex:1;overflow-y:auto" id="wiz-teams-card"></div>
         <div class="wiz-teams-actions">
-          <button class="wiz-add-team-btn" id="wiz-add-team-btn" onclick="wizAddTeam()">+ Add Team</button>
-          <button class="wiz-next-btn" style="margin:0" onclick="wizTeamsStart()">▶ Start Game</button>
+          <button class="wiz-next-btn" id="wiz-teams-primary-btn" style="margin:0" onclick="wizTeamsPrimary()">+ Add Next Team</button>
         </div>
       </div>
 
@@ -1617,7 +1616,17 @@ function wizRenderTeams(){
     card.appendChild(div);
     wizBuildTeamCats(i);
   });
-  document.getElementById('wiz-add-team-btn').style.display=wizTeams.length>=4?'none':'flex';
+  const primaryBtn=document.getElementById('wiz-teams-primary-btn');
+  if(primaryBtn){
+    if(wizTeams.length>=4){primaryBtn.textContent='▶ Start Game';primaryBtn.style.background='#e8b84b';}
+    else if(wizTeams.length>=2){primaryBtn.textContent='▶ Start Game';primaryBtn.style.background='#e8b84b';}
+    else{primaryBtn.textContent='+ Add Next Team';primaryBtn.style.background='#1a1a2e';}
+  }
+}
+
+function wizTeamsPrimary(){
+  if(wizTeams.length>=2) wizTeamsStart();
+  else wizAddTeam();
 }
 
 function wizAddTeam(){
