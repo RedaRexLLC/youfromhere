@@ -2292,7 +2292,7 @@ function renderBoard(){
     G.board.map(col=>'<div class="board-col"><div class="board-cat-hdr">'+col.icon+' '+col.label+'</div><div class="board-pts-col">'+
       [['200-0',200],['200-1',200],['400-0',400],['400-1',400],['600-0',600],['600-1',600]].map(([key,pts])=>{
         const used=col.cells[key];
-        return '<button class="board-cell pts-'+pts+(used?' used':'')+'" '+(used?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\',\''+key+'\')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+( used?'<span style="color:#e8b84b;font-size:.8em">✓</span>'+pts:pts)+'</button>';
+        return '<button class="board-cell pts-'+pts+(used?' used':'')+'" '+(used?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\',\''+key+'\')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+( used?pts:pts)+'</button>';
       }).join('')+'</div></div>'
     ).join('')+'</div>';
   document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
