@@ -2639,9 +2639,9 @@ function resolve(ok,pts,exp,surp){
     const playerName=myPlayer?.name||G.teams[t]?.name||'Player';
     const teamName=G.teams[t]?.name||playerName;
     const lastAns={ok,pts:ok?pts:0,exp,team_name:teamName,player_name:playerName};
-    // Advance turn index
+    // Broadcast result — keep CURRENT turn_index (nextTurn advances it)
     const st=MP.lastState||{};
-    const newTurnIndex=((typeof st.turn_index==='number'?st.turn_index:0)+1)%(st.turn_order?.length||1);
+    const curTurnIndex=typeof st.turn_index==='number'?st.turn_index:0;
 
     if(!ok&&G.teams.length>1){
       // Steal opportunity in room mode
@@ -2661,7 +2661,7 @@ function resolve(ok,pts,exp,surp){
       return;
     }
 
-    // Correct or no steal opportunity: broadcast reveal
+    // Correct or no steal opportunity: broadcast reveal (turn_index unchanged — nextTurn advances)
     if(ok){
       const teamId=G.teams[t]?.id;
       const newTeamScores={...(st.team_scores||{})};
@@ -2669,9 +2669,9 @@ function resolve(ok,pts,exp,surp){
       if(MP.playType==='team'&&teamId)newTeamScores[teamId]=(newTeamScores[teamId]||0)+pts;
       else newPlayerScores[MP.playerId]=(newPlayerScores[MP.playerId]||0)+pts;
       mpPatch({phase:'reveal',scores:G.scores,team_scores:newTeamScores,player_scores:newPlayerScores,
-        turn_index:newTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
+        turn_index:curTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
     } else {
-      mpPatch({phase:'reveal',scores:G.scores,turn_index:newTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
+      mpPatch({phase:'reveal',scores:G.scores,turn_index:curTurnIndex,last_answer:lastAns,answered:true,steal_active:false});
     }
   }
 
@@ -2735,17 +2735,24 @@ function nextTurn(){
   document.getElementById('board-section').style.display='block';
   if(MP.active){
     const st=MP.lastState||{};
+    // Advance turn index by 1 (resolve kept it at current player; now we move to next)
     const newTurnIndex=((typeof st.turn_index==='number'?st.turn_index:0)+1)%(st.turn_order?.length||1);
-    // Find new current team based on room turn order
     const nextPlayerId=st.turn_order?.[newTurnIndex%(st.turn_order?.length||1)];
-    const nextPlayerTeamId=(st.players||[]).find(p=>p.id===nextPlayerId)?.team_id;
-    const newCt=(G.teams||[]).findIndex(t=>t.id===nextPlayerTeamId);
-    if(newCt>=0)G.ct=newCt;
-    else G.ct=(G.ct+1)%G.teams.length; // fallback for individual mode
+    // In individual mode each team's id === player id
+    let newCt=(G.teams||[]).findIndex(t=>t.id===nextPlayerId);
+    if(newCt<0){
+      const nextPlayerTeamId=(st.players||[]).find(p=>p.id===nextPlayerId)?.team_id;
+      newCt=(G.teams||[]).findIndex(t=>t.id===nextPlayerTeamId);
+    }
+    G.ct=newCt>=0?newCt:(G.ct+1)%G.teams.length;
     MP.lastPhase='board';MP.lastCellKey=null;
-    mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,
-      turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
-      current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
+    // Only the player whose turn just ended (or host as fallback) patches the server
+    const prevPlayerId=st.turn_order?.[st.turn_index%(st.turn_order?.length||1)];
+    if(prevPlayerId===MP.playerId||(!prevPlayerId&&MP.isHost)){
+      mpPatch({phase:'board',board:G.board,scores:G.scores,ct:G.ct,mi:G.mi,
+        turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
+        current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
+    }
   }
   try{sessionStorage.setItem('yfh_state',JSON.stringify({screen:'s-game',G:G}));}catch(e){}
   renderBoard();
