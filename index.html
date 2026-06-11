@@ -744,6 +744,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .player-chip{display:flex;align-items:center;gap:.45rem;padding:.3rem .6rem;background:#f8f7f4;border-radius:9px;margin-bottom:.25rem}
 .pc-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;flex-shrink:0}
 .pc-name{font-weight:600;font-size:.85rem;flex:1}
+.pc-name-edit{flex:1;border:none;outline:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.85rem;color:#1a1a2e;background:transparent;padding:0;border-bottom:1.5px solid #e8b84b;min-width:0}
 .pc-badge{font-size:.6rem;padding:.1rem .3rem;border-radius:4px;font-weight:700}
 .pc-host{background:#e8b84b;color:#1a1a2e}
 .pc-voted{background:#22c55e;color:#fff}
@@ -1151,15 +1152,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
               <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
             </div>
 
-            <div class="card" style="margin-bottom:.5rem;display:flex;align-items:center;gap:.65rem;padding:.7rem .85rem" id="mp-name-card">
-              <div style="flex:1">
-                <div style="font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Your Name</div>
-                <input id="mp-lobby-name" type="text" maxlength="24" placeholder="Enter your name"
-                  style="width:100%;border:none;outline:none;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#1a1a2e;background:transparent;padding:0"
-                  onchange="mpUpdateMyName(this.value)" onblur="mpUpdateMyName(this.value)"/>
-              </div>
-              <span id="mp-lobby-host-badge" style="display:none;font-size:.7rem;background:#e8b84b;color:#1a1a2e;border-radius:6px;padding:.15rem .45rem;font-weight:700;flex-shrink:0">Host</span>
-            </div>
           </div>
 
           <!-- RIGHT: countdown + teams/players + voting -->
@@ -2427,13 +2419,6 @@ function mpShowLobby(code,state){
   show('s-mp-wait');
   makeQR('join-qr-box','https://youfromhere.vercel.app?join='+code);
   // Populate name card (only on first show — don't overwrite if user is typing)
-  const nameInp=document.getElementById('mp-lobby-name');
-  if(nameInp&&!nameInp.value){
-    const me=(state.players||[]).find(p=>p.id===MP.playerId);
-    if(me)nameInp.value=me.name||'';
-  }
-  const hostBadge=document.getElementById('mp-lobby-host-badge');
-  if(hostBadge)hostBadge.style.display=MP.isHost?'':'none';
   // Game mode label
   const modeLbl=document.getElementById('mp-mode-lbl');
   if(modeLbl){
@@ -2460,7 +2445,9 @@ function mpRenderLobby(st){
     if(pc)pc.textContent='('+players.length+')';
     if(pl)pl.innerHTML=players.map(p=>`<div class="player-chip">
       <div class="pc-dot"></div>
-      <div class="pc-name">${p.name||'Player'}</div>
+      ${p.id===MP.playerId
+        ?`<input class="pc-name-edit" value="${(p.name||'').replace(/"/g,'&quot;')}" maxlength="24" placeholder="Your name" onblur="mpUpdateMyName(this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>`
+        :`<div class="pc-name">${p.name||'Player'}</div>`}
       ${p.is_host?'<span class="pc-badge pc-host">Host</span>':''}
       ${p.voted?'<span class="pc-badge pc-voted">Voted</span>':''}
     </div>`).join('');
