@@ -422,17 +422,16 @@ body.in-game .ad-left,body.in-game .ad-right{display:none !important}
 body.in-game .game-content{height:100dvh;overflow:hidden;display:flex;flex-direction:column;padding:0;max-width:100% !important}
 #s-game{padding:0 !important}
 #s-game.active{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.game-top{padding:.4rem .75rem .3rem;flex-shrink:0;background:#fff;border-bottom:none}
-body.in-game .board-title{display:none}
+.game-top{padding:.4rem .75rem .3rem;flex-shrink:0;background:#000;border-bottom:1px solid #222}
 
 /* ── IN-GAME LAYOUT: board always fills available height ── */
 .game-body{flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding:.4rem .5rem .5rem;background:#000}
 
 /* Board section fills ALL remaining game-body space */
 body.in-game .board-section{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden;margin-bottom:0}
-body.in-game .board-title{flex-shrink:0}
+body.in-game .board-title{display:none !important}
 /* board-grid: grid that fills board-section, rows share height equally */
-body.in-game .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr;align-items:stretch}
+body.in-game .board-grid{flex:1;min-height:0;display:grid !important;grid-auto-rows:1fr;align-items:stretch;height:100%}
 body.in-game .board-col{display:flex;flex-direction:column;overflow:hidden;min-height:0}
 body.in-game .board-cat-hdr{flex-shrink:0}
 body.in-game .board-pts-col{flex:1;min-height:0;height:auto !important;display:grid !important;grid-template-rows:repeat(6,1fr) !important}
@@ -511,7 +510,7 @@ body.in-game #q-area:not(:empty){flex:1}
   .game-top{
     display:flex !important;flex-direction:column;
     padding:.1rem .4rem .05rem;flex-shrink:0;
-    background:#fff;border-bottom:none;gap:.08rem;
+    background:#000;border-bottom:1px solid #222;gap:.08rem;
   }
   .game-top > .game-header{
     display:flex !important;align-items:center;gap:.3rem;margin:0;
