@@ -2589,17 +2589,19 @@ function showResultPhase(ok,pts,exp,surp){
   // Preserve loaded image if present
   const imgWrap=card.querySelector('.q-img-wrap');
   const imgHtml=imgWrap?imgWrap.outerHTML:'';
+  const hasImg=!!imgHtml;
   const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
   const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
-  let inner=imgHtml
+  const body=(hasImg?'<div class="q-body">':'')
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
     +(exp?'<div class="result-exp">'+exp+'</div>':'')
     +'<div class="result-share"><div class="share-box" id="sbox"></div></div>'
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
-    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>';
-  card.innerHTML=inner;
+    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>'
+    +(hasImg?'</div>':'');
+  card.innerHTML=imgHtml+body;
   if(ok&&exp)showShare(exp);
 }
 
