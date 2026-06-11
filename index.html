@@ -2328,7 +2328,7 @@ function pickCell(catId,cellKey){
   col.cells[cellKey]=true;
   G.curCell={catId,pts,cellKey};
   const q=getNextQ(pts,catId);
-  if(!q){showErr('No question available for this category!');col.cells[cellKey]=false;return;}
+  if(!q){col.cells[cellKey]=true;renderBoard();return;}
   G.curQ=q;
   if(MP.active){
     const st=MP.lastState||{};
