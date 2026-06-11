@@ -1547,8 +1547,13 @@ function wizSetMode(m){
   // Treat 'global' as sub-mode of 'world' button
   const btnId=m==='global'?'world':m;
   G.gameMode=m;
-  document.querySelectorAll('.wiz-mode-btn').forEach(b=>b.classList.remove('on'));
-  document.getElementById('btn-'+btnId).classList.add('on');
+  document.querySelectorAll('.wiz-mode-btn').forEach(b=>{
+    b.classList.remove('on');
+    b.style.background='#fff';b.style.color='#1a1a2e';b.style.borderColor='#e5e7eb';
+  });
+  const ab=document.getElementById('btn-'+btnId);
+  ab.classList.add('on');
+  ab.style.background='#1a1a2e';ab.style.color='#fff';ab.style.borderColor='#1a1a2e';
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
   document.getElementById('world-inputs').style.display=(m==='world'||m==='global')?'block':'none';
