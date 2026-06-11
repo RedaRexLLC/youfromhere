@@ -3126,8 +3126,33 @@ function mpCheckAutoStart(st){
   if(!MP.isHost)return;
   const players=st.players||[];
   if(players.length<2)return;
+  // Background-prefetch top voted categories while players are still voting
+  mpPrefetchTopCats(st);
   const allVoted=players.every(p=>p.voted);
   if(allVoted)mpLaunchGame(st);
+}
+
+// Silently fetch question pools for currently-leading categories
+if(!MP.prefetched)MP.prefetched=new Set();
+function mpPrefetchTopCats(st){
+  if(!MP.active)return;
+  const catVotes={};
+  (st.players||[]).forEach(p=>{(p.votes||[]).forEach(cid=>{catVotes[cid]=(catVotes[cid]||0)+1;});});
+  const top=Object.entries(catVotes).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
+  top.forEach(catId=>{
+    if(MP.prefetched.has(catId))return;
+    MP.prefetched.add(catId);
+    // Set G fields needed by fetchPool/genQsForCategory
+    const savedMode=G.gameMode,savedCity=G.city,savedCountry=G.country;
+    G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';
+    fetchPool(catId).then(poolQs=>{
+      const MIN=6;
+      if(poolQs.length<MIN){
+        genQsForCategory(catId).then(newQs=>{savePool(newQs,catId);}).catch(()=>{});
+      }
+    }).catch(()=>{});
+    G.gameMode=savedMode;G.city=savedCity;G.country=savedCountry;
+  });
 }
 
 // ── LAUNCH GAME (host only) ──
