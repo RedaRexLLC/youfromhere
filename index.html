@@ -155,6 +155,7 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 #q-info-strip-row{display:flex;align-items:center;gap:.6rem}
 .sc0{color:#e8b84b}.sc1{color:#e8b84b}.sc2{color:#e8b84b}.sc3{color:#e8b84b}
 .steal-bar{background:#111;border:2px solid #e8b84b;padding:.4rem 2rem;margin:.2rem 1rem 0;font-weight:700;font-size:.9rem;text-align:center;color:#fff;border-radius:999px}
+@keyframes stealPulse{0%{transform:scale(.95);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
 /* Bottom ad in game — desktop only, hidden during questions */
 #game-bottom-ad{display:none;flex-shrink:0;background:#111;border:1.5px dashed #333;border-radius:10px;padding:.5rem;text-align:center;margin-top:.75rem}
 /* Combined info bar: diamond turn bar */
@@ -2654,9 +2655,8 @@ function resolve(ok,pts,exp,surp){
         steal_excluded_team_id:excludedTeamId,steal_excluded_player_id:excludedPlayerId,
         steal_submissions:{},steal_winner:null,last_answer:lastAns,answered:true};
       mpPatch(stealState);
-      // Show local steal UI
-      const sb=document.getElementById('steal-bar');
-      if(sb){sb.style.display='block';sb.textContent='⏱ Other teams have 10 seconds to steal!';}
+      // Show local steal UI for the player who missed
+      showStealUI(true,stealState);
       stopTmr();
       tLeft=STEAL_TIME;updTmr();
       stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);if(MP.isHost)mpEvaluateSteal({...stealState,steal_submissions:{}});}},1000);
@@ -3489,24 +3489,13 @@ function mpMirrorState(st){
 
   if(phase==='steal'&&MP.lastPhase!=='steal'){
     MP.lastPhase='steal';
-    // Show steal banner, hide answer if I'm eligible
     const excludedTeamId=st.steal_excluded_team_id;
     const excludedPlayerId=st.steal_excluded_player_id;
     const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
     const myTeamId=myPlayer?.team_id;
     const isExcluded=(excludedTeamId&&myTeamId===excludedTeamId)||(excludedPlayerId&&MP.playerId===excludedPlayerId);
-    const sb=document.getElementById('steal-bar');
-    if(sb){
-      sb.style.display='block';
-      sb.innerHTML=isExcluded
-        ?'⏱ Other teams have 10 seconds to steal!'
-        :'⚡ 10 seconds to steal — answer now, don\'t say it aloud!';
-    }
-    // Enable buttons only for eligible
-    document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=isExcluded);
-    // Remove waiting banner if present
     document.querySelector('.mp-waiting-banner')?.remove();
-    // Start steal countdown
+    showStealUI(isExcluded,st);
     tLeft=STEAL_TIME;
     stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);}},1000);
     return;
@@ -3541,6 +3530,53 @@ async function mpPatch(stateUpdate){
     await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({code:MP.code,state:newState,player_id:MP.playerId})});
   }catch(e){}
+}
+
+// ── STEAL UI ──
+function showStealUI(isExcluded,st){
+  // Hide the old steal bar
+  const sb=document.getElementById('steal-bar');if(sb)sb.style.display='none';
+  // Disable all answer buttons first
+  document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=true);
+
+  const qArea=document.getElementById('q-area');
+  const existing=document.getElementById('steal-card');if(existing)existing.remove();
+  const card=document.createElement('div');
+  card.id='steal-card';
+
+  if(isExcluded){
+    // Player who missed — just shows waiting state
+    card.style.cssText='margin-top:.75rem;padding:1rem;background:#1a1a2e;border-radius:14px;text-align:center;color:#fff';
+    card.innerHTML='<div style="font-size:1.1rem;font-weight:700;margin-bottom:.3rem">✗ Not your points this time</div>'
+      +'<div style="font-size:.82rem;color:#9ca3af">Other players have <strong style="color:#e8b84b">10 seconds</strong> to steal…</div>';
+  } else {
+    // Eligible stealer — dramatic Take a Chance card
+    card.style.cssText='margin-top:.75rem;padding:1.1rem;background:linear-gradient(135deg,#1a1a2e,#2d1a4e);border:2px solid #e8b84b;border-radius:14px;text-align:center;color:#fff;animation:stealPulse .6s ease';
+    card.innerHTML='<div style="font-size:1.3rem;font-weight:900;color:#e8b84b;letter-spacing:.04em;margin-bottom:.2rem">⚡ TAKE A CHANCE!</div>'
+      +'<div style="font-size:.85rem;color:#d1d5db;margin-bottom:.75rem">Answer correctly to steal the points — <strong style="color:#fff">first correct answer wins</strong></div>'
+      +'<div id="steal-answer-area"></div>'
+      +'<div style="font-size:.72rem;color:#9ca3af;margin-top:.6rem">Don\'t say your answer out loud!</div>';
+    // Clone answer buttons into the steal card
+    setTimeout(()=>{
+      const ansArea=document.getElementById('steal-answer-area');
+      if(!ansArea)return;
+      // Re-enable and rewire the existing buttons
+      document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{
+        const clone=b.cloneNode(true);
+        clone.disabled=false;
+        clone.style.cssText='';
+        const ans=b.textContent.trim();
+        clone.onclick=()=>{
+          ansArea.querySelectorAll('button').forEach(x=>x.disabled=true);
+          card.querySelector('div:nth-child(2)').textContent='⏳ Submitted! Waiting for results…';
+          mpSubmitStealAnswer(ans);
+        };
+        ansArea.appendChild(clone);
+      });
+      ansArea.style.cssText='display:flex;flex-direction:column;gap:.4rem';
+    },30);
+  }
+  qArea.appendChild(card);
 }
 
 // ── STEAL (room mode) ──
