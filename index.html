@@ -854,43 +854,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
 
 <!-- MIRROR MODAL -->
-<div class="modal-overlay" id="mirror-modal" role="dialog" aria-modal="true" aria-labelledby="mirror-modal-title">
-  <div class="mirror-modal">
-    <h3 id="mirror-modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;margin-bottom:.35rem">📺 Mirror to TV</h3>
-    <p style="font-size:.83rem;color:#6b7280;margin-bottom:1rem;line-height:1.5">Pick your device below. Once mirroring, the TV shows the game — the moderator keeps the phone/tablet to control it.</p>
-
-    <div class="mirror-device">
-      <div class="mirror-device-hdr">🍎 iPhone or iPad (AirPlay)</div>
-      <p>1. Connect iPhone/iPad and Apple TV (or AirPlay-compatible TV) to the <strong>same Wi-Fi</strong>.<br>2. Swipe down from top-right corner to open <strong>Control Center</strong>.<br>3. Tap <strong>Screen Mirroring</strong> → select your TV.</p>
-    </div>
-
-    <div class="mirror-device">
-      <div class="mirror-device-hdr">💻 Mac (AirPlay)</div>
-      <p>1. Click the <strong>Control Center</strong> icon in the menu bar (top-right).<br>2. Click <strong>Screen Mirroring</strong> → select your Apple TV or AirPlay TV.<br>3. Or use the AirPlay icon directly in the menu bar if visible.</p>
-    </div>
-
-    <div class="mirror-device">
-      <div class="mirror-device-hdr">🤖 Android Phone or Tablet</div>
-      <p>1. Connect to the same Wi-Fi as your TV.<br>2. Swipe down for <strong>Quick Settings</strong> → tap <strong>Smart View</strong>, <strong>Screen Cast</strong>, or <strong>Cast</strong> (name varies by brand).<br>3. Select your TV or Chromecast device.</p>
-    </div>
-
-    <div class="mirror-device">
-      <div class="mirror-device-hdr">🪟 Windows PC</div>
-      <p>1. Press <strong>Windows + K</strong> to open the Cast panel.<br>2. Select your TV or Miracast display.<br>3. Alternatively use <strong>Settings → System → Display → Connect to a wireless display</strong>.</p>
-    </div>
-
-    <div class="mirror-device">
-      <div class="mirror-device-hdr">🔌 Any Device — HDMI Cable (most reliable)</div>
-      <p>Plug an HDMI cable from your laptop/phone (with adapter if needed) directly into the TV. Switch the TV input to the correct HDMI port. Works everywhere, no Wi-Fi needed.</p>
-    </div>
-
-    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.75rem;font-size:.8rem;color:#92400e;margin-top:.5rem;line-height:1.6">
-      💡 <strong>Tip:</strong> Use <strong>Moderator Mode</strong> so the answer stays hidden on the TV. The moderator taps "Reveal Answer" on their device when ready.
-    </div>
-
-    <button class="start-btn" style="margin-top:1rem" onclick="document.getElementById('mirror-modal').className='modal-overlay'">Done</button>
-  </div>
-</div>
 
 <!-- CONTACT MODAL -->
 <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
@@ -1125,14 +1088,6 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
       </div>
 
-      <!-- TV mode row (persistent, shown on step 1 & 2) -->
-      <div id="wiz-tv-row" class="wiz-tv-row">
-        <div><label class="tv-label" for="tv-tog">📺 TV Mode</label></div>
-        <div style="display:flex;align-items:center;gap:.6rem">
-          <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'" style="font-size:.78rem;padding:.35rem .7rem">📺 Mirror</button>
-          <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
-        </div>
-      </div>
 
     </div>
 
