@@ -2651,10 +2651,11 @@ function nextTurn(){
       turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
       current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
   }
+  try{sessionStorage.setItem('yfh_state',JSON.stringify({screen:'s-game',G:G}));}catch(e){}
   renderBoard();
 }
 
-function confirmEndGame(){if(confirm('End the game now?')){stopTmr();showResults();}}
+function confirmEndGame(){if(confirm('End the game now?')){stopTmr();sessionStorage.removeItem('yfh_state');showResults();}}
 
 function showShare(fact){
   const b=document.getElementById('sbox');b.className='share-box show';
