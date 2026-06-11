@@ -312,6 +312,61 @@ body.in-question #game-info-bar{display:none!important}
 .style-desc{font-size:.65rem;color:#9ca3af;display:block;margin-top:.15rem;line-height:1.3}
 .style-card.on .style-desc{color:rgba(255,255,255,.6)}
 
+/* ── WIZARD ── */
+#s-home{display:flex;flex-direction:column;padding:0;min-height:100vh}
+.wiz-step{display:flex;flex-direction:column;flex:1;padding:1.25rem 1rem;max-width:560px;margin:0 auto;width:100%;box-sizing:border-box}
+.wiz-logo-wrap{text-align:center;margin-bottom:.5rem}
+.wiz-logo-wrap img{max-height:80px;width:auto}
+.wiz-tagline{text-align:center;font-size:1rem;color:#6b7280;margin:0 0 1rem}
+.wiz-card{background:#fff;border-radius:14px;border:1px solid #e5e7eb;padding:1.25rem;margin-bottom:1rem}
+.wiz-section-lbl{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:#9ca3af;margin-bottom:.75rem}
+.wiz-lbl{display:block;font-size:.75rem;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+.wiz-top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.wiz-back-btn{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:.9rem;font-weight:600;color:#6b7280;cursor:pointer;padding:.25rem 0}
+.wiz-back-btn:hover{color:#1a1a2e}
+.wiz-top-mode{font-size:.8rem;font-weight:700;color:#e8b84b;text-transform:uppercase;letter-spacing:.07em}
+/* Mode buttons */
+.wiz-mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.25rem}
+.wiz-mode-btn{display:flex;flex-direction:column;align-items:center;gap:.3rem;padding:.9rem .5rem;border:2px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.wiz-mode-btn:hover{border-color:#9ca3af;background:#f9fafb}
+.wiz-mode-btn.on{border-color:#1a1a2e;background:#1a1a2e;color:#fff}
+.wmb-icon{font-size:1.8rem;line-height:1}
+.wmb-name{font-weight:700;font-size:.9rem}
+.wmb-desc{font-size:.65rem;color:#9ca3af;text-align:center;line-height:1.3}
+.wiz-mode-btn.on .wmb-desc{color:rgba(255,255,255,.6)}
+/* Style buttons */
+.wiz-style-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.25rem}
+.wiz-style-btn{display:flex;flex-direction:column;align-items:center;gap:.25rem;padding:1rem .5rem;border:2px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;text-align:center}
+.wiz-style-btn:hover{border-color:#9ca3af;background:#f9fafb}
+.wiz-style-btn.on{border-color:#1a1a2e;background:#1a1a2e;color:#fff}
+.wsb-icon{font-size:1.8rem;line-height:1}
+.wsb-name{font-weight:700;font-size:.88rem}
+.wsb-desc{font-size:.65rem;color:#9ca3af;line-height:1.3}
+.wiz-style-btn.on .wsb-desc{color:rgba(255,255,255,.6)}
+/* Next / Start button */
+.wiz-next-btn{background:#e8b84b;color:#1a1a2e;width:100%;padding:.95rem;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;cursor:pointer;border:none;margin-top:.25rem;transition:background .15s;outline:none}
+.wiz-next-btn:hover{background:#d4a43a}
+/* Team wizard */
+.wiz-teams-actions{display:flex;gap:.65rem;align-items:center;padding:.75rem 0 .25rem}
+.wiz-add-team-btn{flex:1;padding:.85rem;border:2px dashed #d1d5db;border-radius:12px;background:#fff;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;color:#6b7280;cursor:pointer;transition:all .15s}
+.wiz-add-team-btn:hover{border-color:#9ca3af;color:#374151}
+/* Team card inside wizard */
+.wiz-team-block{border:1.5px solid #e5e7eb;border-radius:12px;padding:1rem;margin-bottom:.75rem}
+.wiz-team-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+.wiz-team-lbl{font-weight:800;font-size:.95rem}
+.wiz-rm-btn{background:none;border:none;color:#9ca3af;cursor:pointer;font-size:.8rem;font-family:'DM Sans',sans-serif;font-weight:600}
+.wiz-rm-btn:hover{color:#ef4444}
+/* Footer links */
+.wiz-footer-links{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-top:.5rem;margin-bottom:.5rem;flex-wrap:wrap}
+.wiz-link{background:none;border:none;font-family:'DM Sans',sans-serif;font-size:.78rem;color:#9ca3af;cursor:pointer;text-decoration:underline;padding:0}
+.wiz-link:hover{color:#6b7280}
+/* TV row pinned to bottom of step 1 */
+.wiz-tv-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.25rem;border-top:1px solid #e5e7eb;background:#fff;max-width:560px;margin:0 auto;width:100%;box-sizing:border-box}
+.wiz-err{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:.75rem 1rem;font-size:.88rem;color:#991b1b;display:none;margin-bottom:.5rem}
+.wiz-err.show{display:block}
+@media(min-width:600px){.wiz-step{padding:1.5rem 1.5rem}}
+@media(max-width:400px){.wiz-mode-grid{grid-template-columns:1fr 1fr}.wiz-style-grid{grid-template-columns:1fr}}
+
 /* ════════════════════════════════════════════
    DEVICE-RESPONSIVE SYSTEM
    body gets .dev-phone / .dev-tablet / .dev-desktop
@@ -893,78 +948,120 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
   <div class="game-content">
 
-    <!-- ══ HOME ══ -->
+    <!-- ══ HOME WIZARD ══ -->
     <div id="s-home" class="screen active">
-      <div class="ad-banner" style="margin-bottom:.75rem">
-        <div class="ad-label">Advertisement</div>
-        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="0000000003" data-ad-format="horizontal" data-full-width-responsive="true"></ins>
-        <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-      </div>
-      <div class="logo-wrap hero">
-        <img src="/logo.png" alt="You From Here?"/>
-        <button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
-      </div>
-      <p class="tagline hero" id="home-tagline">Think you know your city? Prove it.</p>
 
-      <div class="card">
-        <div class="lbl">Game Mode</div>
-        <div class="mode-grid">
-          <button class="sel-btn on" id="btn-local" onclick="setGameMode('local')" aria-pressed="true">📍 Local</button>
-          <button class="sel-btn" id="btn-national" onclick="setGameMode('national')" aria-pressed="false">🇺🇸 National</button>
-          <button class="sel-btn" id="btn-world" onclick="setGameMode('world')" aria-pressed="false">🌍 World</button>
+      <!-- STEP 1: Game Mode -->
+      <div id="wiz-step-1" class="wiz-step">
+        <div class="wiz-logo-wrap">
+          <img src="/logo.png" alt="You From Here?"/>
+          <button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
         </div>
-        <div id="local-inputs">
-          <label class="lbl" for="city-input">Your city &amp; state</label>
-          <div class="input-wrap"><input type="text" id="city-input" placeholder="e.g. Tucson, AZ" autocomplete="address-level2"/><button class="mic-btn" onclick="startSpeech('city-input')" aria-label="Voice input for city">🎤</button></div>
-          <label class="lbl" for="college-input">College or university <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></label>
-          <div class="input-wrap"><input type="text" id="college-input" placeholder="e.g. University of Arizona" oninput="onCollege()"/><button class="mic-btn" onclick="startSpeech('college-input')" aria-label="Voice input for college">🎤</button></div>
+        <p class="wiz-tagline" id="home-tagline">Think you know your city? Prove it.</p>
+        <div class="wiz-card">
+          <div class="wiz-section-lbl">Select Game Mode</div>
+          <div class="wiz-mode-grid">
+            <button class="wiz-mode-btn on" id="btn-local" onclick="wizSetMode('local')">
+              <span class="wmb-icon">📍</span>
+              <span class="wmb-name">Local</span>
+              <span class="wmb-desc">Your city &amp; state</span>
+            </button>
+            <button class="wiz-mode-btn" id="btn-national" onclick="wizSetMode('national')">
+              <span class="wmb-icon">🇺🇸</span>
+              <span class="wmb-name">National</span>
+              <span class="wmb-desc">All about America</span>
+            </button>
+            <button class="wiz-mode-btn" id="btn-world" onclick="wizSetMode('world')">
+              <span class="wmb-icon">🌍</span>
+              <span class="wmb-name">World</span>
+              <span class="wmb-desc">Global trivia</span>
+            </button>
+          </div>
+          <div id="local-inputs" style="margin-top:.75rem">
+            <label class="wiz-lbl" for="city-input">Your city &amp; state</label>
+            <div class="input-wrap"><input type="text" id="city-input" placeholder="e.g. Tucson, AZ" autocomplete="address-level2"/><button class="mic-btn" onclick="startSpeech('city-input')" aria-label="Voice input for city">🎤</button></div>
+            <label class="wiz-lbl" for="college-input" style="margin-top:.5rem">College or university <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional)</span></label>
+            <div class="input-wrap"><input type="text" id="college-input" placeholder="e.g. University of Arizona" oninput="onCollege()"/><button class="mic-btn" onclick="startSpeech('college-input')" aria-label="Voice input for college">🎤</button></div>
+          </div>
+          <div id="national-inputs" style="display:none;margin-top:.75rem">
+            <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:10px;padding:.85rem;font-size:.88rem;color:#0369a1">🇺🇸 Questions about American culture, history, food, music, and landmarks!</div>
+          </div>
+          <div id="world-inputs" style="display:none;margin-top:.75rem">
+            <label class="wiz-lbl">Select a country</label>
+            <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
+            <label class="wiz-lbl" for="world-city" style="margin-top:.5rem">City (optional)</label>
+            <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
+          </div>
         </div>
-        <div id="national-inputs" style="display:none">
-          <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:.75rem;font-size:.85rem;color:#0369a1;margin-bottom:.5rem">🇺🇸 Questions about American culture, history, food, music, and landmarks!</div>
+        <div class="wiz-err" id="err-box" role="alert" aria-live="assertive"></div>
+        <button class="wiz-next-btn" onclick="wizStep1Next()">Next →</button>
+        <div class="wiz-footer-links">
+          <button class="wiz-link" onclick="openContact()">Own a business? Get featured</button>
+          <span style="color:#d1d5db">·</span>
+          <button class="wiz-link" onclick="openSubmit()">Submit a question</button>
         </div>
-        <div id="world-inputs" style="display:none">
-          <div class="lbl">Select a country</div>
-          <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
-          <label class="lbl" for="world-city">City (optional)</label>
-          <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
+      </div>
+
+      <!-- STEP 2: Play Style -->
+      <div id="wiz-step-2" class="wiz-step" style="display:none">
+        <div class="wiz-top-bar">
+          <button class="wiz-back-btn" onclick="wizGoTo(1)">← Back</button>
+          <div class="wiz-top-mode" id="wiz-top-mode-lbl"></div>
         </div>
-        <div class="tv-row">
-          <div><label class="tv-label" for="tv-tog">📺 TV Mode</label><div class="tv-sub">Larger text for big screens</div></div>
-          <div style="display:flex;align-items:center;gap:.6rem">
-            <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'" style="font-size:.78rem;padding:.35rem .7rem">📺 Mirror</button>
-            <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" onchange="document.body.style.fontSize=this.checked?'20px':'16px'" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+        <div class="wiz-logo-wrap" style="margin-top:.5rem">
+          <img src="/logo.png" alt="You From Here?" style="max-height:60px"/>
+        </div>
+        <div class="wiz-card">
+          <div class="wiz-section-lbl">How are you playing?</div>
+          <div class="wiz-style-grid">
+            <button class="wiz-style-btn" onclick="wizPickStyle('multi')">
+              <span class="wsb-icon">📱</span>
+              <span class="wsb-name">Pass &amp; Play</span>
+              <span class="wsb-desc">One device, pass it around</span>
+            </button>
+            <button class="wiz-style-btn" onclick="wizPickStyle('room')">
+              <span class="wsb-icon">🏠</span>
+              <span class="wsb-name">Multiplayer Room</span>
+              <span class="wsb-desc">Everyone uses their own device</span>
+            </button>
+            <button class="wiz-style-btn" onclick="wizPickStyle('mod')">
+              <span class="wsb-icon">🎙️</span>
+              <span class="wsb-name">Moderator</span>
+              <span class="wsb-desc">Read questions aloud</span>
+            </button>
+            <button class="wiz-style-btn" onclick="wizPickStyle('solo')">
+              <span class="wsb-icon">🧠</span>
+              <span class="wsb-name">Solo</span>
+              <span class="wsb-desc">Practice alone</span>
+            </button>
+          </div>
+          <!-- Join existing room inline -->
+          <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid #e5e7eb">
+            <div class="wiz-lbl" style="margin-bottom:.4rem">Already have a room code?</div>
+            <div style="display:flex;gap:.5rem">
+              <input id="inline-join-code" type="text" maxlength="4" placeholder="Enter code" autocomplete="off"
+                style="flex:1;padding:.7rem 1rem;border:2px solid #e8b84b;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;text-align:center;outline:none;color:#1a1a2e"
+                oninput="this.value=this.value.toUpperCase()"
+                onkeydown="if(event.key==='Enter')inlineJoinRoom()"/>
+              <button onclick="inlineJoinRoom()" style="padding:.7rem 1.1rem;background:#e8b84b;color:#1a1a2e;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap">Join →</button>
+            </div>
+            <div id="inline-join-err" style="font-size:.78rem;color:#dc2626;margin-top:.3rem;display:none"></div>
           </div>
         </div>
       </div>
 
-      <div class="card">
-        <div class="lbl">Play Style</div>
-        <div class="style-grid" style="grid-template-columns:repeat(2,1fr)">
-          <div class="style-card on" id="style-multi" onclick="setStyle('multi')" role="button" tabindex="0" aria-pressed="true" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('multi')">
-            <span class="style-icon" aria-hidden="true">📱</span>
-            <span class="style-name">Pass &amp; Play</span>
-            <span class="style-desc">One device, pass it around</span>
-          </div>
-          <div class="style-card" id="style-room" onclick="setStyle('room')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('room')">
-            <span class="style-icon" aria-hidden="true">🏠</span>
-            <span class="style-name">Multiplayer Room</span>
-            <span class="style-desc">Everyone uses their own device</span>
-          </div>
-          <div class="style-card" id="style-mod" onclick="setStyle('mod')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('mod')">
-            <span class="style-icon" aria-hidden="true">🎙️</span>
-            <span class="style-name">Moderator</span>
-            <span class="style-desc">Speak answers aloud</span>
-          </div>
-          <div class="style-card" id="style-solo" onclick="setStyle('solo')" role="button" tabindex="0" aria-pressed="false" onkeydown="if(event.key==='Enter'||event.key===' ')setStyle('solo')">
-            <span class="style-icon" aria-hidden="true">🧠</span>
-            <span class="style-name">Solo</span>
-            <span class="style-desc">Practice alone</span>
-          </div>
+      <!-- STEP 3a: Multiplayer Room — team type -->
+      <div id="wiz-step-3-room" class="wiz-step" style="display:none">
+        <div class="wiz-top-bar">
+          <button class="wiz-back-btn" onclick="wizGoTo(2)">← Back</button>
+          <div class="wiz-top-mode" id="wiz-top-mode-lbl-3r"></div>
         </div>
-        <!-- Room style: setup panel -->
-        <div id="room-setup-panel" style="display:none">
-          <div class="lbl" style="margin-top:.6rem">How are you playing?</div>
-          <div class="mp-play-type">
+        <div class="wiz-logo-wrap" style="margin-top:.5rem">
+          <img src="/logo.png" alt="You From Here?" style="max-height:60px"/>
+        </div>
+        <div class="wiz-card">
+          <div class="wiz-section-lbl">How are teams playing?</div>
+          <div class="mp-play-type" style="margin-top:.5rem">
             <div class="mp-type-card on" id="mpt-team" onclick="mpSetPlayType('team')">
               <span class="mt-icon">🏆</span>
               <span class="mt-name">Team Play</span>
@@ -978,58 +1075,47 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
               <span class="mt-cta">Open Room →</span>
             </div>
           </div>
-          <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team names &amp; category voting happen in the lobby.</div>
+          <div style="text-align:center;margin-top:.75rem;font-size:.78rem;color:#9ca3af">Team names &amp; categories are set in the lobby.</div>
         </div>
-        <div id="join-room-hint" style="display:none;margin-top:.75rem">
-          <div style="display:flex;gap:.5rem">
-            <input id="inline-join-code" type="text" maxlength="4" placeholder="Already have a room code? Enter Code Here!" autocomplete="off"
-              style="flex:1;padding:.7rem 1rem;border:2px solid #e8b84b;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;text-align:center;outline:none;color:#1a1a2e"
-              oninput="this.value=this.value.toUpperCase()"
-              onkeydown="if(event.key==='Enter')inlineJoinRoom()"/>
-            <button onclick="inlineJoinRoom()" style="padding:.7rem 1.1rem;background:#e8b84b;color:#1a1a2e;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap">Join →</button>
-          </div>
-          <div id="inline-join-err" style="font-size:.78rem;color:#dc2626;margin-top:.3rem;display:none"></div>
-        </div>
+      </div>
 
-        <div id="teams-section">
-          <div id="teams-list"></div>
-          <button class="add-team-btn" id="add-team-btn" onclick="addTeam()">+ Add team</button>
+      <!-- STEP 3b: Solo — pick categories -->
+      <div id="wiz-step-3-solo" class="wiz-step" style="display:none">
+        <div class="wiz-top-bar">
+          <button class="wiz-back-btn" onclick="wizGoTo(2)">← Back</button>
+          <div class="wiz-top-mode" id="wiz-top-mode-lbl-3s"></div>
         </div>
-
-        <div id="cats-block">
-          <div class="lbl" style="margin-top:.5rem">Categories <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.85rem" id="cat-hint">(each team picks 3)</span></div>
-          <div id="solo-cats" style="display:none"></div>
+        <div class="wiz-card" style="flex:1;overflow-y:auto">
+          <div class="wiz-section-lbl">Pick your categories <span style="font-weight:400;font-size:.8rem;text-transform:none;letter-spacing:0;color:#9ca3af">(choose 3–6)</span></div>
+          <div id="solo-cats"></div>
           <div id="solo-cats-note" style="display:none;font-size:.82rem;color:#e57320;margin-top:.25rem;font-weight:500">You must choose a minimum of 3 categories.</div>
-          <div id="teams-cats-note" style="font-size:.82rem;color:#6b7280;margin-top:.25rem">Each team selects their own 3 categories above ↑</div>
         </div>
-
-        <button class="rules-btn" onclick="toggleRules()"><span>ℹ How to play</span><span class="chev" id="chev">▼</span></button>
-        <div class="rules-body" id="rules-body">
-          <p class="r-intro">Pick your city, choose categories, and battle it out on the board!</p>
-          <div class="r-sec"><div class="r-title">The Board</div><p>Categories appear as columns. Each has 3 point values: 200, 400, 600. Teams take turns picking any open cell. Once picked, it's gone.</p></div>
-          <div class="r-div"></div>
-          <div class="r-sec"><div class="r-title">Timer</div><p>1 minute to answer. If time runs out, the other team gets 10 seconds to steal!</p></div>
-          <div class="r-div"></div>
-          <div class="r-sec"><div class="r-title">Scoring</div><div class="r-pts"><div class="r-pt pt-e">🟢 Easy · 200</div><div class="r-pt pt-m">🟡 Medium · 400</div><div class="r-pt pt-h">🔴 Hard · 600</div></div></div>
-          <div class="r-div"></div>
-          <div class="r-sec"><div class="r-title">Moderator Mode</div><p>One person holds the device. Teams answer out loud. Moderator taps Correct, Wrong, or Nobody. Can manually adjust points anytime.</p></div>
-          <div class="r-snap">📸 Rules not sticking? Snap a photo before you start!</div>
-        </div>
+        <div class="wiz-err" id="err-box-solo" role="alert" aria-live="assertive"></div>
+        <button class="wiz-next-btn" onclick="wizSoloStart()">▶ Start Game</button>
       </div>
 
-      <div class="err-box" id="err-box" role="alert" aria-live="assertive"></div>
-      <button class="start-btn" onclick="startGame()">▶ Start Game</button>
-      <div class="contact-bar" style="margin-top:.75rem">
-        <div><strong>Own a business?</strong><p>Get featured in You From Here questions!</p></div>
-        <button class="contact-btn" onclick="openContact()">Get Featured →</button>
+      <!-- STEP 3c: Team setup wizard (Pass & Play / Moderator) -->
+      <div id="wiz-step-3-teams" class="wiz-step" style="display:none">
+        <div class="wiz-top-bar">
+          <button class="wiz-back-btn" id="wiz-teams-back" onclick="wizTeamsBack()">← Back</button>
+          <div class="wiz-top-mode" id="wiz-top-mode-lbl-3t"></div>
+        </div>
+        <div class="wiz-card" style="flex:1;overflow-y:auto" id="wiz-teams-card"></div>
+        <div class="wiz-teams-actions">
+          <button class="wiz-add-team-btn" id="wiz-add-team-btn" onclick="wizAddTeam()">+ Add Team</button>
+          <button class="wiz-next-btn" style="margin:0" onclick="wizTeamsStart()">▶ Start Game</button>
+        </div>
       </div>
-      <div class="contact-bar" style="margin-top:.5rem">
-        <div><strong>Know a great local question?</strong><p>Submit it and it could appear in the game!</p></div>
-        <button class="contact-btn" style="background:#e8b84b;color:#1a1a2e" onclick="openSubmit()">Submit Question →</button>
+
+      <!-- TV mode row (persistent, shown on step 1 & 2) -->
+      <div id="wiz-tv-row" class="wiz-tv-row">
+        <div><label class="tv-label" for="tv-tog">📺 TV Mode</label></div>
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <button class="mirror-btn" onclick="document.getElementById('mirror-modal').className='modal-overlay show'" style="font-size:.78rem;padding:.35rem .7rem">📺 Mirror</button>
+          <label class="tog-sw" aria-label="TV Mode toggle"><input type="checkbox" id="tv-tog" role="switch" aria-checked="false" onchange="this.setAttribute('aria-checked',this.checked);document.body.style.fontSize=this.checked?'20px':'16px'"/><div class="tog-track"></div><div class="tog-thumb"></div></label>
+        </div>
       </div>
-      <div style="text-align:center;margin-top:.75rem;margin-bottom:.5rem">
-        <a href="https://ko-fi.com/youfromhere" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;background:#ff5e5b;color:#fff;border-radius:8px;padding:.5rem 1rem;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;text-decoration:none">☕ Buy us a coffee</a>
-      </div>
+
     </div>
 
     <!-- ══ LOADING ══ -->
@@ -1367,6 +1453,7 @@ function autoDetectCity(){
 window.addEventListener('load',function(){
   makeQR('share-qr-box','https://youfromhere.vercel.app');
   autoDetectCity();
+  wizGoTo(1);
   // Handle ?join=CODE URL parameter — auto-open join modal with code pre-filled
   const params=new URLSearchParams(window.location.search);
   const joinCode=params.get('join');
@@ -1383,7 +1470,13 @@ window.addEventListener('load',function(){
 });
 
 function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');if(id!=='s-game')document.body.classList.remove('in-question');}
-function showErr(msg){const e=document.getElementById('err-box');e.textContent='⚠ '+msg;e.className='err-box show';setTimeout(()=>e.className='err-box',6000);}
+function showErr(msg){
+  // Show in whichever err box is currently visible
+  const ids=['err-box','err-box-solo'];
+  let shown=false;
+  ids.forEach(id=>{const e=document.getElementById(id);if(e&&e.offsetParent!==null){e.textContent='⚠ '+msg;e.className=e.className.split(' ')[0]+' show';setTimeout(()=>e.className=e.className.split(' ')[0],6000);shown=true;}});
+  if(!shown){const e=document.getElementById('err-box');if(e){e.textContent='⚠ '+msg;e.className='wiz-err show';setTimeout(()=>e.className='wiz-err',6000);}}
+}
 function toggleRules(){document.getElementById('rules-body').classList.toggle('open');document.getElementById('chev').classList.toggle('open');}
 function openContact(){document.getElementById('contact-modal').className='modal-overlay show';}
 function closeContact(){document.getElementById('contact-modal').className='modal-overlay';}
@@ -1394,6 +1487,171 @@ function closeSubmit(){document.getElementById('submit-modal').className='modal-
 const TAGLINES={local:'Think you know your city? Prove it.',national:'Think you know America? Prove it.',world:'Think you know the world? Prove it.'};
 
 // ── GAME MODE ──
+// ── WIZARD ──
+const TEAM_COLS=['#e8b84b','#3b82f6','#22c55e','#ef4444'];
+let wizTeams=[]; // [{name,players,cats}]
+
+function wizGoTo(step){
+  document.querySelectorAll('.wiz-step').forEach(s=>s.style.display='none');
+  const tvRow=document.getElementById('wiz-tv-row');
+  if(step===1){document.getElementById('wiz-step-1').style.display='flex';if(tvRow)tvRow.style.display='flex';}
+  else if(step===2){document.getElementById('wiz-step-2').style.display='flex';if(tvRow)tvRow.style.display='none';}
+  else if(step==='3-room'){document.getElementById('wiz-step-3-room').style.display='flex';if(tvRow)tvRow.style.display='none';}
+  else if(step==='3-solo'){document.getElementById('wiz-step-3-solo').style.display='flex';if(tvRow)tvRow.style.display='none';buildSoloCats();}
+  else if(step==='3-teams'){document.getElementById('wiz-step-3-teams').style.display='flex';if(tvRow)tvRow.style.display='none';wizRenderTeams();}
+  // Update mode label on steps 2+
+  const modeLabel={'local':'📍 '+( G.city||'Local'),'national':'🇺🇸 National','world':'🌍 World'}[G.gameMode]||'';
+  ['wiz-top-mode-lbl','wiz-top-mode-lbl-3r','wiz-top-mode-lbl-3s','wiz-top-mode-lbl-3t'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=modeLabel;});
+}
+
+function wizSetMode(m){
+  G.gameMode=m;
+  document.querySelectorAll('.wiz-mode-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('btn-'+m).classList.add('on');
+  document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
+  document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
+  document.getElementById('world-inputs').style.display=m==='world'?'block':'none';
+  document.getElementById('home-tagline').textContent=TAGLINES[m];
+  refreshCats();
+}
+
+function wizStep1Next(){
+  if(G.gameMode==='local'){
+    const city=document.getElementById('city-input').value.trim();
+    if(!city){wizShowErr('Please enter your city and state!');return;}
+    G.city=city;G.college=document.getElementById('college-input').value.trim();
+  } else if(G.gameMode==='world'){
+    const country=document.getElementById('country-select').value;
+    if(!country){wizShowErr('Please select a country!');return;}
+    G.country=country;G.city=document.getElementById('world-city').value.trim();
+  } else {G.city='the United States';}
+  wizGoTo(2);
+}
+
+function wizShowErr(msg){
+  const e=document.getElementById('err-box');
+  if(e){e.textContent='⚠ '+msg;e.className='wiz-err show';setTimeout(()=>e.className='wiz-err',5000);}
+}
+
+function wizPickStyle(s){
+  G.style=s;
+  if(s==='room'){wizGoTo('3-room');}
+  else if(s==='solo'){soloCats=[];wizGoTo('3-solo');}
+  else{wizTeams=[];wizGoTo('3-teams');}
+}
+
+// Solo start
+function wizSoloStart(){
+  if(soloCats.length<3){const n=document.getElementById('solo-cats-note');if(n)n.style.display='block';return;}
+  G.teams=[{name:'You',players:['Solo'],cats:[...soloCats]}];
+  startGame();
+}
+
+// Team wizard
+function wizRenderTeams(){
+  if(wizTeams.length===0)wizAddTeam();
+  const card=document.getElementById('wiz-teams-card');
+  card.innerHTML='<div class="wiz-section-lbl">Set up your teams</div>';
+  wizTeams.forEach((team,i)=>{
+    const ltr=String.fromCharCode(65+i);
+    const div=document.createElement('div');div.className='wiz-team-block';
+    div.innerHTML=`
+      <div class="wiz-team-hdr">
+        <span class="wiz-team-lbl" style="color:${TEAM_COLS[i%4]}">Team ${ltr}</span>
+        ${i>=2?`<button class="wiz-rm-btn" onclick="wizRemoveTeam(${i})">✕ Remove</button>`:''}
+      </div>
+      <div class="wiz-lbl">Team name</div>
+      <input type="text" placeholder="Team ${ltr}" value="${team.name!=='Team '+ltr?team.name:''}"
+        style="width:100%;padding:.6rem .85rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;margin-bottom:.75rem;box-sizing:border-box"
+        oninput="wizTeams[${i}].name=this.value.trim()||'Team ${ltr}'"
+        onfocus="this.style.borderColor='#e8b84b'" onblur="this.style.borderColor='#e5e7eb'"/>
+      <div class="wiz-lbl">Players</div>
+      <div id="wiz-plist-${i}">${team.players.map((p,pi)=>`<div style="display:flex;gap:.4rem;margin-bottom:.35rem"><input type="text" value="${p}" placeholder="Player ${pi+1}" style="flex:1;padding:.55rem .75rem;border:1.5px solid #e5e7eb;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none" oninput="wizTeams[${i}].players[${pi}]=this.value" onfocus="this.style.borderColor='#e8b84b'" onblur="this.style.borderColor='#e5e7eb'"/><button onclick="wizRemovePlayer(${i},${pi})" style="background:none;border:none;color:#9ca3af;cursor:pointer;font-size:.9rem">✕</button></div>`).join('')}</div>
+      <button onclick="wizAddPlayer(${i})" style="background:none;border:1.5px dashed #d1d5db;border-radius:8px;padding:.45rem .75rem;font-family:'DM Sans',sans-serif;font-size:.82rem;color:#6b7280;cursor:pointer;margin-bottom:.75rem">+ Add player</button>
+      <div class="wiz-lbl">Pick 3 categories</div>
+      <div id="wiz-tcats-${i}"></div>
+      <div id="wiz-cc-${i}" style="font-size:.72rem;color:#9ca3af;margin-top:.25rem">${team.cats.length} / 3 selected</div>
+    `;
+    card.appendChild(div);
+    wizBuildTeamCats(i);
+  });
+  document.getElementById('wiz-add-team-btn').style.display=wizTeams.length>=4?'none':'flex';
+}
+
+function wizAddTeam(){
+  const i=wizTeams.length;
+  if(i>=4)return;
+  const ltr=String.fromCharCode(65+i);
+  wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
+  wizRenderTeams();
+}
+
+function wizRemoveTeam(i){
+  wizTeams.splice(i,1);
+  // Re-letter names that are still default
+  wizTeams.forEach((t,idx)=>{const ltr=String.fromCharCode(65+idx);if(t.name===String.fromCharCode(65+idx+1)||t.name===String.fromCharCode(65+idx))t.name='Team '+ltr;});
+  wizRenderTeams();
+}
+
+function wizAddPlayer(teamIdx){
+  wizTeams[teamIdx].players.push('');
+  wizRenderTeams();
+}
+
+function wizRemovePlayer(teamIdx,playerIdx){
+  if(wizTeams[teamIdx].players.length<=1)return;
+  wizTeams[teamIdx].players.splice(playerIdx,1);
+  wizRenderTeams();
+}
+
+function wizBuildTeamCats(idx){
+  const wrap=document.getElementById('wiz-tcats-'+idx);if(!wrap)return;
+  const cats=getCats();
+  const nat=cats.filter(x=>NCATS.find(n=>n.id===x.id)||WCATS.find(n=>n.id===x.id));
+  const loc=cats.filter(x=>![...NCATS,...WCATS].find(n=>n.id===x.id));
+  wrap.innerHTML='';
+  function sec(list,label){
+    if(!list.length)return;
+    const h=document.createElement('div');h.className='sec-hdr';h.style.fontSize='.63rem';h.textContent=label;wrap.appendChild(h);
+    const g=document.createElement('div');g.className='cat-grid';
+    list.forEach(cat=>{
+      const picked=wizTeams[idx].cats.includes(cat.id);
+      const maxed=!picked&&wizTeams[idx].cats.length>=3;
+      const b=document.createElement('button');b.className='sel-btn'+(picked?' on':'')+(maxed?' maxed':'');b.dataset.id=cat.id;
+      b.innerHTML='<span>'+cat.icon+'</span><span>'+cat.label+'</span>';
+      if(!maxed){b.addEventListener('click',function(){
+        const t=wizTeams[idx];
+        if(t.cats.includes(cat.id))t.cats=t.cats.filter(x=>x!==cat.id);
+        else if(t.cats.length<3)t.cats.push(cat.id);
+        const cc=document.getElementById('wiz-cc-'+idx);if(cc)cc.textContent=t.cats.length+' / 3 selected';
+        wizBuildTeamCats(idx);
+      });}
+      g.appendChild(b);
+    });
+    wrap.appendChild(g);
+  }
+  if(G.gameMode==='local'){if(loc.length)sec(loc,'Local'+(colOn?' & College':''));if(nat.length)sec(nat,'National');}
+  else{if(nat.length)sec(nat,G.gameMode==='world'?'World':'National');if(loc.length)sec(loc,'Local');}
+}
+
+function wizTeamsBack(){
+  wizGoTo(2);
+}
+
+function wizTeamsStart(){
+  if(wizTeams.length<2){showErr('You need at least 2 teams!');return;}
+  for(let i=0;i<wizTeams.length;i++){
+    if(wizTeams[i].cats.length<3){showErr('Team '+String.fromCharCode(65+i)+' needs 3 categories!');return;}
+  }
+  // Build G.teams from wizTeams
+  G.teams=wizTeams.map(t=>({
+    name:t.name,
+    players:t.players.map((p,i)=>p.trim()||'Player '+(i+1)).filter((_,i)=>i===0||t.players[i]!==undefined),
+    cats:t.cats
+  }));
+  startGame();
+}
+
 function setGameMode(m){
   G.gameMode=m;
   ['local','national','world'].forEach(x=>{const b=document.getElementById('btn-'+x);b.className='sel-btn'+(m===x?' on':'');b.setAttribute('aria-pressed',String(m===x));});
@@ -1535,29 +1793,16 @@ function startSpeech(id){
 
 // ── START GAME ──
 function startGame(){
-  document.getElementById('err-box').className='err-box';
-  if(G.gameMode==='local'){G.city=document.getElementById('city-input').value.trim();G.college=document.getElementById('college-input').value.trim();if(!G.city){showErr('Please enter your city and state!');return;}}
-  else if(G.gameMode==='world'){G.country=document.getElementById('country-select').value;G.city=document.getElementById('world-city').value.trim();if(!G.country){showErr('Please select a country!');return;}}
-  else{G.city='the United States';}
-
-  if(G.style==='solo'){
-    if(soloCats.length<3){const note=document.getElementById('solo-cats-note');if(note)note.style.display='block';return;}
-    G.teams=[{name:'You',players:['Solo'],cats:[...soloCats]}];
-  } else if(G.style==='room'){
-    // Teams and categories are set up in the lobby — skip local validation
+  ['err-box','err-box-solo'].forEach(id=>{const e=document.getElementById(id);if(e)e.className=e.className.replace(' show','').replace('wiz-err show','wiz-err');});
+  // City/country already set by wizard for non-room paths; for room mode set here too
+  if(G.style==='room'){
+    if(G.gameMode==='local'&&!G.city){G.city=document.getElementById('city-input')?.value.trim()||'';}
+    if(G.gameMode==='world'&&!G.country){G.country=document.getElementById('country-select')?.value||'';}
+    if(G.gameMode==='national')G.city='the United States';
+  }
+  // G.teams already set by wizard callers for solo/team paths; room bypasses team setup
+  if(G.style==='room'){
     G.teams=[];
-  } else {
-    const boxes=document.querySelectorAll('.team-box');
-    if(boxes.length<2){showErr('Add at least 2 teams!');return;}
-    G.teams=[];let ok=true;
-    boxes.forEach((box,i)=>{if(!ok)return;
-      const name=box.querySelector('.tname').value.trim()||'Team '+String.fromCharCode(65+i);
-      const players=Array.from(box.querySelectorAll('.plist input')).map((inp,j)=>inp.value.trim()||'Player '+(j+1));
-      const cats=getPicked(box.querySelector('.tcat-wrap'));
-      if(cats.length<3){showErr(name+' needs exactly 3 categories!');ok=false;return;}
-      G.teams.push({name,players,cats});
-    });
-    if(!ok)return;
   }
 
   G.scores=G.teams.map(()=>0);G.mi=G.teams.map(()=>0);
@@ -1581,7 +1826,7 @@ function startGame(){
     return;
   }
 
-  preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
+  preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');wizGoTo(1);showErr('Error: '+e.message);});
 }
 
 function buildQuips(){
@@ -2331,11 +2576,12 @@ function showResults(){
 function resetGame(){
   stopTmr();
   if(MP.active)mpLeave();
-  soloCats=[];tc=0;colOn=false;G.college='';G.city='';G.country='';
-  document.getElementById('teams-list').innerHTML='';
+  soloCats=[];wizTeams=[];tc=0;colOn=false;G.college='';G.city='';G.country='';G.style='multi';G.gameMode='local';
   ['city-input','college-input','world-city'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('country-select').value='';
-  setGameMode('local');setStyle('multi');buildSoloCats();addTeam();addTeam();show('s-home');
+  const cs=document.getElementById('country-select');if(cs)cs.value='';
+  show('s-home');
+  wizGoTo(1);
+  autoDetectCity();
 }
 
 async function submitQuestion(){
@@ -2756,7 +3002,7 @@ async function mpLaunchGame(st){
     const boardState={...launchState,phase:'board'};
     mpPatch(boardState);
     show('s-game');renderBoard();mpShowRoomBadge();
-  }).catch(e=>{console.error(e);show('s-home');showErr('Error: '+e.message);});
+  }).catch(e=>{console.error(e);show('s-home');wizGoTo(1);showErr('Error: '+e.message);});
 }
 
 // ── POLLING ──
@@ -3022,7 +3268,7 @@ function mpLeave(){
   MP.myVotes=[];MP.votesSubmitted=false;MP.lastPhase=null;MP.lastCellKey=null;MP.lastTurnIndex=-1;MP.lastState=null;
   const banner=document.getElementById('room-code-banner');if(banner)banner.style.display='none';
   const badge=document.getElementById('room-badge');if(badge)badge.classList.remove('show');
-  show('s-home');
+  show('s-home');wizGoTo(1);
 }
 
 // ── ACCESSIBILITY MODE ──
