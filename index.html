@@ -1482,7 +1482,8 @@ window.addEventListener('load',function(){
       openJoinModal();
       setTimeout(function(){
         const inp=document.getElementById('jm-code');
-        if(inp){inp.value=code;inp.dispatchEvent(new Event('input'));}
+        if(inp){inp.value=code;inp.readOnly=true;inp.style.opacity='.6';inp.dispatchEvent(new Event('input'));}
+        document.getElementById('jm-name')?.focus();
       },200);
     }
   }
@@ -2740,7 +2741,7 @@ const MP={
 
 // ── JOIN MODAL ──
 function openJoinModal(){document.getElementById('join-modal').style.display='flex';setTimeout(()=>document.getElementById('jm-code')?.focus(),100);}
-function closeJoinModal(){document.getElementById('join-modal').style.display='none';const e=document.getElementById('jm-err');if(e)e.className='err-box';}
+function closeJoinModal(){document.getElementById('join-modal').style.display='none';const e=document.getElementById('jm-err');if(e)e.className='err-box';const c=document.getElementById('jm-code');if(c){c.readOnly=false;c.style.opacity='';c.value='';}const n=document.getElementById('jm-name');if(n)n.value='';}
 
 async function inlineJoinRoom(){
   const code=(document.getElementById('inline-join-code')?.value||'').trim().toUpperCase();
