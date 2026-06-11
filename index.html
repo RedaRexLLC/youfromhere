@@ -960,7 +960,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <p class="wiz-tagline" id="home-tagline">Think you know your city? Prove it.</p>
         <div class="wiz-card">
           <div class="wiz-section-lbl">Select Game Mode</div>
-          <div class="wiz-mode-grid">
+          <div class="wiz-mode-grid" style="grid-template-columns:1fr 1fr">
             <button class="wiz-mode-btn on" id="btn-local" onclick="wizSetMode('local')">
               <span class="wmb-icon">📍</span>
               <span class="wmb-name">Local</span>
@@ -974,7 +974,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <button class="wiz-mode-btn" id="btn-world" onclick="wizSetMode('world')">
               <span class="wmb-icon">🌍</span>
               <span class="wmb-name">World</span>
-              <span class="wmb-desc">Global trivia</span>
+              <span class="wmb-desc">Pick a country</span>
+            </button>
+            <button class="wiz-mode-btn" id="btn-global" onclick="wizSetMode('global')">
+              <span class="wmb-icon">🌐</span>
+              <span class="wmb-name">The Whole World</span>
+              <span class="wmb-desc">Universal topics, no borders</span>
             </button>
           </div>
           <div id="local-inputs" style="margin-top:.75rem">
@@ -991,6 +996,9 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
             <label class="wiz-lbl" for="world-city" style="margin-top:.5rem">City (optional)</label>
             <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
+          </div>
+          <div id="global-inputs" style="display:none;margin-top:.75rem">
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:.85rem;font-size:.88rem;color:#166534">🌐 Questions spanning the entire planet — geography, history, culture, food, sports, world leaders, languages, flags, landmarks, and more. No passport required!</div>
           </div>
         </div>
         <div class="wiz-err" id="err-box" role="alert" aria-live="assertive"></div>
@@ -1374,8 +1382,22 @@ const WCATS=[
   {id:'w_flags',label:'Flags & Capitals',icon:'🚩'},
   {id:'w_religion',label:'World Religions',icon:'🙏'},
 ];
+const GCATS=[
+  {id:'g_geography',label:'World Geography',icon:'🗺️'},
+  {id:'g_history',label:'World History',icon:'📜'},
+  {id:'g_religions',label:'World Religions',icon:'🙏'},
+  {id:'g_culture',label:'International Culture',icon:'🌐'},
+  {id:'g_food',label:'Global Food',icon:'🍜'},
+  {id:'g_sports',label:'World Sports',icon:'⚽'},
+  {id:'g_cinema',label:'International Movies & TV',icon:'🎬'},
+  {id:'g_leaders',label:'World Leaders & Politics',icon:'👑'},
+  {id:'g_languages',label:'Global Languages',icon:'💬'},
+  {id:'g_weird',label:'Weird World Facts',icon:'🃏'},
+  {id:'g_flags',label:'World Flags',icon:'🚩'},
+  {id:'g_wonders',label:'World Wonders & Landmarks',icon:'🏛️'},
+];
 const COL_CAT={id:'college',label:'College Life',icon:'🎓'};
-const ALL=[...NCATS,...LCATS,...WCATS,COL_CAT];
+const ALL=[...NCATS,...LCATS,...WCATS,...GCATS,COL_CAT];
 const SCOLS=['sc0','sc1','sc2','sc3'];
 const PTS=[200,400,600];
 const TMAX=60;
@@ -1484,7 +1506,7 @@ function submitContact(){const name=document.getElementById('m-name').value.trim
 function openSubmit(){document.getElementById('submit-modal').className='modal-overlay show';}
 function closeSubmit(){document.getElementById('submit-modal').className='modal-overlay';}
 
-const TAGLINES={local:'Think you know your city? Prove it.',national:'Think you know America? Prove it.',world:'Think you know the world? Prove it.'};
+const TAGLINES={local:'Think you know your city? Prove it.',national:'Think you know America? Prove it.',world:'Think you know the world? Prove it.',global:'How well do you know planet Earth?'};
 
 // ── GAME MODE ──
 // ── WIZARD ──
@@ -1500,7 +1522,7 @@ function wizGoTo(step){
   else if(step==='3-solo'){document.getElementById('wiz-step-3-solo').style.display='flex';if(tvRow)tvRow.style.display='none';buildSoloCats();}
   else if(step==='3-teams'){document.getElementById('wiz-step-3-teams').style.display='flex';if(tvRow)tvRow.style.display='none';wizRenderTeams();}
   // Update mode label on steps 2+
-  const modeLabel={'local':'📍 '+( G.city||'Local'),'national':'🇺🇸 National','world':'🌍 World'}[G.gameMode]||'';
+  const modeLabel={'local':'📍 '+(G.city||'Local'),'national':'🇺🇸 National','world':'🌍 World','global':'🌐 The Whole World'}[G.gameMode]||'';
   ['wiz-top-mode-lbl','wiz-top-mode-lbl-3r','wiz-top-mode-lbl-3s','wiz-top-mode-lbl-3t'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=modeLabel;});
 }
 
@@ -1511,6 +1533,7 @@ function wizSetMode(m){
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
   document.getElementById('world-inputs').style.display=m==='world'?'block':'none';
+  document.getElementById('global-inputs').style.display=m==='global'?'block':'none';
   document.getElementById('home-tagline').textContent=TAGLINES[m];
   refreshCats();
 }
@@ -1524,7 +1547,11 @@ function wizStep1Next(){
     const country=document.getElementById('country-select').value;
     if(!country){wizShowErr('Please select a country!');return;}
     G.country=country;G.city=document.getElementById('world-city').value.trim();
-  } else {G.city='the United States';}
+  } else if(G.gameMode==='global'){
+    G.city='the whole world';G.country='';
+  } else {
+    G.city='the United States';
+  }
   wizGoTo(2);
 }
 
@@ -1666,6 +1693,7 @@ function onCollege(){const v=document.getElementById('college-input').value.trim
 
 function getCats(){
   if(G.gameMode==='national')return [...NCATS];
+  if(G.gameMode==='global')return [...GCATS];
   if(G.gameMode==='world')return [...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
   const base=[...NCATS,...LCATS];if(colOn)base.push(COL_CAT);return base;
 }
@@ -1815,7 +1843,7 @@ function startGame(){
     return {catId,label:cat?.label||catId,icon:cat?.icon||'❓',cells:{'200-0':false,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}};
   });
 
-  const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
+  const loc=G.gameMode==='national'?'the United States':G.gameMode==='global'?'the whole world':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
@@ -1934,6 +1962,7 @@ function buildQuips(){
   let pool=[...universal];
   if(mode==='local')pool=[...pool,...local];
   else if(mode==='national')pool=[...pool,...national];
+  else if(mode==='global'){pool=[...pool,...worldGeneric];}
   else if(mode==='world'){
     const match=worldByCountry[country]||[];
     pool=[...pool,...match,...worldGeneric];
@@ -1963,7 +1992,7 @@ function addSeenIds(ids){try{const s=getSeenIds();ids.forEach(id=>s.add(id));con
 async function fetchPool(catId){
   const cat=ALL.find(c=>c.id===catId);
   const catLabel=cat?.label||catId;
-  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city;
+  const loc=G.gameMode==='national'?'national':G.gameMode==='global'?'global':G.gameMode==='world'?(G.country||'world'):G.city;
   try{
     const r=await fetch('/api/pool?location='+encodeURIComponent(loc)+'&game_mode='+encodeURIComponent(G.gameMode)+'&category='+encodeURIComponent(catLabel));
     if(!r.ok)return[];
@@ -1980,7 +2009,7 @@ async function fetchPool(catId){
 }
 
 async function savePool(qs,catId){
-  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city;
+  const loc=G.gameMode==='national'?'national':G.gameMode==='global'?'global':G.gameMode==='world'?(G.country||'world'):G.city;
   const rows=qs.map(q=>({...q,location:loc,game_mode:G.gameMode}));
   try{await fetch('/api/pool',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({questions:rows})});}catch(e){}
 }
@@ -2020,6 +2049,7 @@ async function genQsForCategory(catId){
   const catLabel=cat?.label||catId;
   let locCtx='';
   if(G.gameMode==='national')locCtx='NATIONAL MODE: Questions about American culture, history, food, music, sports, landmarks.';
+  else if(G.gameMode==='global')locCtx='GLOBAL MODE: Questions spanning the entire world — world geography, world history, international culture, global food, world sports, world leaders, languages, flags, landmarks, and surprising world facts.';
   else if(G.gameMode==='world')locCtx='WORLD MODE: Questions about '+(G.city?G.city+', ':'')+G.country+'. Focus on local culture, customs, language, landmarks, history, and cuisine.';
   else locCtx='LOCAL MODE: Questions specifically about '+G.city+'.';
   const asked=Object.keys(getAsked()).slice(0,20).join('; ');
@@ -2065,7 +2095,7 @@ async function genQsForCategory(catId){
 }
 
 async function saveQsToDb(qs){
-  const loc=G.gameMode==='national'?'national':G.gameMode==='world'?(G.city||G.country):G.city;
+  const loc=G.gameMode==='national'?'national':G.gameMode==='global'?'global':G.gameMode==='world'?(G.city||G.country):G.city;
   const rows=qs.map(q=>({location:loc,game_mode:G.gameMode,category:q.category,difficulty:q.difficulty,points:q.points,type:q.type,question:q.question,options:q.options?JSON.stringify(q.options):null,answer:q.answer,explanation:q.explanation||'',surprising:!!q.surprising,pending:false}));
   await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/questions',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(rows)});
 }
@@ -2563,7 +2593,7 @@ function showResults(){
     mpPatch({phase:'results',scores:G.scores,teams:G.teams});
     mpStopPolling();
   }
-  const loc=G.gameMode==='national'?'National Mode':G.gameMode==='world'?(G.city||G.country):G.city;
+  const loc=G.gameMode==='national'?'National Mode':G.gameMode==='global'?'Global Mode':G.gameMode==='world'?(G.city||G.country):G.city;
   document.getElementById('res-loc').textContent='Final scores — '+loc;
   const sorted=[...G.teams.map((t,i)=>({name:t.name,score:G.scores[i]}))].sort((a,b)=>b.score-a.score);
   const max=sorted[0].score;
@@ -2670,7 +2700,7 @@ async function mpJoinRoom(){
 async function mpCreateRoom(playType,hostName){
   try{
     const res=await fetch('/api/room',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({host_name:hostName,game_mode:G.gameMode,location:G.gameMode==='national'?'national':G.gameMode==='world'?(G.country||'world'):G.city})});
+      body:JSON.stringify({host_name:hostName,game_mode:G.gameMode,location:G.gameMode==='national'?'national':G.gameMode==='global'?'global':G.gameMode==='world'?(G.country||'world'):G.city})});
     const room=await res.json();
     if(room.error)throw new Error(room.error);
     const pid=room.player_id;
@@ -2805,6 +2835,7 @@ function mpBuildCatGrid(st){
   const mode=(st&&st.game_mode)||G.gameMode||'local';
   let cats;
   if(mode==='national') cats=[...NCATS];
+  else if(mode==='global') cats=[...GCATS];
   else if(mode==='world') cats=[...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
   else cats=[...NCATS,...LCATS];
   const mkBtn=c=>`<button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')"><span class="mc-icon">${c.icon}</span><span>${c.label}</span></button>`;
@@ -2993,7 +3024,7 @@ async function mpLaunchGame(st){
   G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
   G.teams=gTeams;G.scores=[...scores];G.mi=[...mi];G.board=[...board];G.ct=0;
   G.bank={};G.usedQs={};G.usedImgs={};G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
-  const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
+  const loc=G.gameMode==='national'?'the United States':G.gameMode==='global'?'the whole world':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
@@ -3057,7 +3088,7 @@ function mpApplyGameConfig(st){
   G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
   G.style='room';
   mpBuildGFromState(st);
-  const loc=G.gameMode==='national'?'the United States':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
+  const loc=G.gameMode==='national'?'the United States':G.gameMode==='global'?'the whole world':G.gameMode==='world'?(G.city?G.city+', '+G.country:G.country):G.city;
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
