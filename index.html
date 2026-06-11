@@ -2110,7 +2110,10 @@ async function savePool(qs,catId){
 
 // ── PRE-GENERATE ALL QUESTIONS ──
 async function preGenAll(){
-  const cats=[...new Set(G.teams.flatMap(t=>t.cats))];
+  // In multiplayer, categories come from the voted board; solo uses team.cats
+  const cats=MP.active&&G.board?.length
+    ?[...new Set(G.board.map(col=>col.catId))]
+    :[...new Set(G.teams.flatMap(t=>t.cats))];
   G.bank={200:[],400:[],600:[]};
   const seenIds=getSeenIds();
   let done=0;
