@@ -140,15 +140,18 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 .game-logo span{color:#e8b84b}
 .game-logo-img{height:32px;width:auto;display:block;flex-shrink:0}
 .scores-wrap{flex:1;display:flex !important;gap:.5rem;margin-bottom:0}
-.s-card{border-radius:20px;padding:.4rem .85rem;border:2px solid #333;background:#111;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;transition:all .3s;flex:1;min-width:0}
-.s-card.cur{border-color:#22c55e !important;background:#111 !important;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
-.s-card.mod-active{border-color:#e8b84b !important;background:#111 !important}
+.s-card{border-radius:12px;padding:.4rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;transition:all .3s;flex:1;min-width:0}
+.s-card.cur{border-color:#22c55e !important;background:#fff !important;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.s-card.mod-active{border-color:#e8b84b !important;background:#fff !important}
 .s-left{display:flex;flex-direction:column;gap:.05rem;min-width:0}
-.s-name{font-weight:700;font-size:1rem;color:#fff;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-player{font-size:.65rem;color:#9ca3af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-name{font-weight:700;font-size:1rem;color:#1a1a2e;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-player{font-size:.65rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .s-pts-wrap{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
-.s-pts-lbl{font-size:.48rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7280;line-height:1;margin-bottom:.05rem}
+.s-pts-lbl{font-size:.48rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;line-height:1;margin-bottom:.05rem}
 .s-pts{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1}
+#q-info-strip{display:none;flex-direction:column;gap:.15rem;padding:.3rem .75rem;background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-top:.25rem}
+#q-info-strip.show{display:flex}
+#q-info-strip-row{display:flex;align-items:center;gap:.6rem}
 .sc0{color:#e8b84b}.sc1{color:#4ecdc4}.sc2{color:#a78bfa}.sc3{color:#fb923c}
 .steal-bar{background:#111;border:3px solid #e8b84b;clip-path:polygon(2% 0%,98% 0%,100% 50%,98% 100%,2% 100%,0% 50%);padding:.4rem 2rem;margin:.2rem 1rem 0;font-weight:700;font-size:.9rem;text-align:center;color:#fff;border-radius:0}
 /* Bottom ad in game — desktop only, hidden during questions */
@@ -1158,6 +1161,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <button class="end-btn-small" onclick="confirmEndGame()">⏹ End Game</button>
           </div>
         </div>
+        <div id="q-info-strip"><div id="q-info-strip-row"><span id="qis-pts" class="card-qpts"></span><span id="qis-cat" class="card-qcat"></span><span class="card-qtimer" id="card-qtimer" style="margin-left:auto">1:00</span></div><div class="card-qtbar-wrap"><div id="card-qtbar" class="card-qtbar"></div></div></div>
         <div id="game-info-bar" style="display:none" aria-live="polite" aria-atomic="true">
           <div class="gib-row">
             <span class="gib-left" id="gib-turn"></span>
@@ -2246,6 +2250,7 @@ function getNextQ(pts,catId){
 function renderBoard(){
   G.answered=false;
   document.body.classList.remove('has-img','in-question');
+  const strip=document.getElementById('q-info-strip');if(strip)strip.classList.remove('show');
   const t=G.ct;
 
   // Scores
@@ -2338,21 +2343,17 @@ function renderQuestion(q,pts){
   if(gib)gib.style.display='none';
   const sw=document.getElementById('scores-wrap');
   if(sw)sw.style.display=''; // keep score card visible
-  const curCard=document.querySelector('.s-card.cur');
-  if(curCard){
-    curCard.querySelector('.card-qinfo')?.remove();
-    curCard.querySelector('.card-qtbar-wrap')?.remove();
-    const qi=document.createElement('div');
-    qi.className='card-qinfo';
-    qi.innerHTML='<span class="card-qpts '+pbClass+'">'+pts+' PTS</span>'
-      +'<span class="card-qcat">'+q.category+'</span>'
-      +'<span class="card-qtimer" id="card-qtimer">1:00</span>';
-    curCard.appendChild(qi);
-    const tb=document.createElement('div');
-    tb.className='card-qtbar-wrap';
-    tb.style.cssText='width:100%;margin-top:.2rem;height:4px;background:#e5e7eb;border-radius:3px;overflow:hidden';
-    tb.innerHTML='<div id="card-qtbar" class="card-qtbar"></div>';
-    curCard.appendChild(tb);
+  const strip=document.getElementById('q-info-strip');
+  if(strip){
+    const qisPts=document.getElementById('qis-pts');
+    const qisCat=document.getElementById('qis-cat');
+    const qisTimer=document.getElementById('card-qtimer');
+    const qisBar=document.getElementById('card-qtbar');
+    if(qisPts){qisPts.className='card-qpts '+pbClass;qisPts.textContent=pts+' PTS';}
+    if(qisCat)qisCat.textContent=q.category;
+    if(qisTimer){qisTimer.textContent='1:00';qisTimer.className='card-qtimer';}
+    if(qisBar){qisBar.style.width='100%';qisBar.style.background='#22c55e';}
+    strip.classList.add('show');
   }
 
   const isPhoto=q.type==='photo';
