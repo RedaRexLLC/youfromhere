@@ -996,10 +996,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <button class="add-team-btn" id="add-team-btn" onclick="addTeam()">+ Add team</button>
         </div>
 
-        <div class="lbl" style="margin-top:.5rem">Categories <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.85rem" id="cat-hint">(each team picks 3)</span></div>
-        <div id="solo-cats" style="display:none"></div>
-        <div id="solo-cats-note" style="display:none;font-size:.82rem;color:#e57320;margin-top:.25rem;font-weight:500">You must choose a minimum of 3 categories.</div>
-        <div id="teams-cats-note" style="font-size:.82rem;color:#6b7280;margin-top:.25rem">Each team selects their own 3 categories above ↑</div>
+        <div id="cats-block">
+          <div class="lbl" style="margin-top:.5rem">Categories <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.85rem" id="cat-hint">(each team picks 3)</span></div>
+          <div id="solo-cats" style="display:none"></div>
+          <div id="solo-cats-note" style="display:none;font-size:.82rem;color:#e57320;margin-top:.25rem;font-weight:500">You must choose a minimum of 3 categories.</div>
+          <div id="teams-cats-note" style="font-size:.82rem;color:#6b7280;margin-top:.25rem">Each team selects their own 3 categories above ↑</div>
+        </div>
 
         <button class="rules-btn" onclick="toggleRules()"><span>ℹ How to play</span><span class="chev" id="chev">▼</span></button>
         <div class="rules-body" id="rules-body">
@@ -1425,6 +1427,7 @@ function setStyle(s){
   document.getElementById('teams-section').style.display=(isSolo||isRoom)?'none':'block';
   document.getElementById('solo-cats').style.display=isSolo?'block':'none';
   document.getElementById('teams-cats-note').style.display=(isSolo||isRoom)?'none':'block';
+  const catsBlock=document.getElementById('cats-block');if(catsBlock)catsBlock.style.display=isRoom?'none':'block';
   document.getElementById('cat-hint').textContent=isSolo?'(choose up to 6)':'(each team picks 3)';
   const roomPanel=document.getElementById('room-setup-panel');
   if(roomPanel)roomPanel.style.display=isRoom?'block':'none';
