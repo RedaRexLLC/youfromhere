@@ -1481,6 +1481,13 @@ function sOk(){tone(523,.1);setTimeout(()=>tone(659,.1),100);setTimeout(()=>tone
 function sNo(){tone(200,.15,'sawtooth',.2);setTimeout(()=>tone(150,.2,'sawtooth',.15),150);}
 function sTick(){tone(880,.05,'square',.1);}
 function sOut(){tone(220,.3,'sawtooth',.2);setTimeout(()=>tone(180,.4,'sawtooth',.15),300);}
+function sSteal(){
+  // Rising 3-note sting — urgent but different from the timeout rumble
+  tone(440,.08,'square',.18);
+  setTimeout(()=>tone(554,.08,'square',.18),110);
+  setTimeout(()=>tone(659,.18,'square',.22),220);
+  setTimeout(()=>tone(880,.25,'sine',.15),350);
+}
 
 // ── UI HELPERS ──
 // ── DEVICE DETECTION ──
@@ -3545,6 +3552,7 @@ async function mpPatch(stateUpdate){
 
 // ── STEAL UI ──
 function showStealUI(isExcluded,st){
+  if(!isExcluded)sSteal();
   // Hide the old steal bar
   const sb=document.getElementById('steal-bar');if(sb)sb.style.display='none';
   // Disable all answer buttons first
