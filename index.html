@@ -1308,6 +1308,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div id="mp-voted-confirm" style="display:none;text-align:center;padding:.35rem;color:#166534;font-weight:700;font-size:.83rem;background:#f0fdf4;border-radius:8px;margin-top:.4rem">✓ Your votes are locked in!</div>
         </div>
 
+        <div id="mp-host-start-wrap" style="display:none;margin-bottom:.5rem">
+          <button class="nxt-btn" style="display:flex" onclick="mpForceStart()">▶ Start Game Now</button>
+          <div style="font-size:.68rem;color:#9ca3af;text-align:center;margin-top:.3rem">Only you (the host) can see this button</div>
+        </div>
         <button class="mp-secondary-btn" onclick="mpLeave()" style="margin-bottom:.75rem">Leave Room</button>
       </div><!-- /mp-lobby-wrap -->
     </div>
@@ -2908,6 +2912,14 @@ function mpShowLobby(code,state){
   mpBuildCatGrid(state);
   mpRenderLobby(state);
   mpStartCountdown(state.lobby_started_at);
+  // Show start button only for host
+  const hsw=document.getElementById('mp-host-start-wrap');
+  if(hsw)hsw.style.display=MP.isHost?'block':'none';
+}
+
+function mpForceStart(){
+  if(!MP.isHost||!MP.lastState)return;
+  mpLaunchGame(MP.lastState);
 }
 
 function mpRenderLobby(st){
