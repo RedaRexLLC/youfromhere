@@ -963,9 +963,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
         <!-- Room style: setup panel -->
         <div id="room-setup-panel" style="display:none">
-          <div class="lbl" style="margin-top:.6rem">Your Name</div>
-          <input id="mp-host-name" class="mp-host-name" type="text" placeholder="Enter your name" maxlength="24"/>
-          <div class="lbl" style="margin-top:.75rem">How are you playing?</div>
+          <div class="lbl" style="margin-top:.6rem">How are you playing?</div>
           <div class="mp-play-type">
             <div class="mp-type-card on" id="mpt-team" onclick="mpSetPlayType('team')">
               <span class="mt-icon">🏆</span>
@@ -1385,16 +1383,7 @@ function mpSetPlayType(t){
   mpPlayType=t;
   ['team','individual'].forEach(x=>{const el=document.getElementById('mpt-'+x);if(el){el.className='mp-type-card'+(t===x?' on':'');}});
   // In room mode: clicking the card IS the create-room trigger
-  if(G.style==='room'){
-    const nameInp=document.getElementById('mp-host-name');
-    const name=(nameInp?.value||'').trim();
-    if(!name){
-      nameInp?.focus();
-      if(nameInp){nameInp.style.outline='2px solid #e8b84b';setTimeout(()=>{nameInp.style.outline='';},1200);}
-      return;
-    }
-    startGame();
-  }
+  if(G.style==='room') startGame();
 }
 function setStyle(s){
   G.style=s;
@@ -1552,7 +1541,7 @@ function startGame(){
   show('s-loading');
 
   if(G.style==='room'){
-    const hostName=(document.getElementById('mp-host-name')?.value||'').trim()||'Host';
+    const hostName='Host';
     mpCreateRoom(mpPlayType,hostName);
     return;
   }
