@@ -2168,6 +2168,7 @@ async function preGenAll(){
   let done=0;
   startQuips();
   for(const catId of cats){
+    try{
     // 1. Try fetching from the pool first
     let poolQs=await fetchPool(catId);
     // Filter out questions this device has already seen
@@ -2175,15 +2176,15 @@ async function preGenAll(){
     const needsTopUp=fresh.length<MIN_POOL;
     // 2. Top up with Claude if pool is thin
     if(needsTopUp){
-      const newQs=await genQsForCategory(catId);
-      addRecentTopics(newQs);
-      savePool(newQs,catId); // save in background, don't await
-      // Merge: prefer fresh pool questions, fill with new ones
+      let newQs=[];
+      try{newQs=await genQsForCategory(catId);addRecentTopics(newQs);savePool(newQs,catId);}
+      catch(e){console.warn('genQs failed for',catId,e);} // skip bad cat, don't abort all
       const merged=[...fresh,...newQs];
       [200,400,600].forEach(pts=>{G.bank[pts].push(...merged.filter(q=>q.points===pts));});
     } else {
       [200,400,600].forEach(pts=>{G.bank[pts].push(...fresh.filter(q=>q.points===pts));});
     }
+    }catch(e){console.warn('preGenAll skipping cat',catId,e);}
     done++;
     document.getElementById('load-prog').style.width=Math.round(done/cats.length*100)+'%';
   }
@@ -3226,7 +3227,17 @@ async function mpLaunchGame(st){
     const boardState={...launchState,phase:'board'};
     mpPatch(boardState);
     show('s-game');renderBoard();mpShowRoomBadge();
-  }).catch(e=>{console.error(e);show('s-home');wizGoTo(1);showErr('Error: '+e.message);});
+  }).catch(e=>{
+    console.error(e);
+    MP.launching=false;
+    document.getElementById('load-txt').textContent='Something went wrong loading questions.';
+    document.getElementById('load-prog').style.width='0%';
+    const retryBtn=document.createElement('button');
+    retryBtn.className='nxt-btn';retryBtn.style.cssText='display:flex;margin-top:1rem;max-width:280px';
+    retryBtn.textContent='↺ Try Again';
+    retryBtn.onclick=()=>{retryBtn.remove();if(MP.lastState)mpLaunchGame(MP.lastState);};
+    document.getElementById('s-loading').appendChild(retryBtn);
+  });
 }
 
 // ── POLLING ──
