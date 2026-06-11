@@ -2608,13 +2608,12 @@ function showResultPhase(ok,pts,exp,surp){
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
-    +(exp&&!ok?'<div class="result-exp">'+exp+'</div>':'')
-    +'<div class="result-share"><div class="share-box" id="sbox"></div></div>'
+    +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
     +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next →</button>'
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
-  if(ok&&exp)showShare(exp);
+  if(exp)showShare(exp);
 }
 
 function updScores(){
