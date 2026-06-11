@@ -1313,7 +1313,10 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div class="lbl">Vote for Categories <span style="font-weight:400;color:#9ca3af;font-size:.75rem;text-transform:none;letter-spacing:0">(pick 6 — top voted become the board)</span></div>
           <div id="mp-cat-grid" class="mp-cat-grid"></div>
           <div class="mp-vote-count" id="mp-vote-count">0 / 6 selected</div>
-          <button class="mp-start-btn" id="mp-vote-btn" onclick="mpSubmitVotes()" style="display:none;margin-top:.4rem">✓ Lock In My Votes</button>
+          <label id="mp-lock-row" onclick="mpToggleLockVotes(event)" style="display:flex;align-items:center;gap:.6rem;margin-top:.7rem;padding:.55rem .7rem;border-radius:10px;border:2px solid #d1d5db;cursor:pointer;user-select:none;transition:border-color .2s,background .2s">
+            <span id="mp-lock-check" style="width:22px;height:22px;min-width:22px;border-radius:6px;border:2px solid #d1d5db;background:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s"></span>
+            <span id="mp-lock-label" style="font-size:.85rem;font-weight:600;color:#6b7280">Select 6 categories to lock in your votes</span>
+          </label>
           <div id="mp-voted-confirm" style="display:none;text-align:center;padding:.35rem;color:#166534;font-weight:700;font-size:.83rem;background:#f0fdf4;border-radius:8px;margin-top:.4rem">✓ Your votes are locked in!</div>
         </div>
 
@@ -2994,15 +2997,14 @@ function mpRenderLobby(st){
     }).join('');
   }
 
-  // Voting card: show/hide vote button based on whether voted
+  // Voting card: update lock-in checkbox state
   const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
   const votedAlready=myPlayer?.voted||MP.votesSubmitted;
-  const voteBtn=document.getElementById('mp-vote-btn');
   const votedConfirm=document.getElementById('mp-voted-confirm');
-  if(voteBtn)voteBtn.style.display=(!votedAlready&&MP.myVotes.length===6)?'block':'none';
   if(votedConfirm)votedConfirm.style.display=votedAlready?'block':'none';
   const votingCard=document.getElementById('mp-voting-card');
   if(votingCard)votingCard.style.opacity=votedAlready?'.6':'1';
+  mpUpdateLockRow(votedAlready);
 
   // Status
   const players=st.players||[];
@@ -3050,13 +3052,40 @@ function mpToggleCat(catId){
     else b.disabled=false;
   });
   mpUpdateVoteCount();
-  const voteBtn=document.getElementById('mp-vote-btn');
-  if(voteBtn)voteBtn.style.display=MP.myVotes.length===6?'block':'none';
+  mpUpdateLockRow(MP.votesSubmitted);
 }
 
 function mpUpdateVoteCount(){
   const vc=document.getElementById('mp-vote-count');
   if(vc){vc.textContent=MP.myVotes.length+' / 6 selected';vc.className='mp-vote-count'+(MP.myVotes.length===6?' done':'');}
+  mpUpdateLockRow(MP.votesSubmitted);
+}
+
+function mpUpdateLockRow(locked){
+  const row=document.getElementById('mp-lock-row');
+  const check=document.getElementById('mp-lock-check');
+  const lbl=document.getElementById('mp-lock-label');
+  if(!row)return;
+  const ready=MP.myVotes.length===6;
+  if(locked){
+    row.style.borderColor='#22c55e';row.style.background='#f0fdf4';row.style.cursor='default';row.style.pointerEvents='none';
+    if(check){check.style.background='#22c55e';check.style.borderColor='#22c55e';check.textContent='✓';check.style.color='#fff';}
+    if(lbl){lbl.textContent='Votes locked in!';lbl.style.color='#166534';}
+  } else if(ready){
+    row.style.borderColor='#e8b84b';row.style.background='#fffbeb';row.style.cursor='pointer';row.style.pointerEvents='';
+    if(check){check.style.background='#fff';check.style.borderColor='#e8b84b';check.textContent='';}
+    if(lbl){lbl.textContent='Lock in my votes';lbl.style.color='#1a1a2e';}
+  } else {
+    row.style.borderColor='#d1d5db';row.style.background='#fff';row.style.cursor='not-allowed';row.style.pointerEvents='none';
+    if(check){check.style.background='#f9fafb';check.style.borderColor='#d1d5db';check.textContent='';}
+    if(lbl){lbl.textContent='Select 6 categories to lock in your votes';lbl.style.color='#9ca3af';}
+  }
+}
+
+function mpToggleLockVotes(e){
+  e.preventDefault();
+  if(MP.votesSubmitted||MP.myVotes.length!==6)return;
+  mpSubmitVotes();
 }
 
 async function mpSubmitVotes(){
