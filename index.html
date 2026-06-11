@@ -1115,6 +1115,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
         <div class="wiz-card" style="flex:1;overflow-y:auto" id="wiz-teams-card"></div>
         <div class="wiz-teams-actions">
+          <button class="wiz-add-team-btn" id="wiz-add-another-btn" onclick="wizAddAnotherTeam()" style="display:none">+ Add Another Team</button>
           <button class="wiz-next-btn" id="wiz-teams-primary-btn" style="margin:0" onclick="wizTeamsPrimary()">+ Add Next Team</button>
         </div>
       </div>
@@ -1626,10 +1627,26 @@ function wizRenderTeams(){
   const primaryBtn=document.getElementById('wiz-teams-primary-btn');
   if(primaryBtn){
     const canStart=wizTeams.length>=2&&i===wizTeams.length-1;
-    const isLast=i===wizTeams.length-1;
     if(canStart){primaryBtn.textContent='▶ Start Game';primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';}
     else{primaryBtn.textContent='+ Add Next Team';primaryBtn.style.background='#e8b84b';primaryBtn.style.color='#1a1a2e';}
   }
+  const addAnotherBtn=document.getElementById('wiz-add-another-btn');
+  if(addAnotherBtn){
+    const showAdd=wizTeams.length>=2&&i===wizTeams.length-1&&wizTeams.length<4;
+    addAnotherBtn.style.display=showAdd?'block':'none';
+  }
+}
+
+function wizAddAnotherTeam(){
+  const i=wizCurrentTeamIdx;
+  if(wizTeams[i].cats.length<3){showErr('Team '+String.fromCharCode(65+i)+' needs 3 categories!');return;}
+  const next=wizTeams.length;
+  if(next>=4)return;
+  const ltr=String.fromCharCode(65+next);
+  wizTeams.push({name:'Team '+ltr,players:['',''],cats:[]});
+  wizCurrentTeamIdx=next;
+  wizRenderTeams();
+  document.getElementById('wiz-teams-card').scrollTop=0;
 }
 
 function wizTeamsPrimary(){
