@@ -2797,7 +2797,16 @@ function nextTurn(){
     }
   }
   try{sessionStorage.setItem('yfh_state',JSON.stringify({screen:'s-game',G:G}));}catch(e){}
-  renderBoard();
+  // In MP mode, only the active player renders the board locally right away.
+  // Non-active players wait for the next poll so renderBoard uses up-to-date turn state.
+  const prevPlayerId2=MP.active?(MP.lastState?.turn_order?.[MP.lastState?.turn_index%(MP.lastState?.turn_order?.length||1)]):null;
+  if(!MP.active||prevPlayerId2===MP.playerId||!prevPlayerId2){
+    renderBoard();
+  }
+  // Non-active players: reset lastCt/lastTurnIndex so the next poll forces a fresh render
+  if(MP.active&&prevPlayerId2!==MP.playerId){
+    MP.lastCt=-1;MP.lastTurnIndex=-1;
+  }
 }
 
 function confirmEndGame(){if(confirm('End the game now?')){stopTmr();sessionStorage.removeItem('yfh_state');showResults();}}
@@ -3462,10 +3471,12 @@ function mpMirrorState(st){
   const isMyTurn=!activeId||activeId===MP.playerId;
 
   if(phase==='board'){
-    stopTmr(); // always kill any lingering question/steal timer when returning to board
+    stopTmr();
+    clearInterval(_autoNextTimer);_autoNextTimer=null; // cancel any pending auto-advance
     const ctChanged=st.ct!==MP.lastCt;
-    if(MP.lastPhase!=='board'||ctChanged){
-      MP.lastPhase='board';MP.lastCt=st.ct;
+    const turnChanged=st.turn_index!==MP.lastTurnIndex;
+    if(MP.lastPhase!=='board'||ctChanged||turnChanged){
+      MP.lastPhase='board';MP.lastCt=st.ct;MP.lastTurnIndex=st.turn_index;
       document.getElementById('board-section').style.display='block';
       document.getElementById('q-area').innerHTML='';
       document.body.classList.remove('has-img');
@@ -3491,6 +3502,7 @@ function mpMirrorState(st){
   if(phase==='question'&&st.current_question&&cellKey!==MP.lastCellKey){
     MP.lastPhase='question';MP.lastCellKey=cellKey;
     G.curCell=st.current_cell;G.curQ=st.current_question;G.answered=false;
+    clearInterval(_autoNextTimer);_autoNextTimer=null; // cancel any pending auto-advance from previous turn
     document.getElementById('board-section').style.display='none';
     // Always render from server state so all devices show the same question
     renderQuestion(st.current_question,st.current_cell.pts);
