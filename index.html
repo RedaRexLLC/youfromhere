@@ -3428,6 +3428,18 @@ function mpMirrorState(st){
       document.body.classList.remove('has-img');
       renderBoard();
     }
+    // Show board-level turn banner
+    const tb=document.getElementById('turn-banner');
+    if(tb){
+      const ap=st.players?.find(p=>p.id===activeId);
+      if(isMyTurn){
+        tb.textContent='🎯 Your turn — pick a category!';
+        tb.style.background='#22c55e';tb.style.display='block';
+      } else {
+        tb.textContent=`⏳ Waiting for ${ap?.name||'player'} to pick…`;
+        tb.style.background='#6b7280';tb.style.display='block';
+      }
+    }
     return;
   }
 
