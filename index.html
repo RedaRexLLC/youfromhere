@@ -980,8 +980,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           </div>
           <div style="text-align:center;margin-top:.5rem;font-size:.78rem;color:#9ca3af">Team names &amp; category voting happen in the lobby.</div>
         </div>
-        <div id="join-room-hint" style="display:none;text-align:center;margin-top:.75rem">
-          <button onclick="openJoinModal()" style="background:#fff;border:2px solid #e8b84b;color:#1a1a2e;font-weight:700;cursor:pointer;font-size:.95rem;font-family:'DM Sans',sans-serif;padding:.65rem 1.4rem;border-radius:12px;width:100%;display:flex;align-items:center;justify-content:center;gap:.45rem">🔑 Already have a room code? <span style="color:#e8b84b">Join a room →</span></button>
+        <div id="join-room-hint" style="display:none;margin-top:.75rem">
+          <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#9ca3af;margin-bottom:.3rem">Already have a room code?</div>
+          <div style="display:flex;gap:.5rem">
+            <input id="inline-join-code" type="text" maxlength="4" placeholder="Enter code" autocomplete="off"
+              style="flex:1;padding:.7rem 1rem;border:2px solid #e8b84b;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.2em;text-align:center;outline:none;color:#1a1a2e"
+              oninput="this.value=this.value.toUpperCase()"
+              onkeydown="if(event.key==='Enter')inlineJoinRoom()"/>
+            <button onclick="inlineJoinRoom()" style="padding:.7rem 1.1rem;background:#e8b84b;color:#1a1a2e;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.95rem;cursor:pointer;white-space:nowrap">Join →</button>
+          </div>
+          <div id="inline-join-err" style="font-size:.78rem;color:#dc2626;margin-top:.3rem;display:none"></div>
         </div>
 
         <div id="teams-section">
@@ -2333,6 +2341,29 @@ const MP={
 // ── JOIN MODAL ──
 function openJoinModal(){document.getElementById('join-modal').style.display='flex';setTimeout(()=>document.getElementById('jm-code')?.focus(),100);}
 function closeJoinModal(){document.getElementById('join-modal').style.display='none';const e=document.getElementById('jm-err');if(e)e.className='err-box';}
+
+async function inlineJoinRoom(){
+  const code=(document.getElementById('inline-join-code')?.value||'').trim().toUpperCase();
+  const errEl=document.getElementById('inline-join-err');
+  errEl.style.display='none';
+  if(!code||code.length!==4){errEl.textContent='Enter the 4-letter room code';errEl.style.display='block';return;}
+  try{
+    const res=await fetch('/api/room?code='+code);
+    if(!res.ok){errEl.textContent='Room not found!';errEl.style.display='block';return;}
+    const room=await res.json();const st=room.state;
+    if(st.phase!=='lobby'){errEl.textContent='This game has already started.';errEl.style.display='block';return;}
+    const pid=crypto.randomUUID();
+    const players=(st.players||[]).filter(p=>p.id!==pid);
+    players.push({id:pid,name:'Player',is_host:false,connected:true,team_id:null,votes:[],voted:false,score:0});
+    const newSt={...st,players};
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:newSt})});
+    MP.active=true;MP.code=code;MP.playerId=pid;MP.playerName='Player';MP.isHost=false;
+    MP.playType=st.play_type||'team';
+    mpShowLobby(code,newSt);
+    mpStartPolling();
+    G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
+  }catch(e){errEl.textContent='Error joining. Try again.';errEl.style.display='block';}
+}
 
 async function mpJoinRoom(){
   const code=(document.getElementById('jm-code')?.value||'').trim().toUpperCase();
