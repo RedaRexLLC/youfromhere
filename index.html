@@ -658,10 +658,9 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .fb{font-size:.88rem;padding:.7rem .9rem}
   #s-game .nxt-btn{padding:.75rem}
   /* Side-by-side image layout */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:42% 1fr;column-gap:1rem}
-  body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:200px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:200px;object-fit:cover}
+  body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1rem;align-items:flex-start}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 42%;max-height:380px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
+  body.in-game.has-img #s-game .q-card .q-img{height:380px !important;max-height:380px;object-fit:cover}
 }
 
 /* ── DESKTOP (1024px–1399px) ── */
@@ -682,11 +681,12 @@ body.in-game #q-area:not(:empty){flex:1}
   #s-game .fb{font-size:.93rem !important}
   #s-game .nxt-btn{padding:.85rem !important;font-size:1rem !important}
   body.in-game #game-bottom-ad{display:none}
-  /* Side-by-side image layout — saves ~200px vertical space */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:45% 1fr;column-gap:1.25rem}
-  body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:240px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:240px;object-fit:cover}
+  body.in-game .ad-banner{display:none !important}
+  /* Side-by-side image layout */
+  body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1.25rem;align-items:flex-start}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 44%;max-height:420px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
+  body.in-game.has-img #s-game .q-card .q-img{height:420px !important;max-height:420px;object-fit:cover}
+  body.in-game.has-img #s-game .q-card .q-img-loading{flex:0 0 44%;height:420px}
 }
 
 /* ── LARGE DESKTOP / TV (1400px+) ── */
@@ -716,11 +716,11 @@ body.in-game #q-area:not(:empty){flex:1}
   body:not(.in-game) .logo-txt{font-size:3.5rem}
   body:not(.in-game) .card{padding:1.75rem}
   body.in-game #game-bottom-ad{display:none}
+  body.in-game .ad-banner{display:none !important}
   /* Side-by-side image layout for TV */
-  body.in-game.has-img #s-game .q-card{display:grid;grid-template-columns:48% 1fr;column-gap:1.5rem}
-  body.in-game.has-img #s-game .q-card > *{grid-column:2}
-  body.in-game.has-img #s-game .q-card .q-img-wrap{grid-column:1;grid-row:1/-1;margin-bottom:0;align-self:stretch;min-height:280px}
-  body.in-game.has-img #s-game .q-card .q-img{height:100% !important;min-height:280px;object-fit:cover}
+  body.in-game.has-img #s-game .q-card{display:flex !important;flex-direction:row;gap:1.5rem;align-items:flex-start}
+  body.in-game.has-img #s-game .q-card .q-img-wrap{flex:0 0 46%;max-height:480px;overflow:hidden;border-radius:12px;margin-bottom:0;align-self:stretch}
+  body.in-game.has-img #s-game .q-card .q-img{height:480px !important;max-height:480px;object-fit:cover}
 }
 
 /* ══════════════════════════════════════════════
