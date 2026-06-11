@@ -3077,7 +3077,8 @@ function mpCheckAutoStart(st){
 
 // ── LAUNCH GAME (host only) ──
 async function mpLaunchGame(st){
-  if(!MP.isHost||!MP.active)return;
+  if(!MP.isHost||!MP.active||MP.launching)return;
+  MP.launching=true;
   clearInterval(mpCountdownInterval);
   // Tally votes
   const catVotes={};
@@ -3118,9 +3119,7 @@ async function mpLaunchGame(st){
   const launchState={...st,phase:'loading',board_categories:boardCatIds,board,turn_order:turnOrder,turn_index:0,
     teams:gTeams,scores,mi,ct:0,team_scores:teamScores,player_scores:playerScores,
     current_question:null,current_cell:null,question_started_at:null,answered:false};
-  await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
-
-  // Host generates questions then starts
+  // Show loading screen immediately so quips appear right away
   G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
   G.teams=gTeams;G.scores=[...scores];G.mi=[...mi];G.board=[...board];G.ct=0;
   G.bank={};G.usedQs={};G.usedImgs={};G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
@@ -3128,6 +3127,8 @@ async function mpLaunchGame(st){
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
+
+  await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
   preGenAll().then(()=>{
     MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=0;
     const boardState={...launchState,phase:'board'};
