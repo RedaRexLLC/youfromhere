@@ -3230,7 +3230,8 @@ async function mpLaunchGame(st){
   const launchState={...st,phase:'loading',board_categories:boardCatIds,board,turn_order:turnOrder,turn_index:0,
     teams:gTeams,scores,mi,ct:0,team_scores:teamScores,player_scores:playerScores,
     current_question:null,current_cell:null,question_started_at:null,answered:false};
-  // Show loading screen immediately so quips appear right away
+
+  // Show loading screen immediately
   G.gameMode=st.game_mode||'local';G.city=st.city||'';G.country=st.country||'';G.college=st.college||'';
   G.teams=gTeams;G.scores=[...scores];G.mi=[...mi];G.board=[...board];G.ct=0;
   G.bank={};G.usedQs={};G.usedImgs={};G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
@@ -3239,23 +3240,29 @@ async function mpLaunchGame(st){
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
 
-  await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
+  const showRetry=()=>{
+    MP.launching=false;
+    document.getElementById('load-txt').textContent='Something went wrong. Tap to try again.';
+    document.getElementById('load-prog').style.width='0%';
+    const existing=document.getElementById('launch-retry-btn');if(existing)existing.remove();
+    const retryBtn=document.createElement('button');
+    retryBtn.id='launch-retry-btn';retryBtn.className='nxt-btn';
+    retryBtn.style.cssText='display:flex;margin-top:1rem;max-width:280px';
+    retryBtn.textContent='↺ Try Again';
+    retryBtn.onclick=()=>{retryBtn.remove();if(MP.lastState)mpLaunchGame(MP.lastState);};
+    document.getElementById('s-loading').appendChild(retryBtn);
+  };
+
+  try{
+    await fetch('/api/room',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:MP.code,state:launchState})});
+  }catch(e){console.error('PATCH failed',e);showRetry();return;}
+
   preGenAll().then(()=>{
     MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=0;
     const boardState={...launchState,phase:'board'};
     mpPatch(boardState);
     show('s-game');renderBoard();mpShowRoomBadge();
-  }).catch(e=>{
-    console.error(e);
-    MP.launching=false;
-    document.getElementById('load-txt').textContent='Something went wrong loading questions.';
-    document.getElementById('load-prog').style.width='0%';
-    const retryBtn=document.createElement('button');
-    retryBtn.className='nxt-btn';retryBtn.style.cssText='display:flex;margin-top:1rem;max-width:280px';
-    retryBtn.textContent='↺ Try Again';
-    retryBtn.onclick=()=>{retryBtn.remove();if(MP.lastState)mpLaunchGame(MP.lastState);};
-    document.getElementById('s-loading').appendChild(retryBtn);
-  });
+  }).catch(e=>{console.error(e);showRetry();});
 }
 
 // ── POLLING ──
