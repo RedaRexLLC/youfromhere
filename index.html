@@ -2659,7 +2659,7 @@ function confirmEndGame(){if(confirm('End the game now?')){stopTmr();showResults
 function showShare(fact){
   const b=document.getElementById('sbox');b.className='share-box show';
   const sf=fact.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-  b.innerHTML='<div class="share-card"><div class="share-fact">"'+fact+'"</div><div class="share-city">'+G.city+'</div><div id="qr-el" style="margin-top:.5rem;background:#fff;display:inline-block;padding:4px;border-radius:4px"></div><div class="share-brand">youfromhere.com</div></div><button class="share-btn" onclick="cpFact(\''+sf+'\')">📤 Share this fact</button>';
+  b.innerHTML='<div class="share-card"><div class="share-fact">"'+fact+'"</div><div class="share-city">'+G.city+'</div><div id="qr-el" style="margin-top:.5rem;background:#fff;display:inline-block;padding:4px;border-radius:4px"></div><div class="share-brand">youfromhere.com</div><button class="share-btn" onclick="cpFact(\''+sf+'\')">📤 Share this fact</button></div>';
   try{new QRCode(document.getElementById('qr-el'),{text:'https://youfromhere.vercel.app',width:64,height:64,colorDark:'#1a1a2e',colorLight:'#fff'});}catch(e){}
 }
 function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.vercel.app';navigator.clipboard.writeText(t).then(()=>alert('Copied!')).catch(()=>alert(t));}
