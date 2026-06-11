@@ -3386,6 +3386,88 @@ function toggleA11y(){
 
 // Init
 buildSoloCats();setGameMode('local');setStyle('multi');addTeam();addTeam();
+
+// ── DEV MODE — only active when ?dev=1 is in the URL ──────────────────────
+if(new URLSearchParams(location.search).has('dev')){
+  const DEV_CATS=[
+    {catId:'loc_landmarks',label:'Local Landmarks',icon:'📍',cells:{'200-0':false,'200-1':false,'400-0':true,'400-1':false,'600-0':false,'600-1':true}},
+    {catId:'loc_food',label:'Local Food',icon:'🍽️',cells:{'200-0':false,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}},
+    {catId:'know_rights',label:'Know Your Rights',icon:'⚖️',cells:{'200-0':false,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}},
+    {catId:'loc_history',label:'Local History',icon:'🏛️',cells:{'200-0':true,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}},
+    {catId:'loc_slang',label:'Local Slang',icon:'💬',cells:{'200-0':false,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}},
+    {catId:'spot_it',label:'Can You Spot It?',icon:'🔍',cells:{'200-0':false,'200-1':false,'400-0':false,'400-1':false,'600-0':false,'600-1':false}},
+  ];
+  const DEV_TEAMS_2=[
+    {name:'Team A',players:['Player 1','Player 2'],cats:DEV_CATS.map(c=>c.catId)},
+    {name:'Team B',players:['Player 1'],cats:DEV_CATS.map(c=>c.catId)},
+  ];
+  const DEV_TEAMS_SOLO=[{name:'You',players:['Solo'],cats:DEV_CATS.map(c=>c.catId)}];
+
+  function devSetup(teams,scores,style){
+    G.gameMode='local';G.city='Austin, TX';G.style=style;
+    G.teams=teams;G.scores=scores;G.mi=teams.map(()=>0);
+    G.ct=0;G.board=DEV_CATS.map(c=>({...c,cells:{...c.cells}}));
+    G.bank={};G.usedQs={};G.usedImgs={};G.answered=false;G.stealing=false;G.curCell=null;G.curQ=null;
+    stopTmr();show('s-game');
+  }
+
+  const DEV_MOCK_Q_MC={type:'mc',category:'Local Landmarks',question:'What is the name of the famous bat colony that lives under the Congress Avenue Bridge in Austin?',options:['Mexican Free-Tailed Bats','Vampire Bats','Fruit Bats','Big Brown Bats'],answer:'Mexican Free-Tailed Bats',explanation:'The Congress Avenue Bridge hosts the largest urban bat colony in North America — up to 1.5 million Mexican free-tailed bats.',surprising:true};
+  const DEV_MOCK_Q_TF={type:'tf',category:'Local History',question:'Austin was the original capital of the Republic of Texas before Texas joined the United States.',answer:'true',explanation:'Austin has been the capital since 1839, originally named Waterloo before being renamed after Stephen F. Austin.'};
+  const DEV_MOCK_Q_PHOTO={type:'photo',category:'You Know This Place?',question:'What iconic Austin music venue is shown in this photo?',options:['Stubb\'s Amphitheater','The Parish','Antone\'s','Emo\'s'],answer:'Stubb\'s Amphitheater',wikiTitle:'Stubb\'s Amphitheater',explanation:'Stubb\'s Amphitheater on Red River Street is one of Austin\'s most beloved outdoor music venues.'};
+
+  function devQuestion(q){
+    devSetup(DEV_TEAMS_2,[200,0],'multi');
+    G.curCell={catId:'loc_landmarks',key:'200-0',pts:200};
+    G.curQ=q;
+    document.getElementById('board-section').style.display='none';
+    document.body.classList.add('in-question');
+    const gib=document.getElementById('game-info-bar');if(gib)gib.style.display='none';
+    renderQuestion(q,200);
+  }
+
+  // Inject dev panel CSS + HTML
+  const style=document.createElement('style');
+  style.textContent=`
+    #dev-fab{position:fixed;bottom:1.25rem;right:1.25rem;z-index:99999;background:#1a1a2e;color:#e8b84b;border:2px solid #e8b84b;border-radius:50%;width:48px;height:48px;font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,0,0,.4);font-family:monospace;font-weight:900}
+    #dev-panel{position:fixed;bottom:5rem;right:1.25rem;z-index:99999;background:#1a1a2e;border:2px solid #e8b84b;border-radius:14px;padding:1rem;min-width:230px;display:none;flex-direction:column;gap:.4rem;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    #dev-panel.open{display:flex}
+    #dev-panel h3{color:#e8b84b;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem;font-family:'DM Sans',sans-serif}
+    .dev-btn{background:#fff;color:#1a1a2e;border:none;border-radius:8px;padding:.5rem .75rem;font-size:.82rem;font-weight:600;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:background .15s}
+    .dev-btn:hover{background:#e8b84b}
+    .dev-sep{height:1px;background:#2e2e4e;margin:.2rem 0}
+  `;
+  document.head.appendChild(style);
+
+  const fab=document.createElement('button');
+  fab.id='dev-fab';fab.title='Dev Preview';fab.textContent='⚙';
+  fab.onclick=()=>panel.classList.toggle('open');
+  document.body.appendChild(fab);
+
+  const panel=document.createElement('div');
+  panel.id='dev-panel';
+  panel.innerHTML=`
+    <h3>🛠 Dev Preview</h3>
+    <button class="dev-btn" onclick="devSetup(DEV_TEAMS_2,[0,0],'multi');renderBoard()">🎮 Board — 2 Teams</button>
+    <button class="dev-btn" onclick="devSetup(DEV_TEAMS_2,[400,150],'multi');renderBoard()">🎮 Board — Scores</button>
+    <button class="dev-btn" onclick="devSetup(DEV_TEAMS_SOLO,[0],'solo');renderBoard()">🎮 Board — Solo</button>
+    <div class="dev-sep"></div>
+    <button class="dev-btn" onclick="devQuestion(DEV_MOCK_Q_MC)">❓ Question — Multiple Choice</button>
+    <button class="dev-btn" onclick="devQuestion(DEV_MOCK_Q_TF)">❓ Question — True / False</button>
+    <button class="dev-btn" onclick="devQuestion(DEV_MOCK_Q_PHOTO)">🖼 Question — Photo</button>
+    <div class="dev-sep"></div>
+    <button class="dev-btn" onclick="devSetup(DEV_TEAMS_2,[400,150],'multi');showResults()">🏆 Results Screen</button>
+    <div class="dev-sep"></div>
+    <button class="dev-btn" onclick="show('s-home');document.body.classList.remove('in-game','in-question','has-img')">🏠 Setup / Home</button>
+  `;
+  document.body.appendChild(panel);
+
+  // Make dev helpers globally accessible
+  window.DEV_TEAMS_2=DEV_TEAMS_2;window.DEV_TEAMS_SOLO=DEV_TEAMS_SOLO;
+  window.DEV_MOCK_Q_MC=DEV_MOCK_Q_MC;window.DEV_MOCK_Q_TF=DEV_MOCK_Q_TF;window.DEV_MOCK_Q_PHOTO=DEV_MOCK_Q_PHOTO;
+  window.devSetup=devSetup;window.devQuestion=devQuestion;
+
+  console.log('%c🛠 Dev mode active — youfromhere.vercel.app?dev=1','color:#e8b84b;background:#1a1a2e;padding:4px 8px;border-radius:4px;font-weight:bold');
+}
 </script>
 </body>
 </html>
