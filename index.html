@@ -851,6 +851,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 .pc-badge{font-size:.6rem;padding:.1rem .3rem;border-radius:4px;font-weight:700}
 .pc-host{background:#e8b84b;color:#1a1a2e}
 .pc-voted{background:#22c55e;color:#fff}
+.country-opt{padding:.55rem .85rem;font-size:.9rem;cursor:pointer;border-bottom:1px solid #f3f4f6;color:#1a1a2e}.country-opt:last-child{border-bottom:none}.country-opt:hover{background:#f8f7f4}
 .mp-lobby-status{font-size:.8rem;color:#9ca3af;text-align:center;margin:.4rem 0;min-height:1.1em}
 /* Lobby full-screen responsive layout */
 .mp-lobby-wrap{width:100%;max-width:900px;margin:0 auto;padding:1rem 1.25rem;box-sizing:border-box}
@@ -1009,7 +1010,17 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             </div>
             <div id="country-city-inputs">
               <label class="wiz-lbl">Select a country</label>
-              <select class="country-sel" id="country-select"><option value="">Choose a country...</option></select>
+              <div style="position:relative">
+                <div class="input-wrap" style="margin-bottom:0">
+                  <input type="text" id="country-search" placeholder="Type or speak a country..." autocomplete="off"
+                    oninput="filterCountries(this.value)"
+                    onfocus="showCountryDrop()"
+                    onblur="setTimeout(hideCountryDrop,200)"/>
+                  <button class="mic-btn" onclick="startSpeech('country-search')" aria-label="Voice input for country">🎤</button>
+                </div>
+                <div id="country-drop" style="display:none;position:absolute;z-index:50;width:100%;max-height:220px;overflow-y:auto;background:#fff;border:1.5px solid #d1d5db;border-radius:10px;margin-top:3px;box-shadow:0 4px 16px rgba(0,0,0,.1)"></div>
+                <input type="hidden" id="country-select"/>
+              </div>
               <label class="wiz-lbl" for="world-city" style="margin-top:.5rem">City (optional)</label>
               <div class="input-wrap"><input type="text" id="world-city" placeholder="e.g. Paris, Tokyo, London"/><button class="mic-btn" onclick="startSpeech('world-city')" aria-label="Voice input for city">🎤</button></div>
             </div>
@@ -1418,9 +1429,22 @@ const LOAD_MSGS={
 let G={gameMode:'local',city:'',college:'',country:'',style:'multi',teams:[],bank:{},usedQs:{},usedImgs:{},answered:false,ct:0,stealing:false,scores:[],mi:[],board:[],curCell:null,curQ:null};
 let tc=0,tmr=null,tLeft=TMAX,stealTmr=null,actx=null,colOn=false;
 
-// Populate countries
-const csel=document.getElementById('country-select');
-COUNTRIES.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;csel.appendChild(o);});
+// Country search dropdown
+function filterCountries(q){
+  const drop=document.getElementById('country-drop');
+  if(!drop)return;
+  const matches=q.trim().length===0?COUNTRIES:COUNTRIES.filter(c=>c.toLowerCase().startsWith(q.toLowerCase())).concat(COUNTRIES.filter(c=>!c.toLowerCase().startsWith(q.toLowerCase())&&c.toLowerCase().includes(q.toLowerCase())));
+  drop.innerHTML=matches.slice(0,80).map(c=>`<div class="country-opt" onmousedown="pickCountry('${c.replace(/'/g,"\\'")}')">${c}</div>`).join('');
+  drop.style.display=matches.length?'block':'none';
+}
+function showCountryDrop(){filterCountries(document.getElementById('country-search')?.value||'');}
+function hideCountryDrop(){const d=document.getElementById('country-drop');if(d)d.style.display='none';}
+function pickCountry(c){
+  const inp=document.getElementById('country-search');
+  const hid=document.getElementById('country-select');
+  if(inp)inp.value=c;if(hid)hid.value=c;
+  hideCountryDrop();
+}
 
 // ── CACHE ──
 function getAsked(){try{const d=JSON.parse(localStorage.getItem('yfh_asked')||'{}');const now=Date.now();Object.keys(d).forEach(k=>{if(now-d[k]>604800000)delete d[k];});return d;}catch(e){return {};}}
@@ -1920,6 +1944,12 @@ function startSpeech(id){
       }
     }
     document.getElementById(id).value=val;
+    if(id==='country-search'){
+      // Try to match spoken country to COUNTRIES list
+      const match=COUNTRIES.find(c=>c.toLowerCase()===val.toLowerCase())||COUNTRIES.find(c=>c.toLowerCase().startsWith(val.toLowerCase()));
+      if(match)pickCountry(match);
+      else filterCountries(val);
+    }
     if(id==='college-input')onCollege();
     r.stop();
     if(btn)btn.classList.remove('listening');
@@ -2719,7 +2749,8 @@ function resetGame(){
   stopTmr();
   if(MP.active)mpLeave();
   soloCats=[];wizTeams=[];tc=0;colOn=false;G.college='';G.city='';G.country='';G.style='multi';G.gameMode='local';
-  ['city-input','college-input','world-city'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['city-input','college-input','world-city','country-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const csh=document.getElementById('country-select');if(csh)csh.value='';
   const cs=document.getElementById('country-select');if(cs)cs.value='';
   show('s-home');
   wizGoTo(1);
