@@ -1138,13 +1138,13 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
       <div class="qr-card" id="share-qr-card" style="width:100%;max-width:420px">
         <div class="qr-card-title">Share the game with friends</div>
         <div class="qr-box" id="share-qr-box"></div>
-        <div class="qr-card-sub">Scan to play · youfromhere.vercel.app</div>
+        <div class="qr-card-sub">Scan to play · youfromhere.com</div>
       </div>
       <!-- Room code (multiplayer host only) -->
       <div id="room-code-banner" style="width:100%;max-width:420px">
         <div class="rcb-label">Share this code with your players</div>
         <div class="rcb-code" id="rcb-code-val">----</div>
-        <div class="rcb-hint">Go to youfromhere.vercel.app → Join a room</div>
+        <div class="rcb-hint">Go to youfromhere.com → Join a room</div>
         <div class="mp-share-row" style="justify-content:center;margin-top:.6rem">
           <input type="text" id="rcb-share-input" readonly onclick="this.select()" style="max-width:120px"/>
           <button onclick="rcbCopy()">📋 Copy</button>
@@ -1234,7 +1234,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <div class="card" style="text-align:center;margin-bottom:.5rem;padding:.85rem">
               <div style="font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9ca3af;margin-bottom:.2rem">Room Code — Share with players</div>
               <div id="mp-wait-code" style="font-size:2.8rem;font-weight:900;color:#e8b84b;letter-spacing:.28em;line-height:1">----</div>
-              <div style="font-size:.68rem;color:#9ca3af;margin-top:.2rem">youfromhere.vercel.app → Join a room</div>
+              <div style="font-size:.68rem;color:#9ca3af;margin-top:.2rem">youfromhere.com → Join a room</div>
               <div class="mp-share-row" style="justify-content:center;margin-top:.5rem">
                 <input type="text" id="mp-share-input" readonly onclick="this.select()" style="max-width:120px"/>
                 <button onclick="mpCopyCode()">📋 Copy</button>
@@ -1244,7 +1244,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
             <div class="qr-card" id="join-qr-card" style="margin-bottom:.5rem">
               <div class="qr-card-title">Scan to join this room</div>
               <div class="qr-box" id="join-qr-box"></div>
-              <div class="qr-card-sub">Or type the code above at youfromhere.vercel.app</div>
+              <div class="qr-card-sub">Or type the code above at youfromhere.com</div>
             </div>
 
           </div>
@@ -1467,7 +1467,7 @@ function autoDetectCity(){
 }
 
 window.addEventListener('load',function(){
-  makeQR('share-qr-box','https://youfromhere.vercel.app');
+  makeQR('share-qr-box','https://youfromhere.com');
   const isDev=new URLSearchParams(location.search).has('dev');
   if(isDev){window.devSetup(window.DEV_TEAMS_2,[0,0],'multi');renderBoard();document.getElementById('dev-panel').classList.add('open');return;}
   try{const saved=sessionStorage.getItem('yfh_state');if(saved){const s=JSON.parse(saved);if(s.screen==='s-game'&&s.G){Object.assign(G,s.G);show('s-game');renderBoard();updScores();return;}}}catch(e){}
@@ -2678,9 +2678,9 @@ function showShare(fact){
   const b=document.getElementById('sbox');b.className='share-box show';
   const sf=fact.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
   b.innerHTML='<div class="share-card"><div class="share-fact">"'+fact+'"</div><div class="share-city">'+G.city+'</div><div id="qr-el" style="margin-top:.5rem;background:#fff;display:inline-block;padding:4px;border-radius:4px"></div><div class="share-brand">youfromhere.com</div><button class="share-btn" onclick="cpFact(\''+sf+'\')">📤 Share this fact</button></div>';
-  try{new QRCode(document.getElementById('qr-el'),{text:'https://youfromhere.vercel.app',width:64,height:64,colorDark:'#1a1a2e',colorLight:'#fff'});}catch(e){}
+  try{new QRCode(document.getElementById('qr-el'),{text:'https://youfromhere.com',width:64,height:64,colorDark:'#1a1a2e',colorLight:'#fff'});}catch(e){}
 }
-function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.vercel.app';navigator.clipboard.writeText(t).then(()=>alert('Copied!')).catch(()=>alert(t));}
+function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.com';navigator.clipboard.writeText(t).then(()=>alert('Copied!')).catch(()=>alert(t));}
 
 function showResults(){
   stopTmr();
@@ -2836,7 +2836,7 @@ function mpShowLobby(code,state){
   document.getElementById('mp-wait-code').textContent=code;
   const si=document.getElementById('mp-share-input');if(si)si.value=code;
   show('s-mp-wait');
-  makeQR('join-qr-box','https://youfromhere.vercel.app?join='+code);
+  makeQR('join-qr-box','https://youfromhere.com?join='+code);
   // Populate name card (only on first show — don't overwrite if user is typing)
   // Game mode label
   const modeLbl=document.getElementById('mp-mode-lbl');
@@ -3489,7 +3489,7 @@ if(new URLSearchParams(location.search).has('dev')){
   window.DEV_MOCK_Q_MC=DEV_MOCK_Q_MC;window.DEV_MOCK_Q_TF=DEV_MOCK_Q_TF;window.DEV_MOCK_Q_PHOTO=DEV_MOCK_Q_PHOTO;
   window.devSetup=devSetup;window.devQuestion=devQuestion;
 
-  console.log('%c🛠 Dev mode active — youfromhere.vercel.app?dev=1','color:#e8b84b;background:#1a1a2e;padding:4px 8px;border-radius:4px;font-weight:bold');
+  console.log('%c🛠 Dev mode active — youfromhere.com?dev=1','color:#e8b84b;background:#1a1a2e;padding:4px 8px;border-radius:4px;font-weight:bold');
 }
 </script>
 </body>
