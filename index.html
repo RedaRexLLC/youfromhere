@@ -1772,7 +1772,7 @@ function onCollege(){const v=document.getElementById('college-input').value.trim
 function getCats(){
   if(G.gameMode==='national')return [...NCATS];
   if(G.gameMode==='global')return [...GCATS];
-  if(G.gameMode==='world')return [...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
+  if(G.gameMode==='world')return [...WCATS,...NCATS.filter(c=>['wars'].includes(c.id))];
   const base=[...NCATS,...LCATS];if(colOn)base.push(COL_CAT);return base;
 }
 
@@ -2931,7 +2931,7 @@ function mpBuildCatGrid(st){
   let cats;
   if(mode==='national') cats=[...NCATS];
   else if(mode==='global') cats=[...GCATS];
-  else if(mode==='world') cats=[...WCATS,...NCATS.filter(c=>['geography','flags','wars','religion'].includes(c.id))];
+  else if(mode==='world') cats=[...WCATS,...NCATS.filter(c=>['wars'].includes(c.id))];
   else cats=[...NCATS,...LCATS];
   const mkBtn=c=>`<button class="mp-cat-btn${MP.myVotes.includes(c.id)?' picked':''}" id="mpcb-${c.id}" onclick="mpToggleCat('${c.id}')"><span class="mc-icon">${c.icon}</span><span>${c.label}</span></button>`;
   if(mode==='local'){
