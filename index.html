@@ -3526,10 +3526,17 @@ function mpMirrorState(st){
     const q=st.current_question||G.curQ;
     // Remove waiting banner
     document.querySelector('.mp-waiting-banner')?.remove();
+    document.getElementById('steal-card')?.remove();
     const sb=document.getElementById('steal-bar');if(sb)sb.style.display='none';
-    // Show Phase 2 result for all room players
-    const teamName=la.player_name||la.team_name||'Player';
-    const resultExp=(la.ok?teamName+' got it! ':''+teamName+' missed it. ')+(la.exp||'');
+    // Build result text — show who stole if applicable
+    const teamName=la.player_name||la.team_name||'';
+    let resultExp='';
+    if(la.steal){
+      resultExp=la.ok?`⚡ ${teamName} stole it! +${la.pts} pts`:'Nobody stole it.';
+      resultExp+=(la.exp?' — '+la.exp:'');
+    } else {
+      resultExp=(la.ok?teamName+' got it! ':teamName+' missed it. ')+(la.exp||'');
+    }
     showResultPhase(la.ok,la.pts||0,resultExp,false);
     return;
   }
@@ -3644,13 +3651,14 @@ async function mpEvaluateSteal(st){
   G.scores=newScores;
   const feedbackName=correctKey?(teamName||playerName):'';
   const lastAns={
-    ok:!!correctKey,pts:st.current_cell?.pts||0,exp:q.explanation||'',
+    ok:!!correctKey,pts:correctKey?(st.current_cell?.pts||0):0,exp:q.explanation||'',
     team_name:feedbackName,player_name:feedbackName,
     steal:true,stolen_by:correctKey||null
   };
   const revealState={...st,phase:'reveal',scores:newScores,team_scores:newTeamScores,player_scores:newPlayerScores,
     steal_active:false,steal_winner:correctKey||null,last_answer:lastAns,answered:true};
-  G.scores=newScores;sOk();
+  G.scores=newScores;
+  if(correctKey)sOk();else sNo();
   await mpPatch(revealState);
 }
 
