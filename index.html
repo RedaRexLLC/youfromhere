@@ -1777,8 +1777,7 @@ let mpPlayType='team';
 function mpSetPlayType(t){
   mpPlayType=t;
   ['team','individual'].forEach(x=>{const el=document.getElementById('mpt-'+x);if(el){el.className='mp-type-card'+(t===x?' on':'');}});
-  // In room mode: clicking the card IS the create-room trigger
-  if(G.style==='room') startGame();
+  // Selection only — room opens via the Next button
 }
 function setStyle(s){
   G.style=s;
