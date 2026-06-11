@@ -2755,6 +2755,19 @@ function nextTurn(){
         turn_index:newTurnIndex,stealing:false,curCell:null,curQ:null,
         current_question:null,current_cell:null,answered:false,last_answer:null,steal_active:false});
     }
+    // Update turn banner immediately (don't wait for next poll)
+    const isMyNextTurn=nextPlayerId===MP.playerId;
+    const tb=document.getElementById('turn-banner');
+    if(tb){
+      const ap=st.players?.find(p=>p.id===nextPlayerId);
+      if(isMyNextTurn){
+        tb.textContent='🎯 Your turn — pick a category!';
+        tb.style.background='#22c55e';tb.style.display='block';
+      } else {
+        tb.textContent=`⏳ Waiting for ${ap?.name||'player'} to pick…`;
+        tb.style.background='#6b7280';tb.style.display='block';
+      }
+    }
   }
   try{sessionStorage.setItem('yfh_state',JSON.stringify({screen:'s-game',G:G}));}catch(e){}
   renderBoard();
