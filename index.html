@@ -1463,8 +1463,9 @@ function autoDetectCity(){
 window.addEventListener('load',function(){
   makeQR('share-qr-box','https://youfromhere.vercel.app');
   const isDev=new URLSearchParams(location.search).has('dev');
-  if(!isDev){autoDetectCity();wizGoTo(1);}
   if(isDev){window.devSetup(window.DEV_TEAMS_2,[0,0],'multi');renderBoard();document.getElementById('dev-panel').classList.add('open');return;}
+  try{const saved=sessionStorage.getItem('yfh_state');if(saved){const s=JSON.parse(saved);if(s.screen==='s-game'&&s.G){Object.assign(G,s.G);show('s-game');renderBoard();updScores();return;}}}catch(e){}
+  autoDetectCity();wizGoTo(1);
   // Handle ?join=CODE URL parameter — auto-open join modal with code pre-filled
   const params=new URLSearchParams(window.location.search);
   const joinCode=params.get('join');
@@ -1480,7 +1481,7 @@ window.addEventListener('load',function(){
   }
 });
 
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');if(id!=='s-game')document.body.classList.remove('in-question');}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');document.body.classList.toggle('in-game',id==='s-game');if(id!=='s-game')document.body.classList.remove('in-question');try{if(id==='s-game')sessionStorage.setItem('yfh_state',JSON.stringify({screen:id,G:G}));else sessionStorage.removeItem('yfh_state');}catch(e){}}
 function showErr(msg){
   // Show in whichever err box is currently visible
   const ids=['err-box','err-box-solo'];
