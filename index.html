@@ -1028,7 +1028,16 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         </div>
         <div class="wiz-err" id="err-box" role="alert" aria-live="assertive"></div>
         <button class="wiz-next-btn" onclick="wizStep1Next()">Next →</button>
-        <div class="wiz-footer-links">
+
+        <div style="display:flex;align-items:center;gap:.6rem;margin:.85rem 0 .4rem"><div style="flex:1;height:1px;background:#e5e7eb"></div><span style="font-size:.72rem;color:#9ca3af;font-weight:600;letter-spacing:.06em;white-space:nowrap">OR JOIN A ROOM</span><div style="flex:1;height:1px;background:#e5e7eb"></div></div>
+        <div style="display:flex;gap:.5rem;align-items:center">
+          <div class="input-wrap" style="flex:1;margin:0">
+            <input type="text" id="home-join-code" maxlength="4" placeholder="Room code" style="font-size:1.1rem;font-weight:900;letter-spacing:.2em;text-transform:uppercase;text-align:center" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')"/>
+          </div>
+          <button class="nxt-btn" style="display:flex;width:auto;padding:.75rem 1.1rem;margin:0;flex-shrink:0" onclick="homeQuickJoin()">Join →</button>
+        </div>
+
+        <div class="wiz-footer-links" style="margin-top:.75rem">
           <button class="wiz-link" onclick="openContact()">Own a business? Get featured</button>
           <span style="color:#d1d5db">·</span>
           <button class="wiz-link" onclick="openSubmit()">Submit a question</button>
@@ -2791,6 +2800,15 @@ const MP={
 
 // ── JOIN MODAL ──
 function openJoinModal(){document.getElementById('join-modal').style.display='flex';setTimeout(()=>document.getElementById('jm-code')?.focus(),100);}
+function homeQuickJoin(){
+  const code=(document.getElementById('home-join-code')?.value||'').trim().toUpperCase();
+  openJoinModal();
+  setTimeout(()=>{
+    const inp=document.getElementById('jm-code');
+    if(inp){inp.value=code;inp.readOnly=!!code;inp.style.opacity=code?'.6':'';inp.dispatchEvent(new Event('input'));}
+    document.getElementById('jm-name')?.focus();
+  },200);
+}
 function quickJoinRoom(){
   const code=(document.getElementById('quick-join-code')?.value||'').trim().toUpperCase();
   openJoinModal();
