@@ -30,7 +30,7 @@
      ═══════════════════════════════════════════════════════════ -->
 <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Antonio:wght@700&family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size:16px}
 
@@ -70,9 +70,15 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 /* ── COMMON ── */
 .logo-wrap{display:flex;align-items:center;gap:8px;margin-bottom:.2rem}
 .logo-wrap.hero{flex-direction:column;align-items:center;text-align:center;margin-bottom:.5rem;position:relative}
-.logo-wrap.hero img{height:110px;width:auto;max-width:90%}
-.logo-txt{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:3px;color:#1a1a2e;line-height:1}
-.logo-txt span{color:#e8b84b}
+/* ── Brand logo: favicon + Antonio wordmark ── */
+.yfh-logo{display:inline-flex;align-items:center;gap:.28em;line-height:1;text-decoration:none;flex-shrink:0}
+.yfh-fav{height:.82em;width:auto;flex-shrink:0;display:block}
+.yfh-name{font-family:'Antonio',sans-serif;font-weight:700;color:#000000;letter-spacing:.01em;line-height:1;white-space:nowrap}
+.yfh-here{color:#e8b84a}
+.yfh-logo.on-dark .yfh-name{color:#ffffff}
+.yfh-logo.hero{font-size:clamp(2rem,6vw,3rem)}
+.yfh-logo.md{font-size:clamp(1.3rem,3.5vw,1.8rem)}
+.yfh-logo.sm{font-size:.95rem}
 .tagline{font-size:.88rem;color:#6b7280;margin-top:.2rem;margin-bottom:1.25rem}
 .tagline.hero{font-size:1rem;text-align:center;margin-bottom:1.5rem}
 .a11y-toggle{position:absolute;top:0;right:0;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.3rem .5rem;cursor:pointer;font-size:1.1rem;color:#9ca3af;line-height:1}
@@ -153,8 +159,6 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 
 /* ── GAME BOARD (Seen Jeem style) ── */
 .game-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
-.game-logo{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:2px;color:#1a1a2e}
-.game-logo span{color:#e8b84b}
 .game-logo-img{height:32px;width:auto;display:block;flex-shrink:0}
 .scores-wrap{flex:1;display:flex !important;gap:.5rem;margin-bottom:0}
 .s-card{border-radius:12px;padding:.4rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;transition:all .3s;flex:1;min-width:0}
@@ -994,8 +998,8 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
       <!-- STEP 1: Game Mode -->
       <div id="wiz-step-1" class="wiz-step">
-        <div class="wiz-logo-wrap">
-          <img src="/logo.png" alt="You From Here?"/>
+        <div class="wiz-logo-wrap" style="display:flex;align-items:center;justify-content:center;gap:.75rem;flex-wrap:wrap">
+          <div class="yfh-logo hero"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
           <button class="a11y-toggle" id="a11y-btn" onclick="toggleA11y()" aria-pressed="false" aria-label="Toggle Accessibility Mode" title="Accessibility Mode">♿</button>
         </div>
         <p class="wiz-tagline" id="home-tagline">Think you know your city? Prove it.</p>
@@ -1079,7 +1083,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div class="wiz-top-mode" id="wiz-top-mode-lbl"></div>
         </div>
         <div class="wiz-logo-wrap" style="margin-top:.25rem;margin-bottom:.25rem">
-          <img src="/logo.png" alt="You From Here?" style="max-height:50px"/>
+          <div class="yfh-logo md"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
         </div>
         <div class="wiz-card" style="padding:.85rem">
           <div class="wiz-section-lbl" style="margin-bottom:.5rem">How are you playing?</div>
@@ -1123,7 +1127,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
           <div class="wiz-top-mode" id="wiz-top-mode-lbl-3r"></div>
         </div>
         <div class="wiz-logo-wrap" style="margin-top:.25rem;margin-bottom:.25rem">
-          <img src="/logo.png" alt="You From Here?" style="max-height:50px"/>
+          <div class="yfh-logo md"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
         </div>
         <div class="wiz-card">
           <div class="wiz-section-lbl">How are teams playing?</div>
@@ -1193,7 +1197,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
     <!-- ══ LOADING ══ -->
     <div id="s-loading" class="screen">
-      <img src="/logo.png" alt="You From Here?" style="height:clamp(55px,8vw,90px);width:auto;max-width:80%;flex-shrink:0"/>
+      <div class="yfh-logo md" style="margin-bottom:.5rem"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
       <!-- Spinner + quip -->
       <div class="load-box" style="width:100%;max-width:420px;padding:.85rem">
         <div class="spin"></div>
@@ -1223,7 +1227,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <div id="s-game" class="screen">
       <div class="game-top">
         <div class="game-header">
-          <img src="/logo.png" alt="You From Here?" class="game-logo-img"/>
+          <div class="yfh-logo sm on-dark"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
           <div class="scores-wrap" id="scores-wrap" aria-label="Scores" aria-live="polite"></div>
           <div style="display:flex;gap:.4rem;align-items:center;flex-shrink:0">
             <span id="room-badge"><span class="rb-dot"></span> <span id="room-badge-code"></span></span>
@@ -1259,7 +1263,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <!-- ══ RESULTS ══ -->
     <div id="s-results" class="screen">
       <div class="logo-wrap hero" style="margin-bottom:.25rem">
-        <img src="/logo.png" alt="You From Here?"/>
+        <div class="yfh-logo hero"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
       </div>
       <p class="tagline hero" id="res-loc"></p>
       <div class="ad-inline show">
@@ -1289,7 +1293,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
 
         <!-- Header bar -->
         <div class="mp-lobby-header">
-          <img src="/logo.png" alt="You From Here?" class="mp-lobby-logo"/>
+          <div class="yfh-logo md on-dark"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here?</span></span></div>
           <div id="mp-mode-lbl" class="mp-mode-lbl"></div>
           <button class="end-btn-small" onclick="mpLeave()">✕ Leave</button>
         </div>
