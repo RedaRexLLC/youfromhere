@@ -366,7 +366,7 @@ body.in-question #game-info-bar{display:none!important}
 .wiz-top-mode{font-size:.8rem;font-weight:700;color:#e8b84b;text-transform:uppercase;letter-spacing:.07em}
 /* Mode buttons — horizontal pills on mobile, card grid on larger screens */
 .wiz-mode-grid{display:flex;flex-direction:column;gap:.45rem;margin-bottom:.25rem}
-.wiz-mode-btn{display:flex;flex-direction:row;align-items:center;gap:1rem;padding:.9rem 1.1rem;border:2px solid #e5e7eb;border-radius:14px;background:#fff !important;color:#1a1a2e !important;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;width:100%;max-width:420px;box-sizing:border-box;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,.05);outline:none;-webkit-tap-highlight-color:transparent}
+.wiz-mode-btn{display:flex;flex-direction:row;align-items:center;gap:1rem;padding:.9rem 1.1rem;border:2px solid #e5e7eb;border-radius:14px;background:#fff;color:#1a1a2e;cursor:pointer;transition:all .18s;font-family:'DM Sans',sans-serif;width:100%;max-width:420px;box-sizing:border-box;text-align:left;box-shadow:0 1px 3px rgba(0,0,0,.05);outline:none;-webkit-tap-highlight-color:transparent}
 .wiz-mode-btn:focus{outline:none}
 .wiz-mode-btn:hover:not(.on){border-color:#9ca3af;background:#f9fafb;box-shadow:0 3px 10px rgba(0,0,0,.08)}
 .wiz-mode-btn.on{border-color:#1a1a2e !important;background:#1a1a2e !important;color:#fff !important;box-shadow:0 4px 14px rgba(26,26,46,.2)}
@@ -1666,10 +1666,10 @@ function wizSetMode(m){
   G.gameMode=m;
   ['local','national','world'].forEach(id=>{
     const b=document.getElementById('btn-'+id);
-    if(b){b.classList.remove('on');b.style.background='#fff';b.style.color='#1a1a2e';b.style.borderColor='#e5e7eb';b.style.boxShadow='none';}
+    if(b)b.classList.remove('on');
   });
   const ab=document.getElementById('btn-'+btnId);
-  if(ab){ab.classList.add('on');ab.style.background='#1a1a2e';ab.style.color='#fff';ab.style.borderColor='#1a1a2e';ab.style.boxShadow='0 4px 14px rgba(26,26,46,.2)';}
+  if(ab)ab.classList.add('on');
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
   document.getElementById('world-inputs').style.display=(m==='world'||m==='global')?'block':'none';
