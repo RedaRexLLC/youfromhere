@@ -2533,15 +2533,21 @@ function renderBoard(){
   const sw=document.getElementById('scores-wrap');
   sw.style.gridTemplateColumns='';
   const isMod=G.style==='mod';
-  const activeTeam=G.teams[t];
-  const activeScore=G.scores[t];
-  const otherChips=G.teams.map((team,i)=>i===t?''
-    :'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
-  sw.innerHTML='<div class="s-active-bar'+(isMod?' mod':'')+'">'
-    +'<span class="s-active-name s-active-name-t">'+activeTeam.name+'</span>'
-    +'<span class="s-active-pts s-active-pts-t">'+activeScore+'</span>'
-    +'</div>'
-    +(G.teams.length>1?'<div class="s-others">'+otherChips+'</div>':'');
+  if(isMod){
+    // Moderator: no "active" team — show all as equal chips
+    const allChips=G.teams.map((team,i)=>'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'" style="color:#1a1a2e">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
+    sw.innerHTML='<span style="font-family:\'Bebas Neue\',sans-serif;font-size:.72rem;color:#e8b84b;letter-spacing:.06em;flex-shrink:0">🎙️ MOD</span><div class="s-others" style="flex:1">'+allChips+'</div>';
+  } else {
+    const activeTeam=G.teams[t];
+    const activeScore=G.scores[t];
+    const otherChips=G.teams.map((team,i)=>i===t?''
+      :'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
+    sw.innerHTML='<div class="s-active-bar">'
+      +'<span class="s-active-name s-active-name-t">'+activeTeam.name+'</span>'
+      +'<span class="s-active-pts s-active-pts-t">'+activeScore+'</span>'
+      +'</div>'
+      +(G.teams.length>1?'<div class="s-others">'+otherChips+'</div>':'');
+  }
   // Update turn banner
   const tb=document.getElementById('turn-banner');if(tb){tb.style.display='none';}
 
@@ -2653,13 +2659,15 @@ function renderQuestion(q,pts){
     strip.classList.add('show');
   }
 
-  // Show turn banner
-  const tb=document.getElementById('turn-banner');
-  if(tb&&G.style!=='mod'){
+  // Show turn banner (not in solo — only one player)
+  const tb=document.getElementById(‘turn-banner’);
+  if(tb&&G.style!==’mod’&&G.style!==’solo’){
     const curTeam=G.teams[G.ct];
-    const curName=curTeam?curTeam.name:'';
+    const curName=curTeam?curTeam.name:’’;
     tb.textContent=`🎯 ${curName}’s turn`;
-    tb.style.display='block';
+    tb.style.display=’block’;
+  } else if(tb&&(G.style===’mod’||G.style===’solo’)){
+    tb.style.display=’none’;
   }
 
   const isPhoto=q.type==='photo';
@@ -2694,7 +2702,7 @@ function renderQuestion(q,pts){
     let acts='<div class="acts">'
       +(isSolo
         ?'<button class="act-btn" onclick="nextTurn()">⏭ Skip</button>'
-        :'<button class="act-btn" onclick="doPass()">→ Pass</button>')
+        :MP.active?'':/* no Pass in MP — timer handles steal */'<button class="act-btn" onclick="doPass()">→ Pass</button>')
       +'<button class="act-btn" style="background:#fef2f2;border-color:#fecaca;color:#991b1b" onclick="confirmEndGame()">⏹ End</button>'
       +'</div>';
 
@@ -2806,21 +2814,21 @@ function updTmr(){
 function doStealTimer(){
   if(G.answered)return;
   if(G.style==='solo'){doTimeout();return;}
-  // Switch to steal team
+  // In MP: treat timer expiry as a wrong answer — broadcasts steal phase to all players
+  if(MP.active){
+    const pts=G.curCell?.pts||0;
+    const q=G.curQ;
+    resolve(false,0,q?'Time\'s up! The answer was: '+q.answer:'Time\'s up!',false);
+    return;
+  }
+  // Local multi: switch to steal team and show steal countdown on the visible card-qtimer
   const stealTeam=(G.ct+1)%G.teams.length;
   const sb=document.getElementById('steal-bar');sb.style.display='block';
   sb.textContent=G.teams[stealTeam].name+' — steal opportunity! 10 seconds!';
   G.stealing=true;G.ct=stealTeam;
-  let stLeft=STEAL_TIME;
-  const tn=document.getElementById('gib-timer');const bar=document.getElementById('gib-tbar');
-  if(tn)tn.textContent='0:'+STEAL_TIME;if(tn)tn.className='urgent';
-  stealTmr=setInterval(()=>{
-    stLeft--;
-    if(tn)tn.textContent='0:'+(stLeft<10?'0':'')+stLeft;
-    const pct=(stLeft/STEAL_TIME)*100;
-    if(bar){bar.style.width=pct+'%';bar.style.background='#ef4444';}
-    if(stLeft<=0){clearInterval(stealTmr);doTimeout();}
-  },1000);
+  updScores();
+  tLeft=STEAL_TIME;updTmr();
+  stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);doTimeout();}},1000);
 }
 
 function doTimeout(){
@@ -2957,20 +2965,23 @@ function toggleResultPause(){
 function updScores(){
   const sw=document.getElementById('scores-wrap');if(!sw)return;
   const t=G.ct;
+  const isMod=G.style==='mod';
+  if(isMod){
+    // Moderator: all chips — just update numbers in place
+    G.teams.forEach((_,i)=>{const el=sw.querySelector('.s-pts-'+i);if(el)el.textContent=G.scores[i];});
+    return;
+  }
   // If the active team changed, re-render the whole bar
   const curActiveName=sw.querySelector('.s-active-name-t');
   if(!curActiveName||curActiveName.textContent!==G.teams[t].name){
-    // Re-render (active team changed — new turn)
-    const isMod=G.style==='mod';
     const otherChips=G.teams.map((team,i)=>i===t?''
       :'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
-    sw.innerHTML='<div class="s-active-bar'+(isMod?' mod':'')+'">'
+    sw.innerHTML='<div class="s-active-bar">'
       +'<span class="s-active-name s-active-name-t">'+G.teams[t].name+'</span>'
       +'<span class="s-active-pts s-active-pts-t">'+G.scores[t]+'</span>'
       +'</div>'
       +(G.teams.length>1?'<div class="s-others">'+otherChips+'</div>':'');
   } else {
-    // Just update numbers in place
     const ap=sw.querySelector('.s-active-pts-t');if(ap)ap.textContent=G.scores[t];
     G.teams.forEach((_,i)=>{if(i===t)return;const el=sw.querySelector('.s-pts-'+i);if(el)el.textContent=G.scores[i];});
   }
