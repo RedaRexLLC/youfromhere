@@ -152,6 +152,13 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 
 /* ── LOADING ── */
 .spin{width:28px;height:28px;border:3px solid #e5e7eb;border-top-color:#e8b84b;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem}
+/* Vibe selector */
+.vibe-row{display:flex;gap:.45rem;justify-content:center;flex-wrap:wrap;margin:.75rem 0 .5rem}
+.vibe-btn{padding:.45rem .85rem;border-radius:100px;border:1.5px solid #e5e7eb;background:#fff;font-family:'DM Sans',sans-serif;font-size:.78rem;font-weight:600;color:#6b7280;cursor:pointer;transition:all .18s;white-space:nowrap;outline:none}
+.vibe-btn:hover{border-color:#e8b84b;color:#1a1a2e}
+.vibe-btn.active{background:#e8b84b;border-color:#e8b84b;color:#1a1a2e}
+.submit-quip-link{background:none;border:none;font-size:.72rem;color:#9ca3af;cursor:pointer;text-decoration:underline;font-family:'DM Sans',sans-serif;margin-top:.3rem;display:block;width:100%;text-align:center;padding:.2rem 0}
+.submit-quip-link:hover{color:#6b7280}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-box{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:2.5rem;text-align:center}
 .load-progress{margin-top:1rem;background:#e5e7eb;border-radius:4px;height:6px;overflow:hidden}
@@ -976,6 +983,29 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
   </div>
 </div>
 
+<div class="modal-overlay" id="quip-modal" role="dialog" aria-modal="true" aria-labelledby="quip-modal-title">
+  <div class="modal" style="max-width:460px">
+    <h3 id="quip-modal-title">💬 Submit a Quip</h3>
+    <p style="font-size:.88rem;color:#6b7280;margin-bottom:1rem;line-height:1.6">Got something funnier than what we came up with? Prove it. The best ones get added to the loading screen for everyone to see — with your name on it if you want.</p>
+    <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:.65rem .85rem;font-size:.78rem;color:#92400e;margin-bottom:1rem;line-height:1.6">⚠️ All submissions are reviewed before going live. Keep it funny, keep it clean. Personal attacks, anything inappropriate, or anything that crosses the line won't make the cut — but everything else is fair game.</div>
+    <div class="lbl">Which vibe fits your quip?</div>
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.85rem">
+      <button class="vibe-btn active" id="qm-vibe-any" onclick="qmSetVibe('any',this)">🎲 Any vibe</button>
+      <button class="vibe-btn" id="qm-vibe-family" onclick="qmSetVibe('family',this)">👨‍👩‍👧 Family</button>
+      <button class="vibe-btn" id="qm-vibe-friends" onclick="qmSetVibe('friends',this)">🥂 Friends</button>
+      <button class="vibe-btn" id="qm-vibe-solo" onclick="qmSetVibe('solo',this)">🎯 Solo</button>
+    </div>
+    <div class="lbl">Your quip</div>
+    <textarea id="quip-text" placeholder="Make us laugh. No pressure. Okay, a little pressure." style="height:90px"></textarea>
+    <div class="lbl">Your name <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#9ca3af">(optional — shows if your quip gets featured)</span></div>
+    <input type="text" id="quip-name" placeholder="First name or nickname"/>
+    <div class="modal-btns" style="margin-top:.75rem">
+      <button class="modal-cancel" onclick="closeSubmitQuip()">Cancel</button>
+      <button class="modal-submit" onclick="submitQuip()" id="quip-submit-btn">Submit Quip →</button>
+    </div>
+  </div>
+</div>
+
 <div class="page-wrap">
   <div class="ad-left">
     <div class="ad-sidebar-block">
@@ -1204,6 +1234,14 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
         <p style="font-weight:700;font-size:1rem;margin-bottom:.3rem" id="load-txt">Loading...</p>
         <p style="color:#6b7280;font-size:.82rem;margin-bottom:.6rem;line-height:1.5" id="load-sub">Generating your questions</p>
         <div class="load-progress"><div class="load-progress-fill" id="load-prog" style="width:0%"></div></div>
+        <!-- Vibe selector -->
+        <p style="font-size:.72rem;color:#9ca3af;margin:.85rem 0 .3rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Who's playing?</p>
+        <div class="vibe-row">
+          <button class="vibe-btn" id="vibe-family" onclick="selectVibe('family')">👨‍👩‍👧 Family Stand-Off</button>
+          <button class="vibe-btn" id="vibe-friends" onclick="selectVibe('friends')">🥂 Friend Zone</button>
+          <button class="vibe-btn" id="vibe-solo" onclick="selectVibe('solo')">🎯 Flying Solo</button>
+        </div>
+        <button class="submit-quip-link" onclick="openSubmitQuip()">💬 Got a funny one? Submit a quip →</button>
       </div>
       <!-- QR code -->
       <div class="qr-card" id="share-qr-card" style="width:100%;max-width:420px">
@@ -2052,10 +2090,128 @@ function startGame(){
   preGenAll().then(()=>{show('s-game');renderBoard();}).catch(e=>{console.error(e);show('s-home');wizGoTo(1);showErr('Error: '+e.message);});
 }
 
+let _selectedVibe='';
+function selectVibe(v){
+  _selectedVibe=v;
+  ['family','friends','solo'].forEach(id=>{
+    const b=document.getElementById('vibe-'+id);
+    if(b)b.classList.toggle('active',id===v);
+  });
+  // Restart quips immediately with new vibe
+  stopQuips();startQuips();
+  // Log to analytics (fire and forget)
+  try{fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/vibe_selections',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({vibe:v,city:G.city||'',mode:G.gameMode||'local',created_at:new Date().toISOString()})}).catch(()=>{});}catch(e){}
+}
+
+let _quipModalVibe='any';
+function openSubmitQuip(){
+  // Pre-select vibe matching current selection
+  const v=_selectedVibe||'any';
+  qmSetVibe(v,document.getElementById('qm-vibe-'+v)||document.getElementById('qm-vibe-any'));
+  document.getElementById('quip-text').value='';
+  document.getElementById('quip-name').value='';
+  document.getElementById('quip-submit-btn').textContent='Submit Quip →';
+  document.getElementById('quip-modal').style.display='flex';
+}
+function closeSubmitQuip(){document.getElementById('quip-modal').style.display='none';}
+function qmSetVibe(v,btn){
+  _quipModalVibe=v;
+  document.querySelectorAll('#quip-modal .vibe-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+}
+async function submitQuip(){
+  const text=(document.getElementById('quip-text').value||'').trim();
+  const name=(document.getElementById('quip-name').value||'').trim();
+  if(!text){alert('Type your quip first!');return;}
+  if(text.length<10){alert('Give us a bit more to work with!');return;}
+  const btn=document.getElementById('quip-submit-btn');
+  btn.textContent='Sending…';btn.disabled=true;
+  try{
+    const r=await fetch('https://mukasqppyafjdhujoapl.supabase.co/rest/v1/submitted_quips',{method:'POST',headers:{'apikey':'sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Authorization':'Bearer sb_publishable_Y38hnvvThsfJKRXeA_fiUA_pHsjCVST','Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({quip:text,vibe:_quipModalVibe,submitted_by:name||null,city:G.city||null,approved:false,created_at:new Date().toISOString()})});
+    if(r.ok||r.status===201){
+      document.querySelector('#quip-modal .modal').innerHTML='<div style="text-align:center;padding:1.5rem 1rem"><div style="font-size:2.5rem;margin-bottom:.75rem">🎉</div><h3 style="margin-bottom:.5rem">Nice one!</h3><p style="color:#6b7280;font-size:.9rem;line-height:1.6">Your quip has been submitted. Our team will review it and if it makes us laugh — which it will — it\'ll show up for everyone. Thanks for making the game better.</p><button class="modal-submit" style="margin-top:1.25rem;width:100%" onclick="closeSubmitQuip()">Back to loading →</button></div>';
+    }else{throw new Error('failed');}
+  }catch(e){
+    btn.textContent='Submit Quip →';btn.disabled=false;
+    alert('Something went wrong — check your connection and try again.');
+  }
+}
+
 function buildQuips(){
   const city=G.city||'';
   const country=G.country||'';
   const mode=G.gameMode||'local';
+
+  const vibeFamily=[
+    'No cheating, Grandma. We can see your browser history.',
+    'Dad is about to learn that confidence and being right are very different things.',
+    'Somewhere a sibling is already calculating how to gloat.',
+    'One of you is going to say "I knew that" after the answer is revealed. You know who you are.',
+    'The person who always wins family game night is watching this screen right now. Nervous? Good.',
+    'Mom said no arguing. Mom is not the boss of game night.',
+    'At least one person in your family has been confidently wrong about something for years. Tonight we find out.',
+    'Somewhere a grandparent is about to humble every single one of you. You\'ve been warned.',
+    'The family that plays together stays together — and also argues together, but lovingly.',
+    'Plot twist: the quiet one is about to win everything.',
+    'Family trivia rule #1: the loudest person is rarely the most right.',
+    'Someone in this family Googled "trivia answers" before sitting down. You know who you are.',
+    'The score doesn\'t matter. The bragging rights last until the next family reunion.',
+    'At some point tonight someone will say "that question was unfair" because they got it wrong.',
+    'Family game night: proving since forever that you don\'t actually know your family as well as you thought.',
+    'Pro tip: let the youngest answer first. Then look surprised. Classic.',
+    'Some families bond over cooking. Some over sports. You chose trivia. Respect.',
+    'This game has ended friendships. Good news: you\'re family. You\'re stuck with each other.',
+    'The energy in this room right now is unmatched. Also slightly chaotic. Also perfect.',
+    'Whoever loses has to do the dishes. Unofficial rule. Official now.',
+  ];
+
+  const vibeF=[
+    'Loading ammo for a lifetime of bragging rights.',
+    'Preparing questions that will finally expose who\'s been lying about being smart.',
+    'Someone in your group thinks they know everything. They don\'t. This is how you find out.',
+    'The group chat is about to get very active.',
+    'Nothing tests a friendship like competitive trivia. You\'ve been warned.',
+    'At least one of your friends is going to look things up between questions. Watch them.',
+    'Good friends celebrate your wins. Great friends rub their own wins in your face forever.',
+    'The score will be forgotten. The humiliation will not.',
+    'Whoever loses has to buy snacks next time. Unofficial rule. Official now.',
+    'Real friendship is playing trivia and still calling each other out when you cheat.',
+    'You thought you knew your friends. Trivia reveals all.',
+    'The friend who never plays these games? They always win. Prepare yourself.',
+    'Your friendship group has a secret genius. Tonight you find out who it is.',
+    'Trivia with friends: part game, part therapy, part roast session.',
+    'May the best person win. May the worst person never hear the end of it.',
+    'You came to play. Your friends came to play. Someone came to judge everyone quietly. You know who.',
+    'Fun fact: most people overestimate how much they know until someone starts keeping score.',
+    'This is how legends are made. Or how people get roasted forever. Both are equally valid outcomes.',
+    'Somewhere a friend is convinced they\'re about to destroy everyone. Sweet. Naive. So very wrong.',
+    'No matter what happens tonight, someone is walking away with a new nickname. Probably not a good one.',
+  ];
+
+  const vibeSolo=[
+    'We\'ll keep you company… don\'t worry.',
+    'Who said games can\'t be played by yourself? Legends. That\'s who.',
+    'Are you sharpening your skills so you have the advantage when family plays? Smart move.',
+    'You could share this with a friend right now so you can play together… just saying… that would be cool.',
+    'Solo players are the ones who actually read the instructions. Respect.',
+    'Playing alone means no one sees you get it wrong. That\'s called strategy.',
+    'We\'ve seen solo players become absolute legends in group games. Today might be your origin story.',
+    'No one to judge you. No one to steal your answers. No one to blame but yourself. Freedom.',
+    'The best kind of competition is proving yourself to yourself. Very philosophical. Very you.',
+    'Some of the greatest minds in history preferred to work alone. You\'re in great company.',
+    'Imagine showing up to family game night knowing everything. That\'s what we\'re building right now.',
+    'The grind is real. The trivia is also real. You\'ve got this.',
+    'A solo player once got every question right and had nobody to tell. Don\'t let that be you. Share this.',
+    'Solo mode: full focus, zero distractions, maximum energy. This is your moment.',
+    'Every answer you get right now is one less you\'ll get wrong in front of people. Efficiency.',
+    'You\'re not playing alone. You\'re playing ahead. There\'s a difference.',
+    'One person. One phone. Unlimited potential. Also unlimited snacks, since nobody\'s watching.',
+    'are you really playing trivia by yourself or are you just doing research? Because it sounds like research.',
+    'The person who knows the most usually says the least. Study accordingly.',
+    'Honestly? Respect. Most people need an audience. You just need answers.',
+  ];
+
+  const vibeQuips=_selectedVibe==='family'?vibeFamily:_selectedVibe==='friends'?vibeF:_selectedVibe==='solo'?vibeSolo:[];
 
   const universal=[
     // Spread the word
@@ -2154,7 +2310,7 @@ function buildQuips(){
     `Cross-referencing everything we know about ${country}...`,
   ]:[];
 
-  let pool=[...universal];
+  let pool=[...vibeQuips,...universal];
   if(mode==='local')pool=[...pool,...local];
   else if(mode==='national')pool=[...pool,...national];
   else if(mode==='global'){pool=[...pool,...worldGeneric];}
