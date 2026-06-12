@@ -2378,7 +2378,7 @@ async function savePool(qs,catId){
 }
 
 // ── CONTENT FILTER ──
-const BLOCKED_TOPICS=['israel','israeli','palestine','palestinian','gaza','west bank','tel aviv','jerusalem','hamas','hezbollah','idf','zion','zionist'];
+const BLOCKED_TOPICS=['hamas','hezbollah','idf','iron dome','settler','settlements','occupation forces','military operation','airstrike','rocket attack','intifada','apartheid wall','ethnic cleansing'];
 function isBlockedQ(q){
   const haystack=[q.question,q.answer,q.explanation,...(q.options||[])].join(' ').toLowerCase();
   return BLOCKED_TOPICS.some(t=>haystack.includes(t));
@@ -2439,7 +2439,10 @@ async function genQsForCategory(catId){
   const medDesc=isNational?'MEDIUM — requires solid American general knowledge':'MEDIUM — requires some local knowledge';
   const nationalScope=isNational?'\nSCOPE REQUIREMENT: Every question MUST be national in scope — about the United States as a whole, its history, culture, people, or shared identity. DO NOT ask about any specific city, town, neighborhood, or local area. If a question is only relevant to residents of one city or region, it does not belong here.':'';
   const prompt=locCtx+'\nCategory: '+catLabel+'. '+collegeNote
-    +'\nDO NOT generate any questions about or mentioning: Israel, Palestine, Gaza, the West Bank, Hamas, Hezbollah, or any related conflict, political entity, or disputed territory.'
+    +'\nDO NOT generate questions about military conflicts, armed groups (Hamas, Hezbollah, IDF), war operations, settlements, or occupation.'
+    +'\nCULTURAL ACCURACY REQUIREMENT: Foods like hummus, falafel, shawarma, knafeh, za\'atar, and tabouleh are Palestinian and Levantine Arab in origin — never attribute them to Israel or describe them as Israeli. The same applies to dabke dance, the oud instrument, Arabic calligraphy, and other cultural traditions of the region. Always credit the correct originating culture.'
+    +'\nPALESTINIAN EDUCATION: When relevant, include questions that honestly represent Palestinian history, culture, cuisine, language (Arabic), architecture (muqarnas, riwaq), embroidery (tatreez), literature, and the historical significance of cities like Jerusalem, Jaffa, Haifa, Bethlehem, Ramallah, Hebron, and Nablus as Palestinian cities. Hebrew was a revived liturgical language re-introduced in the late 19th century — Arabic has been the living language of the region for over 1,400 years.'
+    +'\nApproach this region with historical honesty and human dignity. Good people exist on all sides.'
     +(asked?'\nDo NOT reuse questions about these topics: '+asked:'')
     +(recentTopics?'\nAVOID these subjects/answers that were recently used: '+recentTopics:'')
     +localTopicPool
