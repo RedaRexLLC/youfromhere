@@ -2894,26 +2894,32 @@ function showResultPhase(ok,pts,exp,surp){
   const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
   const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
   const AUTO_SECS=10;
+  // In MP, only the player whose turn it was drives auto-advance.
+  // Everyone else just sees the result and waits for the board phase via poll.
+  const _revealActiveId=MP.active?(MP.lastState?.turn_order?.[MP.lastState?.turn_index%(MP.lastState?.turn_order?.length||1)]):null;
+  const drivesNext=!MP.active||!_revealActiveId||_revealActiveId===MP.playerId;
   const body=(hasImg?'<div class="q-body">':'')
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
     +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
-    +'<button id="pause-btn" style="display:block;width:100%;margin-top:.6rem;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.35rem;font-size:.75rem;font-weight:600;cursor:pointer;color:#9ca3af;letter-spacing:.02em" onclick="toggleResultPause()">⏸ Hold on — let me read this</button>'
-    +'<button class="nxt-btn" id="nb" style="display:flex;margin-top:.35rem" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
+    +(drivesNext?'<button id="pause-btn" style="display:block;width:100%;margin-top:.6rem;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.35rem;font-size:.75rem;font-weight:600;cursor:pointer;color:#9ca3af;letter-spacing:.02em" onclick="toggleResultPause()">⏸ Hold on — let me read this</button>':'')
+    +'<button class="nxt-btn" id="nb" style="display:flex;margin-top:.35rem" onclick="nextTurn()">'+(drivesNext?'Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span>':'Next →')+'</button>'
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
   if(exp)showShare(exp);
-  // Auto-advance countdown
-  clearTimeout(_autoNextTimer);
-  let rem=AUTO_SECS;
-  _autoNextTimer=setInterval(()=>{
-    rem--;
-    const el=document.getElementById('auto-next-count');
-    if(el)el.textContent='('+rem+')';
-    if(rem<=0){clearInterval(_autoNextTimer);_autoNextTimer=null;nextTurn();}
-  },1000);
+  // Only the active player runs the auto-advance timer
+  if(drivesNext){
+    clearTimeout(_autoNextTimer);
+    let rem=AUTO_SECS;
+    _autoNextTimer=setInterval(()=>{
+      rem--;
+      const el=document.getElementById('auto-next-count');
+      if(el)el.textContent='('+rem+')';
+      if(rem<=0){clearInterval(_autoNextTimer);_autoNextTimer=null;nextTurn();}
+    },1000);
+  }
 }
 
 let _resultPaused=false;
@@ -3673,6 +3679,8 @@ function mpBuildGFromState(st){
 // ── MIRROR STATE (non-host, in-game) ──
 function mpMirrorState(st){
   if(!st)return;
+  // Kill any pending auto-advance the moment new state arrives
+  clearInterval(_autoNextTimer);_autoNextTimer=null;
   // Sync scores + board
   mpBuildGFromState(st);
   updScores();
@@ -3721,15 +3729,23 @@ function mpMirrorState(st){
       const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
       tLeft=Math.max(0,TMAX-elapsed);
     }
-    // Non-active player: disable buttons + show waiting banner
+    // Non-active player: silent visual-only timer + disable buttons
     if(!isMyTurn){
+      // Replace the full timer (which plays sTick and triggers doStealTimer) with a
+      // silent visual countdown — spectators see the clock but make no sound/action
+      clearInterval(tmr);clearInterval(stealTmr);
+      if(st.question_started_at){
+        const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
+        tLeft=Math.max(0,TMAX-elapsed);
+      }
+      tmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(tmr);}},1000);
       setTimeout(()=>{
         document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>b.disabled=true);
         const acts=document.querySelector('.acts');
         if(acts){
           const ap=st.players?.find(p=>p.id===activeId);
           const wb=document.createElement('div');wb.className='mp-waiting-banner';
-          wb.textContent='⏳ Waiting for '+( ap?.name||'player')+' to answer...';
+          wb.textContent='⏳ Waiting for '+(ap?.name||'player')+' to answer...';
           acts.before(wb);
         }
       },50);
@@ -3739,6 +3755,7 @@ function mpMirrorState(st){
 
   if(phase==='steal'&&MP.lastPhase!=='steal'){
     MP.lastPhase='steal';
+    stopTmr(); // kill main timer + its sTick sound before steal countdown begins
     const excludedTeamId=st.steal_excluded_team_id;
     const excludedPlayerId=st.steal_excluded_player_id;
     const myPlayer=(st.players||[]).find(p=>p.id===MP.playerId);
