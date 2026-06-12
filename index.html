@@ -1701,6 +1701,12 @@ function wizShowErr(msg){
 
 function wizPickStyle(s){
   G.style=s;
+  // Flash selected state (inline styles override Safari !important conflicts)
+  document.querySelectorAll('.wiz-style-btn').forEach(b=>{
+    b.style.background='';b.style.color='';b.style.borderColor='';
+  });
+  const clicked=event?.currentTarget||event?.target;
+  if(clicked){clicked.style.background='#1a1a2e';clicked.style.color='#fff';clicked.style.borderColor='#1a1a2e';}
   if(s==='room'){wizGoTo('3-room');}
   else if(s==='solo'){soloCats=[];wizGoTo('3-solo');}
   else{wizTeams=[];wizGoTo('3-teams');}
