@@ -1638,6 +1638,7 @@ const TEAM_COLS=['#e8b84b','#3b82f6','#22c55e','#ef4444'];
 let wizTeams=[]; // [{name,players,cats}]
 
 function wizGoTo(step){
+  window.scrollTo({top:0,behavior:'instant'});
   document.querySelectorAll('.wiz-step').forEach(s=>s.style.display='none');
   const tvRow=document.getElementById('wiz-tv-row');
   if(step===1){document.getElementById('wiz-step-1').style.display='flex';if(tvRow)tvRow.style.display='flex';}
