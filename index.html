@@ -167,17 +167,19 @@ body{font-family:'DM Sans',sans-serif;background:#f8f7f4;color:#1a1a2e;font-size
 /* ── GAME BOARD (Seen Jeem style) ── */
 .game-header{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
 .game-logo-img{height:32px;width:auto;display:block;flex-shrink:0}
-.scores-wrap{flex:1;display:flex !important;gap:.5rem;margin-bottom:0}
-.s-card{border-radius:12px;padding:.4rem .85rem;border:2px solid #e5e7eb;background:#fff;display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;transition:all .3s;flex:1;min-width:0}
-.s-card.cur{border-color:#22c55e !important;background:#fff !important;box-shadow:0 0 0 3px rgba(34,197,94,.15)}
-.s-card.mod-active{border-color:#e8b84b !important;background:#fff !important}
-.s-left{display:flex;flex-direction:column;gap:.05rem;min-width:0}
-.s-name{font-weight:700;font-size:1rem;color:#1a1a2e;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-player{font-size:.65rem;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-turn-pill{font-size:.5rem;font-weight:800;letter-spacing:.08em;color:#22c55e;text-transform:uppercase;line-height:1;margin-top:.1rem}
-.s-pts-wrap{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
-.s-pts-lbl{font-size:.48rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#9ca3af;line-height:1;margin-bottom:.05rem}
-.s-pts{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;line-height:1}
+/* Score header — single active-player bar + compact chips for others */
+.scores-wrap{flex:1;display:flex !important;align-items:center;gap:.5rem;margin-bottom:0;min-width:0}
+.s-active-bar{display:flex;align-items:center;gap:.45rem;background:#fff;border:2px solid #22c55e;border-radius:10px;padding:.28rem .7rem;box-shadow:0 0 0 3px rgba(34,197,94,.12);flex-shrink:0;max-width:55%}
+.s-active-bar.mod{border-color:#e8b84b;box-shadow:0 0 0 3px rgba(232,184,74,.15)}
+.s-active-name{font-family:'Bebas Neue',sans-serif;font-weight:700;font-size:.95rem;color:#1a1a2e;letter-spacing:.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:8rem}
+.s-active-pts{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;line-height:1;color:#22c55e;flex-shrink:0}
+.s-active-bar.mod .s-active-pts{color:#e8b84b}
+.s-others{display:flex;flex-wrap:wrap;gap:.3rem;flex:1;min-width:0}
+.s-chip{display:flex;align-items:center;gap:.25rem;background:#f3f4f6;border-radius:7px;padding:.18rem .45rem;min-width:0}
+.s-chip-name{font-family:'Bebas Neue',sans-serif;font-size:.72rem;color:#6b7280;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:5rem}
+.s-chip-pts{font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:#374151;flex-shrink:0}
+/* legacy class kept for updScores() compat */
+.s-pts{font-family:'Bebas Neue',sans-serif}
 #q-info-strip{display:none;flex-direction:column;gap:.15rem;padding:.3rem .75rem;background:#fff;border-radius:10px;border:1px solid #e5e7eb;margin-top:.25rem}
 #q-info-strip.show{display:flex}
 #q-info-strip-row{display:flex;align-items:center;gap:.6rem}
@@ -510,12 +512,13 @@ body.in-game #q-area:not(:empty){flex:1}
   .game-top{padding:.2rem .4rem .15rem}
   #s-game .game-header{margin-bottom:.2rem;gap:.3rem}
   #s-game .game-logo-img{height:22px !important}
-  #s-game .scores-wrap{gap:.2rem}
-  #s-game .s-card{padding:.2rem .5rem;border-radius:12px}
-  #s-game .s-pts{font-size:1.1rem}
-  #s-game .s-pts-lbl{display:none}
-  #s-game .s-name{font-size:.8rem}
-  #s-game .s-player{font-size:.55rem}
+  #s-game .scores-wrap{gap:.3rem}
+  #s-game .s-active-bar{padding:.2rem .5rem;border-radius:8px}
+  #s-game .s-active-name{font-size:.75rem;max-width:6rem}
+  #s-game .s-active-pts{font-size:1.1rem}
+  #s-game .s-chip{padding:.12rem .35rem}
+  #s-game .s-chip-name{font-size:.6rem}
+  #s-game .s-chip-pts{font-size:.72rem}
   #turn-banner{font-size:.75rem;padding:.2rem .6rem}
   #game-info-bar{padding:.2rem 1.5rem;margin:.15rem .5rem;font-size:.72rem}
   #s-game .steal-bar{padding:.2rem 1.5rem;font-size:.65rem;margin:.15rem .5rem}
@@ -563,14 +566,12 @@ body.in-game #q-area:not(:empty){flex:1}
   .game-logo-img{height:20px !important}
   #room-badge{display:none !important}
   .end-btn-small{font-size:.56rem !important;padding:.1rem .3rem !important}
-  #s-game .s-card{
-    flex:1;min-width:0;padding:.08rem .3rem;
-    border-radius:10px;border-width:1px;
-    justify-content:space-between;align-items:center;gap:.15rem;
-  }
-  #s-game .s-pts{font-size:.85rem;line-height:1}
-  #s-game .s-name{font-size:.54rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #s-game .s-player{display:none}
+  #s-game .s-active-bar{padding:.08rem .3rem;border-radius:8px;border-width:1px}
+  #s-game .s-active-pts{font-size:.85rem;line-height:1}
+  #s-game .s-active-name{font-size:.54rem;max-width:5rem}
+  #s-game .s-chip{padding:.06rem .25rem}
+  #s-game .s-chip-pts{font-size:.65rem}
+  #s-game .s-chip-name{font-size:.5rem;max-width:3.5rem}
   #s-game .steal-bar{margin:.05rem .5rem;padding:.1rem 1.5rem;font-size:.58rem}
   #gib-timer{font-size:.82rem !important}
   #gib-cat{max-width:130px}
@@ -655,10 +656,9 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .board-cell{font-size:1.1rem;min-height:42px}
   .game-top{padding:.3rem .65rem .25rem}
   #s-game .scores-wrap{gap:.25rem;margin-bottom:.25rem}
-  #s-game .s-card{padding:.25rem .65rem;border-radius:10px}
-  #s-game .s-pts{font-size:1.3rem}
-  #s-game .s-name{font-size:.8rem}
-  #s-game .s-player{font-size:.65rem}
+  #s-game .s-active-bar{padding:.25rem .65rem;border-radius:10px}
+  #s-game .s-active-pts{font-size:1.3rem}
+  #s-game .s-active-name{font-size:.8rem}
   #game-info-bar{padding:.3rem .65rem;margin-bottom:.3rem}
   #s-game .steal-bar{padding:.3rem .65rem;font-size:.78rem;margin-bottom:.25rem}
   /* Question: side-by-side image when has-img */
@@ -678,10 +678,9 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .board-cat-hdr{height:52px;font-size:.76rem}
   body.in-game .board-cell{font-size:1.3rem;min-height:48px}
   #s-game .scores-wrap{gap:.3rem;margin-bottom:.3rem}
-  #s-game .s-card{padding:.3rem .75rem;border-radius:10px}
-  #s-game .s-pts{font-size:1.5rem}
-  #s-game .s-name{font-size:.85rem}
-  #s-game .s-player{font-size:.68rem}
+  #s-game .s-active-bar{padding:.3rem .75rem;border-radius:10px}
+  #s-game .s-active-pts{font-size:1.5rem}
+  #s-game .s-active-name{font-size:.85rem}
   #s-game .steal-bar{padding:.35rem .75rem;font-size:.88rem;margin-bottom:.3rem}
   #s-game .q-card{padding:.9rem;margin-bottom:.45rem}
   #s-game .q-txt{font-size:1rem;margin-bottom:.6rem}
@@ -704,9 +703,8 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .board-cat-hdr{height:58px;font-size:.82rem}
   body.in-game .board-cell{font-size:1.55rem;min-height:52px}
   body.in-game .board-title{font-size:.9rem;margin-bottom:.3rem}
-  #s-game .s-pts{font-size:1.6rem}
-  #s-game .s-name{font-size:.88rem}
-  #s-game .s-player{font-size:.72rem}
+  #s-game .s-active-pts{font-size:1.6rem}
+  #s-game .s-active-name{font-size:.88rem}
   #s-game .steal-bar{font-size:.95rem;padding:.45rem .9rem}
   #s-game .q-card{padding:1.1rem}
   #s-game .q-txt{font-size:1.1rem !important;line-height:1.6 !important}
@@ -735,10 +733,11 @@ body.in-game #q-area:not(:empty){flex:1}
   body.in-game .board-cat-hdr{height:72px;font-size:.95rem}
   body.in-game .board-cell{font-size:2.1rem;min-height:64px}
   body.in-game .board-title{font-size:1.1rem;margin-bottom:.4rem}
-  #s-game .s-card{padding:.65rem 1.25rem}
-  #s-game .s-pts{font-size:2.2rem}
-  #s-game .s-name{font-size:1.05rem}
-  #s-game .s-player{font-size:.82rem}
+  #s-game .s-active-bar{padding:.5rem 1.25rem}
+  #s-game .s-active-pts{font-size:2.2rem}
+  #s-game .s-active-name{font-size:1.05rem}
+  #s-game .s-chip-pts{font-size:1rem}
+  #s-game .s-chip-name{font-size:.78rem}
   #s-game .steal-bar{font-size:1.1rem;padding:.6rem 1rem}
   #game-info-bar{padding:.6rem 1rem;margin-bottom:.5rem;font-size:1rem}
   #gib-timer{font-size:1.35rem !important}
@@ -823,8 +822,7 @@ body.a11y .board-cell{font-size:1.4rem !important}
 body.a11y .fb{font-size:1rem !important}
 body.a11y #gib-timer{font-size:1.6rem !important}
 body.a11y button:focus-visible,body.a11y input:focus-visible,body.a11y select:focus-visible,body.a11y textarea:focus-visible{outline:4px solid #1a1a2e;outline-offset:3px}
-body.a11y .s-card{border-width:3px !important}
-body.a11y .s-card.cur{background:#d1fae5 !important}
+body.a11y .s-active-bar{border-width:3px !important;background:#d1fae5 !important}
 body.a11y .opt-btn.ok{background:#15803d !important;border-color:#15803d !important}
 body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !important}
 /* Accessibility toggle — small icon button, never in the way */
@@ -2531,10 +2529,19 @@ function renderBoard(){
   const strip=document.getElementById('q-info-strip');if(strip)strip.classList.remove('show');
   const t=G.ct;
 
-  // Scores
+  // Scores — single active-player bar + compact chips for others
   const sw=document.getElementById('scores-wrap');
-  sw.style.gridTemplateColumns='repeat('+G.teams.length+',1fr)';
-  sw.innerHTML=G.teams.map((team,i)=>{const isCur=i===t&&G.style!=='mod';return'<div class="s-card '+(isCur?'cur':'')+'" aria-label="'+team.name+': '+G.scores[i]+' points'+(isCur?' — current turn':'')+'"><div class="s-left"><div class="s-name">'+team.name+'</div>'+(isCur?'<div class="s-turn-pill">YOUR TURN</div>':'<div class="s-player">'+team.players[G.mi[i]%team.players.length]+'</div>')+'</div><div class="s-pts-wrap"><div class="s-pts-lbl">total pts</div><div class="s-pts '+SCOLS[i%4]+'" aria-hidden="true">'+G.scores[i]+'</div></div></div>';}).join('');
+  sw.style.gridTemplateColumns='';
+  const isMod=G.style==='mod';
+  const activeTeam=G.teams[t];
+  const activeScore=G.scores[t];
+  const otherChips=G.teams.map((team,i)=>i===t?''
+    :'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
+  sw.innerHTML='<div class="s-active-bar'+(isMod?' mod':'')+'">'
+    +'<span class="s-active-name s-active-name-t">'+activeTeam.name+'</span>'
+    +'<span class="s-active-pts s-active-pts-t">'+activeScore+'</span>'
+    +'</div>'
+    +(G.teams.length>1?'<div class="s-others">'+otherChips+'</div>':'');
   // Update turn banner
   const tb=document.getElementById('turn-banner');if(tb){tb.style.display='none';}
 
@@ -2781,9 +2788,10 @@ function modAdj(teamIdx,pts){
 function startTmr(){clearInterval(tmr);clearInterval(stealTmr);tLeft=TMAX;updTmr();tmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=10&&tLeft>0)sTick();if(tLeft<=0){clearInterval(tmr);doStealTimer();}},1000);}
 function stopTmr(){clearInterval(tmr);clearInterval(stealTmr);}
 function updTmr(){
-  const m=Math.floor(tLeft/60),s=tLeft%60;
+  const d=Math.max(0,tLeft); // never display negative time
+  const m=Math.floor(d/60),s=d%60;
   const txt=m+':'+(s<10?'0':'')+s;
-  const pct=(tLeft/TMAX)*100;
+  const pct=(d/TMAX)*100;
   const bkg=pct>50?'#22c55e':pct>20?'#f59e0b':'#ef4444';
   // Update in-card timer (question mode)
   const tn=document.getElementById('card-qtimer');
@@ -2947,7 +2955,25 @@ function toggleResultPause(){
 }
 
 function updScores(){
-  document.querySelectorAll('.s-pts').forEach((el,i)=>{if(G.scores[i]!==undefined)el.textContent=G.scores[i];});
+  const sw=document.getElementById('scores-wrap');if(!sw)return;
+  const t=G.ct;
+  // If the active team changed, re-render the whole bar
+  const curActiveName=sw.querySelector('.s-active-name-t');
+  if(!curActiveName||curActiveName.textContent!==G.teams[t].name){
+    // Re-render (active team changed — new turn)
+    const isMod=G.style==='mod';
+    const otherChips=G.teams.map((team,i)=>i===t?''
+      :'<div class="s-chip"><span class="s-chip-name s-chip-name-'+i+'">'+team.name+'</span><span class="s-chip-pts s-pts-'+i+'">'+G.scores[i]+'</span></div>').join('');
+    sw.innerHTML='<div class="s-active-bar'+(isMod?' mod':'')+'">'
+      +'<span class="s-active-name s-active-name-t">'+G.teams[t].name+'</span>'
+      +'<span class="s-active-pts s-active-pts-t">'+G.scores[t]+'</span>'
+      +'</div>'
+      +(G.teams.length>1?'<div class="s-others">'+otherChips+'</div>':'');
+  } else {
+    // Just update numbers in place
+    const ap=sw.querySelector('.s-active-pts-t');if(ap)ap.textContent=G.scores[t];
+    G.teams.forEach((_,i)=>{if(i===t)return;const el=sw.querySelector('.s-pts-'+i);if(el)el.textContent=G.scores[i];});
+  }
 }
 
 function doPass(){
@@ -3726,7 +3752,7 @@ function mpMirrorState(st){
     // Always render from server state so all devices show the same question
     renderQuestion(st.current_question,st.current_cell.pts);
     if(st.question_started_at){
-      const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
+      const elapsed=Math.max(0,Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000));
       tLeft=Math.max(0,TMAX-elapsed);
     }
     // Non-active player: silent visual-only timer + disable buttons
@@ -3735,7 +3761,7 @@ function mpMirrorState(st){
       // silent visual countdown — spectators see the clock but make no sound/action
       clearInterval(tmr);clearInterval(stealTmr);
       if(st.question_started_at){
-        const elapsed=Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000);
+        const elapsed=Math.max(0,Math.floor((Date.now()-new Date(st.question_started_at).getTime())/1000));
         tLeft=Math.max(0,TMAX-elapsed);
       }
       tmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(tmr);}},1000);
