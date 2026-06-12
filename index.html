@@ -2469,7 +2469,8 @@ async function genQsForCategory(catId){
   const parsed=JSON.parse(txt.slice(s,e+1));
   if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error('No questions');
   saveQsToDb(parsed.questions).catch(()=>{});
-  return parsed.questions.filter(q=>!wasAsked(q)&&!isBlockedQ(q));
+  const catFix={'World Religeons':'World Religions','World Religeon':'World Religions','Religions':'World Religions','American Histoy':'American History','Goegraphy':'Geography','Goography':'Geography'};
+  return parsed.questions.filter(q=>!wasAsked(q)&&!isBlockedQ(q)).map(q=>({...q,category:catFix[q.category]||q.category}));
 }
 
 async function saveQsToDb(qs){
