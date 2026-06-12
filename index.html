@@ -1265,7 +1265,7 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <div id="s-game" class="screen">
       <div class="game-top">
         <div class="game-header">
-          <div class="yfh-logo sm on-dark"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here</span>?</span></div>
+          <div class="yfh-logo sm" style="background:#fff;border-radius:6px;padding:.2rem .45rem"><img src="/favicon.png" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here</span>?</span></div>
           <div class="scores-wrap" id="scores-wrap" aria-label="Scores" aria-live="polite"></div>
           <div style="display:flex;gap:.4rem;align-items:center;flex-shrink:0">
             <span id="room-badge"><span class="rb-dot"></span> <span id="room-badge-code"></span></span>
@@ -2893,17 +2893,15 @@ function showResultPhase(ok,pts,exp,surp){
   const hasImg=!!imgHtml;
   const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
   const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
-  const AUTO_SECS=MP.active?5:4;
+  const AUTO_SECS=10;
   const body=(hasImg?'<div class="q-body">':'')
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
     +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
-    +'<div style="display:flex;gap:.5rem;margin-top:.7rem">'
-    +'<button class="nxt-btn" id="nb" style="display:flex;flex:1" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
-    +'<button id="pause-btn" style="background:#f3f4f6;border:1.5px solid #d1d5db;border-radius:12px;padding:.85rem .9rem;font-size:.82rem;font-weight:700;cursor:pointer;color:#374151;white-space:nowrap;flex-shrink:0" onclick="toggleResultPause()">⏸ Hold on</button>'
-    +'</div>'
+    +'<button id="pause-btn" style="display:block;width:100%;margin-top:.6rem;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.35rem;font-size:.75rem;font-weight:600;cursor:pointer;color:#9ca3af;letter-spacing:.02em" onclick="toggleResultPause()">⏸ Hold on — let me read this</button>'
+    +'<button class="nxt-btn" id="nb" style="display:flex;margin-top:.35rem" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
   if(exp)showShare(exp);
