@@ -2672,14 +2672,14 @@ function renderQuestion(q,pts){
   }
 
   // Show turn banner (not in solo — only one player)
-  const tb=document.getElementById(‘turn-banner’);
-  if(tb&&G.style!==’mod’&&G.style!==’solo’){
+  const tb=document.getElementById('turn-banner');
+  if(tb&&G.style!=='mod'&&G.style!=='solo'){
     const curTeam=G.teams[G.ct];
-    const curName=curTeam?curTeam.name:’’;
-    tb.textContent=`🎯 ${curName}’s turn`;
-    tb.style.display=’block’;
-  } else if(tb&&(G.style===’mod’||G.style===’solo’)){
-    tb.style.display=’none’;
+    const curName=curTeam?curTeam.name:'';
+    tb.textContent=`🎯 ${curName}'s turn`;
+    tb.style.display='block';
+  } else if(tb&&(G.style==='mod'||G.style==='solo')){
+    tb.style.display='none';
   }
 
   const isPhoto=q.type==='photo';
