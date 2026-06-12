@@ -2626,6 +2626,7 @@ function renderBoard(){
 }
 
 function pickCell(catId,cellKey){
+  clearInterval(_autoNextTimer);_autoNextTimer=null;_resultPaused=false;
   // In room mode: only the active player can pick a cell
   if(MP.active&&MP.lastState){
     const st=MP.lastState;
