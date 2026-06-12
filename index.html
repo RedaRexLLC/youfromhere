@@ -779,10 +779,16 @@ body.in-game #q-area:not(:empty){flex:1}
 
 /* ── PHOTO QUESTIONS ── */
 .q-img-wrap{border-radius:12px;overflow:hidden;margin-bottom:.85rem;position:relative;background:#1a1a2e;line-height:0}
-.q-img{width:100%;height:260px;object-fit:cover;display:block;transition:opacity .3s}
+.q-img{width:100%;height:260px;object-fit:cover;display:block;transition:opacity .3s,filter .4s}
 .q-img-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,rgba(0,0,0,.75));pointer-events:none}
 .q-img-overlay-top{position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(rgba(0,0,0,.85),transparent);pointer-events:none}
 .q-img-badge{position:absolute;top:.6rem;left:.6rem;background:rgba(0,0,0,.55);color:#fff;font-size:.68rem;font-weight:700;padding:.2rem .55rem;border-radius:6px;letter-spacing:.05em;backdrop-filter:blur(4px)}
+/* Spoiler blur — applied during question phase, removed on reveal */
+.q-img-wrap.spoiler .q-img{filter:blur(18px);transform:scale(1.08)}
+.q-img-spoiler-cover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:rgba(0,0,0,.35);cursor:pointer;transition:opacity .2s}
+.q-img-spoiler-cover:hover{background:rgba(0,0,0,.2)}
+.q-img-spoiler-cover span:first-child{font-size:2rem}
+.q-img-spoiler-cover span:last-child{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.06em;text-transform:uppercase;background:rgba(0,0,0,.5);padding:.2rem .6rem;border-radius:6px}
 .q-north-arrow{position:absolute;top:.6rem;right:.6rem;background:rgba(0,0,0,.65);color:#fff;font-size:.72rem;font-weight:700;padding:.25rem .5rem;border-radius:6px;backdrop-filter:blur(4px);line-height:1.2;text-align:center;pointer-events:none}
 .q-img-loading{height:200px;display:flex;align-items:center;justify-content:center;background:#f0f0ee;border-radius:12px;margin-bottom:.85rem;color:#9ca3af;font-size:.85rem;gap:.5rem}
 #s-game .q-img{height:200px}
@@ -2561,12 +2567,13 @@ function renderQuestion(q,pts){
       const wrap=document.getElementById('q-img-container');
       if(!wrap)return;
       if(imgUrl){
-        wrap.className='q-img-wrap';
+        wrap.className='q-img-wrap spoiler';
         document.body.classList.add('has-img');
         wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-overlay-top"></div>'
-          +'<div class="q-img-badge">📸 Where is this?</div>';
+          +'<div class="q-img-badge">📸 Where is this?</div>'
+          +'<div class="q-img-spoiler-cover" onclick="this.closest(\'.q-img-wrap\').classList.toggle(\'spoiler\')" title="Peek at image"><span>👁</span><span>Tap to peek</span></div>';
       }else{
         wrap.className='q-img-wrap';
         wrap.innerHTML='<div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px">'
@@ -2720,18 +2727,23 @@ function showResultPhase(ok,pts,exp,surp){
   const card=document.querySelector('#q-area .q-card');
   if(!card)return;
   const imgWrap=card.querySelector('.q-img-wrap');
+  // Strip spoiler — reveal the image now that the question is answered
+  if(imgWrap){imgWrap.classList.remove('spoiler');imgWrap.querySelector('.q-img-spoiler-cover')?.remove();}
   const imgHtml=imgWrap?imgWrap.outerHTML:'';
   const hasImg=!!imgHtml;
   const catLbl=q.category?'<div class="q-cat-lbl">'+q.category+'</div>':'';
   const statusTxt=ok?'✓ Correct! +'+pts+' pts':'✗ Not quite — correct answer: '+q.answer;
-  const AUTO_SECS=MP.active?5:4; // slightly longer in multiplayer so everyone can read
+  const AUTO_SECS=MP.active?5:4;
   const body=(hasImg?'<div class="q-body">':'')
     +catLbl
     +'<div class="result-q-ref">'+q.question+'</div>'
     +'<div class="result-status '+(ok?'ok':'no')+'">'+statusTxt+'</div>'
     +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
-    +'<button class="nxt-btn" id="nb" style="display:flex" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
+    +'<div style="display:flex;gap:.5rem;margin-top:.7rem">'
+    +'<button class="nxt-btn" id="nb" style="display:flex;flex:1" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
+    +'<button id="pause-btn" style="background:#f3f4f6;border:1.5px solid #d1d5db;border-radius:12px;padding:.85rem .9rem;font-size:.82rem;font-weight:700;cursor:pointer;color:#374151;white-space:nowrap;flex-shrink:0" onclick="toggleResultPause()">⏸ Hold on</button>'
+    +'</div>'
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
   if(exp)showShare(exp);
@@ -2744,6 +2756,30 @@ function showResultPhase(ok,pts,exp,surp){
     if(el)el.textContent='('+rem+')';
     if(rem<=0){clearInterval(_autoNextTimer);_autoNextTimer=null;nextTurn();}
   },1000);
+}
+
+let _resultPaused=false;
+function toggleResultPause(){
+  const btn=document.getElementById('pause-btn');
+  const countEl=document.getElementById('auto-next-count');
+  if(!_resultPaused){
+    // Pause
+    clearInterval(_autoNextTimer);_autoNextTimer=null;
+    _resultPaused=true;
+    if(btn){btn.textContent='▶ Resume';btn.style.background='#e8b84b';btn.style.color='#1a1a2e';btn.style.borderColor='#e8b84b';}
+    if(countEl)countEl.textContent='(paused)';
+  }else{
+    // Resume — restart countdown from current display or 5s
+    _resultPaused=false;
+    const displayed=countEl?parseInt(countEl.textContent.replace(/\D/g,''))||5:5;
+    let rem=displayed||5;
+    if(btn){btn.textContent='⏸ Hold on';btn.style.background='#f3f4f6';btn.style.color='#374151';btn.style.borderColor='#d1d5db';}
+    _autoNextTimer=setInterval(()=>{
+      rem--;
+      if(countEl)countEl.textContent='('+rem+')';
+      if(rem<=0){clearInterval(_autoNextTimer);_autoNextTimer=null;_resultPaused=false;nextTurn();}
+    },1000);
+  }
 }
 
 function updScores(){
