@@ -2601,7 +2601,7 @@ function renderBoard(){
   document.getElementById('steal-bar').style.display='none';
 
   // Check if board is complete
-  const allUsed=G.board.every(col=>Object.values(col.cells).every(v=>v));
+  const allUsed=G.board.length>0&&G.board.every(col=>Object.values(col.cells).every(v=>v));
   if(allUsed){showResults();return;}
 
   // Determine if this device's player can pick (MP: only active player)
@@ -3118,7 +3118,7 @@ function showResults(){
 function resetGame(){
   stopTmr();clearInterval(_autoNextTimer);_autoNextTimer=null;_resultPaused=false;
   if(MP.active)mpLeave();
-  soloCats=[];wizTeams=[];tc=0;colOn=false;G.college='';G.city='';G.country='';G.style='multi';G.gameMode='local';
+  soloCats=[];wizTeams=[];tc=0;colOn=false;G.college='';G.city='';G.country='';G.style='multi';G.gameMode='local';G.board=[];G.teams=[];G.scores=[];G.bank={};G.usedQs={};
   ['city-input','college-input','world-city','country-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   const csh=document.getElementById('country-select');if(csh)csh.value='';
   const cs=document.getElementById('country-select');if(cs)cs.value='';
