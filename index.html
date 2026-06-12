@@ -2367,7 +2367,7 @@ async function fetchPool(catId){
       mapviewHint:q.mapview_hint,
       placeName:q.place_name,
       wikiTitle:q.wiki_title,
-    }));
+    })).filter(q=>!isBlockedQ(q));
   }catch(e){return[];}
 }
 
@@ -2375,6 +2375,13 @@ async function savePool(qs,catId){
   const loc=G.gameMode==='national'?'national':G.gameMode==='global'?'global':G.gameMode==='world'?(G.country||'world'):G.city;
   const rows=qs.map(q=>({...q,location:loc,game_mode:G.gameMode}));
   try{await fetch('/api/pool',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({questions:rows})});}catch(e){}
+}
+
+// ── CONTENT FILTER ──
+const BLOCKED_TOPICS=['israel','israeli','palestine','palestinian','gaza','west bank','tel aviv','jerusalem','hamas','hezbollah','idf','zion','zionist'];
+function isBlockedQ(q){
+  const haystack=[q.question,q.answer,q.explanation,...(q.options||[])].join(' ').toLowerCase();
+  return BLOCKED_TOPICS.some(t=>haystack.includes(t));
 }
 
 // ── PRE-GENERATE ALL QUESTIONS ──
@@ -2432,6 +2439,7 @@ async function genQsForCategory(catId){
   const medDesc=isNational?'MEDIUM — requires solid American general knowledge':'MEDIUM — requires some local knowledge';
   const nationalScope=isNational?'\nSCOPE REQUIREMENT: Every question MUST be national in scope — about the United States as a whole, its history, culture, people, or shared identity. DO NOT ask about any specific city, town, neighborhood, or local area. If a question is only relevant to residents of one city or region, it does not belong here.':'';
   const prompt=locCtx+'\nCategory: '+catLabel+'. '+collegeNote
+    +'\nDO NOT generate any questions about or mentioning: Israel, Palestine, Gaza, the West Bank, Hamas, Hezbollah, or any related conflict, political entity, or disputed territory.'
     +(asked?'\nDo NOT reuse questions about these topics: '+asked:'')
     +(recentTopics?'\nAVOID these subjects/answers that were recently used: '+recentTopics:'')
     +localTopicPool
@@ -2458,7 +2466,7 @@ async function genQsForCategory(catId){
   const parsed=JSON.parse(txt.slice(s,e+1));
   if(!Array.isArray(parsed.questions)||!parsed.questions.length)throw new Error('No questions');
   saveQsToDb(parsed.questions).catch(()=>{});
-  return parsed.questions.filter(q=>!wasAsked(q));
+  return parsed.questions.filter(q=>!wasAsked(q)&&!isBlockedQ(q));
 }
 
 async function saveQsToDb(qs){
