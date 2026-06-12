@@ -1665,10 +1665,10 @@ function wizSetMode(m){
   G.gameMode=m;
   ['local','national','world'].forEach(id=>{
     const b=document.getElementById('btn-'+id);
-    if(b){b.classList.remove('on');b.style.cssText='';}
+    if(b){b.classList.remove('on');b.style.background='';b.style.color='';b.style.borderColor='';b.style.boxShadow='';}
   });
   const ab=document.getElementById('btn-'+btnId);
-  if(ab)ab.classList.add('on');
+  if(ab){ab.classList.add('on');ab.style.background='#1a1a2e';ab.style.color='#fff';ab.style.borderColor='#1a1a2e';ab.style.boxShadow='0 4px 14px rgba(26,26,46,.2)';}
   document.getElementById('local-inputs').style.display=m==='local'?'block':'none';
   document.getElementById('national-inputs').style.display=m==='national'?'block':'none';
   document.getElementById('world-inputs').style.display=(m==='world'||m==='global')?'block':'none';
