@@ -3063,7 +3063,7 @@ function nextTurn(){
   }
 }
 
-function confirmEndGame(){if(confirm('End the game now?')){stopTmr();sessionStorage.removeItem('yfh_state');showResults();}}
+function confirmEndGame(){if(confirm('End the game now?')){stopTmr();clearInterval(_autoNextTimer);_autoNextTimer=null;sessionStorage.removeItem('yfh_state');showResults();}}
 
 function showShare(fact){
   const b=document.getElementById('sbox');b.className='share-box show';
@@ -3074,7 +3074,7 @@ function showShare(fact){
 function cpFact(f){const t='Did you know? "'+f+'" — '+G.city+'\n\nyoufromhere.com';navigator.clipboard.writeText(t).then(()=>alert('Copied!')).catch(()=>alert(t));}
 
 function showResults(){
-  stopTmr();
+  stopTmr();clearInterval(_autoNextTimer);_autoNextTimer=null;_resultPaused=false;
   if(MP.active){
     mpPatch({phase:'results',scores:G.scores,teams:G.teams});
     mpStopPolling();
@@ -3090,7 +3090,7 @@ function showResults(){
 }
 
 function resetGame(){
-  stopTmr();
+  stopTmr();clearInterval(_autoNextTimer);_autoNextTimer=null;_resultPaused=false;
   if(MP.active)mpLeave();
   soloCats=[];wizTeams=[];tc=0;colOn=false;G.college='';G.city='';G.country='';G.style='multi';G.gameMode='local';
   ['city-input','college-input','world-city','country-search'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
