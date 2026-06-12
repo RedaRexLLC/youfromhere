@@ -1666,7 +1666,7 @@ function wizSetMode(m){
   G.gameMode=m;
   ['local','national','world'].forEach(id=>{
     const b=document.getElementById('btn-'+id);
-    if(b){b.classList.remove('on');b.style.background='';b.style.color='';b.style.borderColor='';b.style.boxShadow='';}
+    if(b){b.classList.remove('on');b.style.background='#fff';b.style.color='#1a1a2e';b.style.borderColor='#e5e7eb';b.style.boxShadow='none';}
   });
   const ab=document.getElementById('btn-'+btnId);
   if(ab){ab.classList.add('on');ab.style.background='#1a1a2e';ab.style.color='#fff';ab.style.borderColor='#1a1a2e';ab.style.boxShadow='0 4px 14px rgba(26,26,46,.2)';}
