@@ -3043,6 +3043,8 @@ function nextTurn(){
     G.ct=(G.ct+1)%G.teams.length;
   }
   G.stealing=false;
+  document.getElementById('q-area').innerHTML='';
+  document.body.classList.remove('has-img','in-question');
   document.getElementById('board-section').style.display='block';
   if(MP.active){
     const st=MP.lastState||{};
