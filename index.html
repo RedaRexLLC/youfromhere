@@ -2714,7 +2714,7 @@ function renderQuestion(q,pts){
   let html='<div class="q-card">'
     +(hasImg?'<div class="q-img-loading" id="q-img-container"><span>'+(isMap?'🗺':'🖼')+'</span> Loading '+(isMap?'map':'image')+'...</div><div class="q-body">':'')
     +'<div class="q-cat-lbl">'+q.category+'</div>'
-    +'<div class="q-txt">'+(q.type==='tf'?'<span style="color:#e8b84b;font-size:.85em;font-weight:700;display:block;margin-bottom:.2em;letter-spacing:.03em">TRUE OR FALSE</span>':'')+q.question+'</div>';
+    +'<div class="q-txt">'+((q.type==='tf'||(q.answer==='true'||q.answer==='false'))&&!q.question.toLowerCase().startsWith('true or false')?'<span style="color:#e8b84b;font-size:.85em;font-weight:700;display:block;margin-bottom:.2em;letter-spacing:.03em">TRUE OR FALSE</span>':'')+q.question+'</div>';
 
   if(isMod){
     // Moderator mode — phase 1: question shown, phase 2: answer + team selection
