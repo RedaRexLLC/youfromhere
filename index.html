@@ -2816,6 +2816,7 @@ function renderQuestion(q,pts){
 
 // ── MODERATOR MODE ──
 function revealModAnswer(){
+  stopTmr();
   const btn=document.getElementById('mod-reveal-btn');
   const bar=document.getElementById('mod-answer-bar');
   if(btn)btn.style.display='none';
@@ -2851,7 +2852,7 @@ function updTmr(){
 
 function doStealTimer(){
   if(G.answered)return;
-  if(G.style==='solo'){doTimeout();return;}
+  if(G.style==='solo'||G.style==='mod'){doTimeout();return;}
   // In MP: treat timer expiry as a wrong answer — broadcasts steal phase to all players
   if(MP.active){
     const pts=G.curCell?.pts||0;
