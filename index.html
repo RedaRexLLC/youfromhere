@@ -1228,12 +1228,20 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <!-- ══ LOADING ══ -->
     <div id="s-loading" class="screen">
       <div class="yfh-logo md" style="margin-bottom:.5rem"><img src="/favicon.png?v=2" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here</span>?</span></div>
-      <!-- Spinner -->
+      <!-- Spinner + quip -->
       <div class="load-box" style="width:100%;max-width:420px;padding:.85rem">
         <div class="spin"></div>
-        <p style="font-weight:700;font-size:1rem;margin-bottom:.75rem" id="load-txt">Loading...</p>
+        <p style="font-weight:700;font-size:1rem;margin-bottom:.3rem" id="load-txt">Loading...</p>
+        <p style="color:#6b7280;font-size:.82rem;margin-bottom:.6rem;line-height:1.5" id="load-sub">Generating your questions</p>
         <div class="load-progress"><div class="load-progress-fill" id="load-prog" style="width:0%"></div></div>
-        <p id="load-sub" style="display:none"></p>
+        <!-- Vibe selector -->
+        <p style="font-size:.72rem;color:#9ca3af;margin:.85rem 0 .3rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Who's playing?</p>
+        <div class="vibe-row">
+          <button class="vibe-btn" id="vibe-family" onclick="selectVibe('family')">👨‍👩‍👧 Family Stand-Off</button>
+          <button class="vibe-btn" id="vibe-friends" onclick="selectVibe('friends')">🫂 Friend Zone</button>
+          <button class="vibe-btn" id="vibe-solo" onclick="selectVibe('solo')">🎯 Flying Solo</button>
+        </div>
+        <button class="submit-quip-link" onclick="openSubmitQuip()">💬 Got a funny one? Submit a quip →</button>
       </div>
       <!-- QR code -->
       <div class="qr-card" id="share-qr-card" style="width:100%;max-width:420px">
@@ -2196,6 +2204,9 @@ function buildQuips(){
     'This is how legends are made. Or how people get roasted forever. Both are equally valid outcomes.',
     'Somewhere a friend is convinced they\'re about to destroy everyone. Sweet. Naive. So very wrong.',
     'No matter what happens tonight, someone is walking away with a new nickname. Probably not a good one.',
+    'A wise person once said "the best nights are the ones you actually remember." We support this message.',
+    'We\'re quietly bringing back the kind of fun that doesn\'t come with a morning-after story. You\'re welcome.',
+    'Imagine a room full of people, laughing, arguing, winning — and not a single thing in anyone\'s hand except this game. Revolutionary, we know.',
   ];
 
   const vibeSolo=[
@@ -2242,17 +2253,11 @@ function buildQuips(){
     'No game night is complete without at least one moment of "WAIT THAT\'S WRONG." We provide those.',
     'This is the part where your group chat finally agrees on something. Probably what to eat. While playing this.',
     'Pro tip: game nights with good questions make people forget to check their phones. This is that game.',
-    // Friend game night / sober gathering energy
-    'Imagine a room full of people, laughing, arguing, winning — and not a single thing in anyone\'s hand except this game. Revolutionary, we know.',
-    'Fun fact: in most of the world, people just... sit together and talk. No entry fee. No substances. Just people being people. Wild concept.',
+    // Community / gathering
     'Some cultures have been hosting legendary gatherings for centuries with nothing but good company, good food, and good conversation. We\'re adding good trivia to that list.',
     'Who decided fun required a price of admission? Not us. All you need is a phone and people who think they\'re smarter than they are.',
-    'PSA: your couch, your friends, and this game is literally all you need for a great night. We checked.',
-    'Turns out humans are actually pretty entertaining when you give them a reason to compete. No extras required.',
-    'A wise person once said "the best nights are the ones you actually remember." We support this message.',
-    'Somewhere right now a group of friends is having the time of their lives with nothing but each other and a trivia game. That could be you. That IS you.',
+    'Somewhere right now a group of people is having the time of their lives with nothing but each other and a trivia game. That could be you. That IS you.',
     'Game nights don\'t have an age limit, a dress code, or a cover charge. They just need people. Hopefully competitive ones.',
-    'We\'re quietly bringing back the kind of fun that doesn\'t come with a morning-after story. You\'re welcome.',
     'Other countries have tea ceremonies, card games, and gathering traditions that have lasted thousands of years. We\'re just a trivia game. But still.',
     // Funny / patience
     'Patience is a virtue. So is having good trivia questions. Both are loading.',
