@@ -3690,8 +3690,21 @@ async function mpPoll(){
     // In lobby
     if(document.getElementById('s-mp-wait')?.classList.contains('active')){
       mpRenderLobby(st);
-      if(!MP.isHost&&(st.phase==='loading'||st.phase==='board')){
+      if(!MP.isHost&&(st.phase==='loading'||st.phase==='board')&&!MP.preGenStarted){
         mpApplyGameConfig(st);
+      }
+      return;
+    }
+
+    // On loading screen (non-host): wait for host to finish before showing board
+    if(document.getElementById('s-loading')?.classList.contains('active')&&!MP.isHost&&MP.preGenPromise){
+      if(st.phase==='board'){
+        MP.preGenPromise.then(()=>{
+          MP.preGenPromise=null;MP.preGenStarted=false;
+          MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=-1;
+          show('s-game');renderBoard();mpShowRoomBadge();
+          MP.syncing=true;mpMirrorState(st);MP.syncing=false;
+        }).catch(e=>{console.error(e);mpLeave();});
       }
       return;
     }
@@ -3722,11 +3735,9 @@ function mpApplyGameConfig(st){
   document.getElementById('load-txt').textContent='Loading '+loc+'...';
   document.getElementById('load-prog').style.width='0%';
   show('s-loading');
-  preGenAll().then(()=>{
-    MP.lastPhase='board';MP.lastCellKey=null;MP.lastTurnIndex=-1;
-    show('s-game');renderBoard();mpShowRoomBadge();
-    MP.syncing=true;mpMirrorState(st);MP.syncing=false;
-  }).catch(e=>{console.error(e);mpLeave();});
+  // Store the promise — poll will show the board once host sets phase:'board'
+  MP.preGenStarted=true;
+  MP.preGenPromise=preGenAll().catch(e=>{console.error(e);mpLeave();});
 }
 
 function mpBuildGFromState(st){
@@ -3999,6 +4010,7 @@ function mpLeave(){
   mpStopPolling();clearInterval(mpCountdownInterval);
   MP.active=false;MP.code=null;MP.playerId=null;MP.playerName=null;MP.isHost=false;
   MP.myVotes=[];MP.votesSubmitted=false;MP.lastPhase=null;MP.lastCellKey=null;MP.lastTurnIndex=-1;MP.lastState=null;
+  MP.preGenPromise=null;MP.preGenStarted=false;
   const banner=document.getElementById('room-code-banner');if(banner)banner.style.display='none';
   const badge=document.getElementById('room-badge');if(badge)badge.classList.remove('show');
   show('s-home');wizGoTo(1);
