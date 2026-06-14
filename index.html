@@ -2412,11 +2412,13 @@ async function preGenAll(){
     return genQsForCategory(catId).then(newQs=>{addRecentTopics(newQs);savePool(newQs,catId);return newQs;}).catch(e=>{console.warn('genQs failed for',catId,e);return[];});
   }));
 
-  // Merge into bank
+  // Merge into bank, deduplicating by question text
   catData.forEach(({fresh},i)=>{
     const qs=[...fresh,...genResults[i]];
     [200,400,600].forEach(pts=>{G.bank[pts].push(...qs.filter(q=>q.points===pts));});
   });
+  const seen=new Set();
+  [200,400,600].forEach(pts=>{G.bank[pts]=G.bank[pts].filter(q=>{if(seen.has(q.question))return false;seen.add(q.question);return true;});});
   if(prog)prog.style.width='100%';
   stopQuips();
 }
