@@ -2823,7 +2823,7 @@ function modCorrect(teamIdx,pts){
   G.scores[teamIdx]+=pts;G.mi[teamIdx]++;sOk();
   updScores();
 }
-function modWrong(){sNo();}
+function modWrong(){sNo();nextTurn();}
 function modAdj(teamIdx,pts){
   G.scores[teamIdx]+=pts;sOk();updScores();
 }
