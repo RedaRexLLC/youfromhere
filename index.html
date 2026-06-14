@@ -2378,7 +2378,9 @@ async function savePool(qs,catId){
 }
 
 // ── CONTENT FILTER ──
-const BLOCKED_TOPICS=['hamas','hezbollah','idf','iron dome','settler','settlements','occupation forces','military operation','airstrike','rocket attack','intifada','apartheid wall','ethnic cleansing'];
+const BLOCKED_TOPICS=['hamas','hezbollah','idf','iron dome','settler','settlements','occupation forces','military operation','airstrike','rocket attack','intifada','apartheid wall','ethnic cleansing',
+  // Healthcare policy — sensitive/divisive, not fun trivia
+  'healthcare spending','health care spending','per capita health','uninsured','health insurance cost','medical debt','afford healthcare','afford health care'];
 function isBlockedQ(q){
   const haystack=[q.question,q.answer,q.explanation,...(q.options||[])].join(' ').toLowerCase();
   return BLOCKED_TOPICS.some(t=>haystack.includes(t));
