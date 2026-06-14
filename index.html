@@ -1228,20 +1228,12 @@ body.a11y .opt-btn.no{background:#b91c1c !important;border-color:#b91c1c !import
     <!-- ══ LOADING ══ -->
     <div id="s-loading" class="screen">
       <div class="yfh-logo md" style="margin-bottom:.5rem"><img src="/favicon.png?v=2" class="yfh-fav" alt=""/><span class="yfh-name">You From <span class="yfh-here">Here</span>?</span></div>
-      <!-- Spinner + quip -->
+      <!-- Spinner -->
       <div class="load-box" style="width:100%;max-width:420px;padding:.85rem">
         <div class="spin"></div>
-        <p style="font-weight:700;font-size:1rem;margin-bottom:.3rem" id="load-txt">Loading...</p>
-        <p style="color:#6b7280;font-size:.82rem;margin-bottom:.6rem;line-height:1.5" id="load-sub">Generating your questions</p>
+        <p style="font-weight:700;font-size:1rem;margin-bottom:.75rem" id="load-txt">Loading...</p>
         <div class="load-progress"><div class="load-progress-fill" id="load-prog" style="width:0%"></div></div>
-        <!-- Vibe selector -->
-        <p style="font-size:.72rem;color:#9ca3af;margin:.85rem 0 .3rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em">Who's playing?</p>
-        <div class="vibe-row">
-          <button class="vibe-btn" id="vibe-family" onclick="selectVibe('family')">👨‍👩‍👧 Family Stand-Off</button>
-          <button class="vibe-btn" id="vibe-friends" onclick="selectVibe('friends')">🫂 Friend Zone</button>
-          <button class="vibe-btn" id="vibe-solo" onclick="selectVibe('solo')">🎯 Flying Solo</button>
-        </div>
-        <button class="submit-quip-link" onclick="openSubmitQuip()">💬 Got a funny one? Submit a quip →</button>
+        <p id="load-sub" style="display:none"></p>
       </div>
       <!-- QR code -->
       <div class="qr-card" id="share-qr-card" style="width:100%;max-width:420px">
