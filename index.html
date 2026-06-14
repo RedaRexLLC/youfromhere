@@ -2768,13 +2768,12 @@ function renderQuestion(q,pts){
       const wrap=document.getElementById('q-img-container');
       if(!wrap)return;
       if(imgUrl){
-        wrap.className='q-img-wrap spoiler';
+        wrap.className='q-img-wrap';
         document.body.classList.add('has-img');
         wrap.innerHTML='<img class="q-img" src="'+imgUrl+'" alt="'+q.question+'" loading="eager"/>'
           +'<div class="q-img-overlay"></div>'
           +'<div class="q-img-overlay-top"></div>'
-          +'<div class="q-img-badge">📸 Where is this?</div>'
-          +'<div class="q-img-spoiler-cover" onclick="this.closest(\'.q-img-wrap\').classList.toggle(\'spoiler\')" title="Peek at image"><span>👁</span><span>Tap to peek</span></div>';
+          +'<div class="q-img-badge">📸 Where is this?</div>';
       }else{
         wrap.className='q-img-wrap';
         wrap.innerHTML='<div style="height:140px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;background:#1a1a2e;border-radius:12px">'
