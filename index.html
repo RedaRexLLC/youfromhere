@@ -3914,27 +3914,38 @@ function showStealUI(isExcluded,st){
     // Eligible stealer — dramatic Take a Chance card
     card.style.cssText='margin-top:.75rem;padding:1.1rem;background:linear-gradient(135deg,#1a1a2e,#2d1a4e);border:2px solid #e8b84b;border-radius:14px;text-align:center;color:#fff;animation:stealPulse .6s ease';
     card.innerHTML='<div style="font-size:1.3rem;font-weight:900;color:#e8b84b;letter-spacing:.04em;margin-bottom:.2rem">⚡ TAKE A CHANCE!</div>'
-      +'<div style="font-size:.85rem;color:#d1d5db;margin-bottom:.75rem">Answer correctly to steal the points — <strong style="color:#fff">first correct answer wins</strong></div>'
+      +'<div class="steal-sub-txt" style="font-size:.85rem;color:#d1d5db;margin-bottom:.75rem">Answer correctly to steal the points — <strong style="color:#fff">first correct answer wins</strong></div>'
       +'<div id="steal-answer-area"></div>'
       +'<div style="font-size:.72rem;color:#9ca3af;margin-top:.6rem">Don\'t say your answer out loud!</div>';
-    // Clone answer buttons into the steal card
+    // Build answer buttons from question data (never clone DOM — avoids missing/colored button issues)
     setTimeout(()=>{
       const ansArea=document.getElementById('steal-answer-area');
       if(!ansArea)return;
-      // Re-enable and rewire the existing buttons
-      document.querySelectorAll('.opt-btn,.tf-btn').forEach(b=>{
-        const clone=b.cloneNode(true);
-        clone.disabled=false;
-        clone.style.cssText='';
-        const ans=b.textContent.trim();
-        clone.onclick=()=>{
-          ansArea.querySelectorAll('button').forEach(x=>x.disabled=true);
-          card.querySelector('div:nth-child(2)').textContent='⏳ Submitted! Waiting for results…';
-          mpSubmitStealAnswer(ans);
-        };
-        ansArea.appendChild(clone);
-      });
-      ansArea.style.cssText='display:flex;flex-direction:column;gap:.4rem';
+      const q=st.current_question;
+      if(!q)return;
+      const submitAns=ans=>{
+        ansArea.querySelectorAll('button').forEach(x=>x.disabled=true);
+        const sub=card.querySelector('.steal-sub-txt');if(sub)sub.textContent='⏳ Submitted! Waiting for results…';
+        mpSubmitStealAnswer(ans);
+      };
+      if(q.type==='tf'){
+        ['True','False'].forEach(val=>{
+          const btn=document.createElement('button');
+          btn.className='tf-btn';btn.textContent=val;
+          btn.onclick=()=>submitAns(val.toLowerCase());
+          ansArea.appendChild(btn);
+        });
+        ansArea.style.cssText='display:flex;gap:.5rem';
+      } else {
+        const opts=q.options?[...q.options]:[];
+        opts.forEach(opt=>{
+          const btn=document.createElement('button');
+          btn.className='opt-btn';btn.textContent=opt;
+          btn.onclick=()=>submitAns(opt);
+          ansArea.appendChild(btn);
+        });
+        ansArea.style.cssText='display:flex;flex-direction:column;gap:.4rem';
+      }
     },30);
   }
   qArea.appendChild(card);
