@@ -2909,7 +2909,7 @@ function resolve(ok,pts,exp,surp){
       showStealUI(true,stealState);
       stopTmr();
       tLeft=STEAL_TIME;updTmr();
-      stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);if(MP.isHost)mpEvaluateSteal({...stealState,steal_submissions:{}});}},1000);
+      stealTmr=setInterval(()=>{tLeft--;updTmr();if(tLeft<=0){clearInterval(stealTmr);if(MP.isHost){fetch('/api/room?code='+MP.code).then(r=>r.json()).then(room=>mpEvaluateSteal(room.state)).catch(()=>mpEvaluateSteal({...stealState,steal_submissions:{}}));}}},1000);
       return;
     }
 
