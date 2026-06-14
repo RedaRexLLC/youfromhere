@@ -2581,26 +2581,30 @@ function renderBoard(){
   // Update turn banner
   const tb=document.getElementById('turn-banner');if(tb){tb.style.display='none';}
 
-  // Combined info bar — board phase
+  // Combined info bar — board phase (hidden in MP; turn-banner handles it there)
   const gib=document.getElementById('game-info-bar');
   if(gib){
-    gib.style.display='block';
-    gib.className='';
     document.body.classList.remove('in-question');
     const sw=document.getElementById('scores-wrap');if(sw)sw.style.display='';
-    const gibTurn=document.getElementById('gib-turn');
-    const gibPts=document.getElementById('gib-pts');
-    const gibCat=document.getElementById('gib-cat');
-    const gibTimer=document.getElementById('gib-timer');
-    const gibTbar=document.getElementById('gib-tbar-wrap');
-    if(gibPts)gibPts.style.display='none';
-    if(gibCat)gibCat.style.display='none';
-    if(gibTimer)gibTimer.style.display='none';
-    if(gibTbar)gibTbar.style.display='none';
-    if(gibTurn){
-      if(G.style==='solo')gib.style.display='none';
-      else if(G.style==='mod')gibTurn.textContent='🎙️ Moderator — pick a question for any team';
-      else{const mem=G.teams[t].players[G.mi[t]%G.teams[t].players.length];gibTurn.textContent='🎯 '+G.teams[t].name+'\'s turn · '+mem;}
+    if(MP.active){
+      gib.style.display='none';
+    } else {
+      gib.style.display='block';
+      gib.className='';
+      const gibTurn=document.getElementById('gib-turn');
+      const gibPts=document.getElementById('gib-pts');
+      const gibCat=document.getElementById('gib-cat');
+      const gibTimer=document.getElementById('gib-timer');
+      const gibTbar=document.getElementById('gib-tbar-wrap');
+      if(gibPts)gibPts.style.display='none';
+      if(gibCat)gibCat.style.display='none';
+      if(gibTimer)gibTimer.style.display='none';
+      if(gibTbar)gibTbar.style.display='none';
+      if(gibTurn){
+        if(G.style==='solo')gib.style.display='none';
+        else if(G.style==='mod')gibTurn.textContent='🎙️ Moderator — pick a question for any team';
+        else{const mem=G.teams[t].players[G.mi[t]%G.teams[t].players.length];gibTurn.textContent='🎯 '+G.teams[t].name+'\'s turn · '+mem;}
+      }
     }
   }
   document.getElementById('steal-bar').style.display='none';
@@ -2951,7 +2955,9 @@ function showResultPhase(ok,pts,exp,surp){
     +(exp?'<div class="result-share"><div class="share-box" id="sbox"></div></div>':'')
     +'<button class="report-btn" onclick="reportQ()">⚑ Report this question</button>'
     +(drivesNext?'<button id="pause-btn" style="display:block;width:100%;margin-top:.6rem;background:none;border:1px solid #e5e7eb;border-radius:8px;padding:.35rem;font-size:.75rem;font-weight:600;cursor:pointer;color:#9ca3af;letter-spacing:.02em" onclick="toggleResultPause()">⏸ Hold on — let me read this</button>':'')
-    +'<button class="nxt-btn" id="nb" style="display:flex;margin-top:.35rem" onclick="nextTurn()">'+(drivesNext?'Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span>':'Next →')+'</button>'
+    +(drivesNext
+      ?'<button class="nxt-btn" id="nb" style="display:flex;margin-top:.35rem" onclick="nextTurn()">Next <span id="auto-next-count" style="font-size:.75em;opacity:.7;margin-left:.25rem">('+AUTO_SECS+')</span></button>'
+      :'<div style="margin-top:.5rem;text-align:center;font-size:.8rem;color:#9ca3af;padding:.5rem">⏳ Waiting for active player…</div>')
     +(hasImg?'</div>':'');
   card.innerHTML=imgHtml+body;
   if(exp)showShare(exp);
