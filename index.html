@@ -2392,29 +2392,32 @@ async function preGenAll(){
     :[...new Set(G.teams.flatMap(t=>t.cats))];
   G.bank={200:[],400:[],600:[]};
   const seenIds=getSeenIds();
-  let done=0;
+  const prog=document.getElementById('load-prog');
   startQuips();
-  for(const catId of cats){
-    try{
-    // 1. Try fetching from the pool first
-    let poolQs=await fetchPool(catId);
-    // Filter out questions this device has already seen
-    const fresh=poolQs.filter(q=>!seenIds.has(q.id));
-    const needsTopUp=fresh.length<MIN_POOL;
-    // 2. Top up with Claude if pool is thin
-    if(needsTopUp){
-      let newQs=[];
-      try{newQs=await genQsForCategory(catId);addRecentTopics(newQs);savePool(newQs,catId);}
-      catch(e){console.warn('genQs failed for',catId,e);} // skip bad cat, don't abort all
-      const merged=[...fresh,...newQs];
-      [200,400,600].forEach(pts=>{G.bank[pts].push(...merged.filter(q=>q.points===pts));});
-    } else {
-      [200,400,600].forEach(pts=>{G.bank[pts].push(...fresh.filter(q=>q.points===pts));});
-    }
-    }catch(e){console.warn('preGenAll skipping cat',catId,e);}
-    done++;
-    document.getElementById('load-prog').style.width=Math.round(done/cats.length*100)+'%';
-  }
+
+  // 1. Fetch all DB pools in parallel — much faster than one-by-one
+  const poolResults=await Promise.all(cats.map(catId=>fetchPool(catId).catch(()=>[])));
+  if(prog)prog.style.width='50%';
+
+  // 2. For categories with enough fresh questions use DB; top up thin ones with Claude (in parallel)
+  const topUpJobs=[];
+  const catData=cats.map((catId,i)=>{
+    const fresh=poolResults[i].filter(q=>!seenIds.has(q.id));
+    return{catId,fresh,needsTopUp:fresh.length<MIN_POOL};
+  });
+
+  // Kick off all Claude top-ups at the same time
+  const genResults=await Promise.all(catData.map(({catId,needsTopUp})=>{
+    if(!needsTopUp)return Promise.resolve([]);
+    return genQsForCategory(catId).then(newQs=>{addRecentTopics(newQs);savePool(newQs,catId);return newQs;}).catch(e=>{console.warn('genQs failed for',catId,e);return[];});
+  }));
+
+  // Merge into bank
+  catData.forEach(({fresh},i)=>{
+    const qs=[...fresh,...genResults[i]];
+    [200,400,600].forEach(pts=>{G.bank[pts].push(...qs.filter(q=>q.points===pts));});
+  });
+  if(prog)prog.style.width='100%';
   stopQuips();
 }
 
