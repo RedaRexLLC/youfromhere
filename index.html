@@ -2636,7 +2636,9 @@ function renderBoard(){
         return '<button class="board-cell pts-'+pts+(used?' used':blocked?' blocked':'')+'" '+(blocked?'disabled aria-disabled="true"':'')+' onclick="pickCell(\''+col.catId+'\',\''+key+'\')" aria-label="'+col.label+' '+pts+' points'+(used?' (used)':'')+'">'+pts+'</button>';
       }).join('')+'</div></div>'
     ).join('')+'</div>';
-  document.getElementById('board-section').innerHTML='<div class="board-title">The Board</div>'+boardHtml;
+  const bs=document.getElementById('board-section');
+  bs.style.display='';// clear any inline display:none left from a previous question
+  bs.innerHTML='<div class="board-title">The Board</div>'+boardHtml;
   document.getElementById('q-area').innerHTML='';
 }
 
